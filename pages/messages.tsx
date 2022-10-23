@@ -1,10 +1,13 @@
 import React from 'react';
-import { FlatList, SafeAreaView, Text, View, Image } from 'react-native';
-import { Appbar, FAB, Avatar, Provider, IconButton } from 'react-native-paper';
+import { FlatList, SafeAreaView, Text, View } from 'react-native';
+import { Appbar, FAB, Avatar, Provider, IconButton, List, Card } from 'react-native-paper';
+import ImageView from 'react-native-image-viewing';
 
 import {MessageField} from '../components/messageField';
 import {MessageType} from '../types/message';
 import {Tiler} from '../components/tiler';
+import {ImageViewContextType} from '../types/images';
+import {ImageViewContext} from '../context/images';
 
 const FloatingActions = () => {
     const [expanded, setExpanded] = React.useState(false);
@@ -53,6 +56,19 @@ const FloatingActions = () => {
     );
 }
 
+export function MessagesHeader() {
+    return (
+    <View style={{display: 'flex', flexDirection: 'row', width: '100%', margin: 0, padding: 0, backgroundColor: '#373737'}}>
+        <List.Item
+            title="Juanita"
+            description="perez"
+            style={{flex: 1}}
+        />
+        <Avatar.Image style={{flex: 1, backgroundColor: '#373737', marginRight: 10}} source={{uri: 'https://img.icons8.com/color/96/000000/user-female-skin-type-6.png'}}/>
+    </View>
+    );
+}
+
 export function Messages() {
         const messages: MessageType[] = [
             {id: 'id', text: 'text', sender: 'from', recipients: ['to'], media: []},
@@ -62,13 +78,28 @@ export function Messages() {
             {id: 'id4', text: 'text4', sender: 'from4', recipients: ['to4'], media: []}
         ];
 
+//     const images = [
+//       {
+//         uri: "https://images.unsplash.com/photo-1571501679680-de32f1e7aad4",
+//       },
+//       {
+//         uri: "https://images.unsplash.com/photo-1573273787173-0eb81a833b34",
+//       },
+//       {
+//         uri: "https://images.unsplash.com/photo-1569569970363-df7b6160d111",
+//       },
+//     ];
+
+    const {images, onView, onViewOff} = React.useContext(ImageViewContext) as ImageViewContextType;
+
     return (
     <SafeAreaView>
-        <Appbar.Header>
-            <Appbar.BackAction onPress={()=>{}}/>
-            <Appbar.Content title="Juan" subtitle="Perez"/>
-            <Appbar.Action size={40} icon={{uri: 'https://img.icons8.com/doodle/48/000000/user-male-skin-type-5.png'}} onPress={() => {}} />
-        </Appbar.Header>
+        <ImageView
+            images={images}
+            imageIndex={0}
+            visible={onView}
+            onRequestClose={onViewOff}
+        />
         <Tiler/>
         <FloatingActions/>
     </SafeAreaView>

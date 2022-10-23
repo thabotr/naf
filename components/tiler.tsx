@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, ScrollView, Image, Button, Text, ImageBackground } from 'react-native';
-import { Card, Paragraph, TextInput, IconButton, List, Avatar} from 'react-native-paper';
+import { Card, Paragraph, TextInput, IconButton, List, Avatar, Chip} from 'react-native-paper';
 import Lorem from 'react-native-lorem-ipsum';
-import { mdiContentSaveEdit } from '@mdi/js';
+
+import {ImageViewContext} from '../context/images';
+import {ImageViewContextType} from '../types/images';
 
 const PairedCards = ({children}) => {
     return (
@@ -97,11 +99,19 @@ const ExpandableParagraph = ({text}:{text:string}) => {
         else setExpanded(true);
     }
 
-    if( text.length > 100){
+    if( text.length > 150){
         return (
         <>
-        <Paragraph numberOfLines={!expanded ? 2 : 0} onPress={toggleExpanded}>{text}</Paragraph>
-        {!expanded ? <TouchToExpandHint/> : null}
+            <Paragraph onPress={toggleExpanded} numberOfLines={!expanded ? 2 : 0}>{text}</Paragraph>
+            <IconButton
+                onPress={toggleExpanded}
+                style={{
+                    width: '100%',
+                    transform: [{rotate: expanded ? '180deg' : '0deg'}],
+                }}
+                size={10}
+                icon={{uri: 'https://img.icons8.com/material-sharp/24/000000/give-way--v1.png'}}
+            />
         </>
         );
     }
@@ -111,9 +121,14 @@ const ExpandableParagraph = ({text}:{text:string}) => {
 }
 
 const ImagePreviewCard = ({source, numberRemaining=0}:{source: Object, numberRemaining: number}) => {
+    const {saveImages, onViewOn} = React.useContext(ImageViewContext) as ImageViewContextType;
+
     if( numberRemaining === 0){
         return (
-        <Card style={{flexGrow: 1, margin: 1}}>
+        <Card onPress={()=>{
+            saveImages([source])
+            onViewOn();
+        }} style={{flexGrow: 1, margin: 1}}>
             <Card.Cover source={source} />
         </Card>
         );
@@ -198,7 +213,11 @@ const MessageCard = ({msg, sender=true}:{msg: DummyMessage[], sender: boolean}) 
                     {msg.audio.slice(0,2).map( od => <AudioPreviewCard key={`${od.title}${od.description}`} {...od}/>)}
                 </View>
                 {msg.audio.length > 2 ?
-                    <Card><Paragraph style={{textAlign: 'center'}}>+{msg.audio.slice(2).length} more</Paragraph></Card> : <></>
+                    <Chip
+                        onPress={()=>{}}
+                        style={{ borderRadius: 10, flex: 1}}
+                        icon={{uri: 'https://img.icons8.com/material-sharp/24/000000/give-way--v1.png'}}
+                    >+{msg.audio.slice(2).length} more</Chip> : <></>
                 }
             </>
         );
@@ -210,8 +229,9 @@ const MessageCard = ({msg, sender=true}:{msg: DummyMessage[], sender: boolean}) 
         if(msg.visuals.length === 1){
             if( msg.visuals[0].type === 'image')
                 return <Card style={[ sender ? styles.sender : styles.recipient, {margin: 2, padding: 3}]}>
-                   <Card.Cover source={msg.visuals[0]}/>
+                   <ImagePreviewCard source={msg.visuals[0]}/>
                 </Card>
+
             return <VidPreviewCard source={msg.visuals[0]} iconSize={96}/>
         }
     }
@@ -276,11 +296,13 @@ export function Tiler({children}:{children:JSX.Element[]}) {
                 </Card.Content>
             </Card>
         </View>
-        <View style={{display: 'flex'}}>
-            <Card style={{...styles.all, ...styles.recipient}}>
-                <Card.Cover source={{ uri: 'https://picsum.photos/400' }} />
-            </Card>
-        </View>
+
+        <MessageCard msg={{
+            text: "",
+            visuals: [{type: 'image', uri: 'https://picsum.photos/400'}],
+            audio: []
+        }} sender/>
+
         <PairedCards>
             <Card style={{...styles.all, ...styles.recipient}}>
                 <Card.Cover source={{ uri: 'https://picsum.photos/500' }} />
