@@ -12,27 +12,26 @@ const PairedCards = ({children}) => {
     );
 }
 
-const VidPreviewCard = ({iconSize, source}:{iconSize: number, source: Object}) => {
+const VidPreviewCard = ({iconSize, source, numberRemaining=0}:{iconSize: number, source: Object, numberRemaining: number}) => {
+    if( numberRemaining === 0)
     return (
-    <Card style={{flexGrow: 1, margin: 1}}>
-        <Card.Cover style={{opacity: 0.8}} source={source} />
-        <View style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: 'center',
-            alignItems: 'center'
-            }}
-        >
-            <IconButton size={iconSize} icon="play-circle-outline" />
-        </View>
-    </Card>
-    );
-}
+        <Card style={{flexGrow: 1, margin: 1}}>
+            <Card.Cover style={{opacity: 0.8}} source={source} />
+            <View style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center'
+                }}
+            >
+                <IconButton size={iconSize} icon="play-circle-outline" />
+            </View>
+        </Card>
+        );
 
-const ExtraVidsPreviewCard = ({iconSize, source, numberRemaining}:{iconSize: number, source: Object, numberRemaining: number}) => {
     return (
     <Card style={{flexGrow: 0.5, margin: 1}}>
         <Card.Cover style={{opacity: 0.5}} source={source} />
@@ -66,14 +65,6 @@ const ExtraVidsPreviewCard = ({iconSize, source, numberRemaining}:{iconSize: num
                 }}
           >+{numberRemaining} more</Paragraph>
         </View>
-    </Card>
-    );
-}
-
-const ImagePreviewCard = ({source}:{source: Object}) => {
-    return (
-    <Card style={{flexGrow: 1, margin: 1}}>
-        <Card.Cover source={source} />
     </Card>
     );
 }
@@ -119,7 +110,15 @@ const ExpandableParagraph = ({text}:{text:string}) => {
 
 }
 
-const ExtraImagesPreviewCard = ({source, numberRemaining}:{source: Object, numberRemaining: number}) => {
+const ImagePreviewCard = ({source, numberRemaining=0}:{source: Object, numberRemaining: number}) => {
+    if( numberRemaining === 0){
+        return (
+        <Card style={{flexGrow: 1, margin: 1}}>
+            <Card.Cover source={source} />
+        </Card>
+        );
+    }
+
     return (
     <Card style={{flexGrow: 0.5, margin: 1}}>
         <Card.Cover
@@ -184,8 +183,8 @@ const MessageCard = ({msg, sender=true}:{msg: DummyMessage[], sender: boolean}) 
                     )}
                     {/* TODO Add extra vid preview*/}
                     {msg.visuals.slice(3,4).map(vz => vz.type === 'image' ?
-                        <ExtraImagesPreviewCard key={vz.uri} source={vz} numberRemaining={msg.visuals.slice(3).length}/> :
-                        <ExtraVidsPreviewCard key={vz.uri} source={vz} numberRemaining={msg.visuals.slice(3).length}/>
+                        <ImagePreviewCard key={vz.uri} source={vz} numberRemaining={msg.visuals.slice(3).length}/> :
+                        <VidPreviewCard key={vz.uri} source={vz} numberRemaining={msg.visuals.slice(3).length}/>
                     )}
                 </View>
             )
@@ -334,7 +333,7 @@ export function Tiler({children}:{children:JSX.Element[]}) {
                     <ImagePreviewCard source={{ uri: 'https://picsum.photos/211' }}/>
                     <ImagePreviewCard source={{ uri: 'https://picsum.photos/311' }}/>
                     <ImagePreviewCard source={{ uri: 'https://picsum.photos/411' }}/>
-                    <ExtraImagesPreviewCard source={{ uri: 'https://picsum.photos/421' }} numberRemaining={3}/>
+                    <ImagePreviewCard source={{ uri: 'https://picsum.photos/421' }} numberRemaining={3}/>
                 </View>
             </Card.Content>
         </Card>
