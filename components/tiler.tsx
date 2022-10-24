@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, ScrollView, Image, Button, Text, ImageBackground } from 'react-native';
-import { Card, Paragraph, TextInput, IconButton, List, Avatar, Chip} from 'react-native-paper';
-import Lorem from 'react-native-lorem-ipsum';
+import { View, ScrollView, Image} from 'react-native';
+import { Card, Paragraph, TextInput, IconButton, List, Chip} from 'react-native-paper';
 
 import {ImageViewContext} from '../context/images';
 import {ImageViewContextType} from '../types/images';
+import {VoiceNoteCard} from '../components/voiceNote';
 
-const PairedCards = ({children}) => {
+const PairedCards = ({children}:{children:React.ReactNode}) => {
     return (
     <View style={{display: 'flex', flexDirection: 'row'}}>
         {children}
@@ -14,7 +14,8 @@ const PairedCards = ({children}) => {
     );
 }
 
-const VidPreviewCard = ({iconSize, source, numberRemaining=0}:{iconSize: number, source: Object, numberRemaining: number}) => {
+// TODO use dynamic value for iconSize
+const VidPreviewCard = ({iconSize=64, source, numberRemaining=0}:{iconSize?: number, source: Object, numberRemaining?: number}) => {
     if( numberRemaining === 0)
     return (
         <Card style={{flexGrow: 1, margin: 1}}>
@@ -71,15 +72,7 @@ const VidPreviewCard = ({iconSize, source, numberRemaining=0}:{iconSize: number,
     );
 }
 
-const TouchToExpandHint = () => {
-    return (
-    <Paragraph
-        style={{textAlign: 'center', opacity: 0.5}}
-    >touch text to see whole message</Paragraph>
-    );
-}
-
-const AudioPreviewCard = ({title, description, recorded=false}:{title:string, description:string, recorded: boolean}) => {
+const AudioPreviewCard = ({title, description, recorded=false}:{title:string, description:string, recorded?: boolean}) => {
     return (
         <Card style={{flex: 1, margin: 1}}>
             <List.Item
@@ -120,7 +113,7 @@ const ExpandableParagraph = ({text}:{text:string}) => {
 
 }
 
-const ImagePreviewCard = ({source, numberRemaining=0}:{source: Object, numberRemaining: number}) => {
+const ImagePreviewCard = ({source, numberRemaining=0}:{source: {uri: string}, numberRemaining?: number}) => {
     const {saveImages, onViewOn} = React.useContext(ImageViewContext) as ImageViewContextType;
 
     if( numberRemaining === 0){
@@ -161,29 +154,29 @@ const ImagePreviewCard = ({source, numberRemaining=0}:{source: Object, numberRem
     );
 }
 
-class DummyVisual {
-    type: string;
+type DummyVisual = {
+    type: string,
     uri: string
 }
 
-class DummyAudio {
-    title: string;
-    description: string;
+type DummyAudio = {
+    title: string,
+    description: string,
     recorded: boolean
 }
 
 class DummyMessage {
-    text: string;
-    audio: DummyAudio[];
-    visuals: DummyVisual[]
+    text: string="";
+    audio: DummyAudio[]=[];
+    visuals: DummyVisual[]=[];
 }
 
-const MessageCard = ({msg, sender=true}:{msg: DummyMessage[], sender: boolean}) => {
+const MessageCard = ({msg, sender=true}:{msg: DummyMessage, sender?: boolean}) => {
     const renderVisualFiles = () => {
         if( msg.visuals.length <= 4) {
             return (
                 <View style={{display: 'flex', flexDirection: 'row'}}>
-                    {msg.visuals.map( vzs => vzs.type === 'image' ?
+                    {msg.visuals.map( (vzs: DummyVisual) => vzs.type === 'image' ?
                         <ImagePreviewCard key={vzs.uri} source={vzs}/> :
                         <VidPreviewCard key={vzs.uri} iconSize={64} source={vzs} />
                     )}
@@ -360,6 +353,11 @@ export function Tiler({children}:{children:JSX.Element[]}) {
             </Card.Content>
         </Card>
         <MessageEditor/>
+        <VoiceNoteCard track={{
+            url: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3',
+            title: 'bad guy',
+            artist: 'a-reece'
+        }}/>
         <View style={{height: 200, opacity: 0}}>
         </View>
     </ScrollView>
