@@ -1,6 +1,9 @@
+import React from 'react';
 import {View} from 'react-native';
-import {ProgressBar, IconButton, Paragraph, Card, Chip} from 'react-native-paper';
+import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 import TrackPlayer, {useProgress, usePlaybackState, State, Track} from 'react-native-track-player';
+import { ThemeContext } from '../context/theme';
+import { ThemeContextType } from '../types/theme';
 
 function zeroPad(num: number):string { return num < 10 ? `0${num}` : `${num}`};
 
@@ -10,10 +13,11 @@ function humanAudioLength(seconds: number): string {
     return seconds/3600 < 1 ? minSecs : `${zeroPad(Math.floor(seconds/3600))}:${minSecs}`;
 }
 
-export function VoiceNoteCard({track}:{track: Track}) {
+export function VoiceNoteCard({track, user=true}:{track: Track, user?: boolean}) {
     const playBackState = usePlaybackState();
     const { position, buffered, duration } = useProgress(1_000);
     const isPlaying = playBackState  === State.Playing;
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
     const play = async () => {
         const tracks = await TrackPlayer.getQueue();
@@ -29,7 +33,7 @@ export function VoiceNoteCard({track}:{track: Track}) {
     }
 
     return (
-    <Card style={{margin: 5}}>
+    <Card style={{margin: 5, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}>
         <Card.Content>
         <View style={{display: 'flex', flexDirection: 'row'}}>
             <View style={{flex: 1}}>
@@ -39,7 +43,7 @@ export function VoiceNoteCard({track}:{track: Track}) {
                 </View>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                     {/* Buffered progress */}
-                    <ProgressBar style={{opacity: 0.2}} progress={duration === 0 ? 0 : buffered/duration}/>
+                    <ProgressBar color={theme.color.primary} style={{opacity: 0.2}} progress={duration === 0 ? 0 : buffered/duration}/>
                     <View style={{
                        justifyContent: 'center',
                        position: 'absolute',
@@ -49,7 +53,7 @@ export function VoiceNoteCard({track}:{track: Track}) {
                        bottom: 0
                     }}>
                         {/* Playback progress */}
-                        <ProgressBar progress={duration === 0 ? 0 : position/duration}/>
+                        <ProgressBar color={theme.color.primary} progress={duration === 0 ? 0 : position/duration}/>
                     </View>
                 </View>
             </View>

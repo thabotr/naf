@@ -1,8 +1,8 @@
-export class MediaType {
+export type MediaType = {
     id: string,
 }
 
-export class MessageType {
+export type MessageType = {
     id: string,
     text: string | null,
     sender: string,
@@ -10,13 +10,13 @@ export class MessageType {
     media: MediaType[]
 }
 
-export class Link {
+export type Link = {
     id: string,
-    nextIds: []string,
-    prevIds: []string
+    nextIds: string[],
+    prevIds: string[]
 }
 
-export class MessageThread {
+export type MessageThread = {
     id: string,
     title: string,
     messageLinks: Link[]

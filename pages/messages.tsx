@@ -1,13 +1,14 @@
 import React from 'react';
-import { FlatList, SafeAreaView, Text, View } from 'react-native';
-import { Appbar, FAB, Avatar, Provider, IconButton, List, Card } from 'react-native-paper';
+import {SafeAreaView, View} from 'react-native';
+import {FAB, Avatar, IconButton, List} from 'react-native-paper';
 import ImageView from 'react-native-image-viewing';
 
-import {MessageField} from '../components/messageField';
 import {MessageType} from '../types/message';
 import {Tiler} from '../components/tiler';
 import {ImageViewContextType} from '../types/images';
 import {ImageViewContext} from '../context/images';
+import { ThemeContext } from '../context/theme';
+import { ThemeContextType } from '../types/theme';
 
 const FloatingActions = () => {
     const [expanded, setExpanded] = React.useState(false);
@@ -32,7 +33,9 @@ const FloatingActions = () => {
             right: 10,
             bottom: 50,
             backgroundColor: 'black', // TODO get from theme,
-            width: expanded ? 150 : null
+            },
+            {
+                width: expanded ? 150 : 'auto'
             }
         ]}
     >
@@ -57,14 +60,15 @@ const FloatingActions = () => {
 }
 
 export function MessagesHeader() {
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     return (
-    <View style={{display: 'flex', flexDirection: 'row', width: '100%', margin: 0, padding: 0, backgroundColor: '#373737'}}>
+    <View style={{display: 'flex', flexDirection: 'row', width: '100%', margin: 0, padding: 0, backgroundColor: theme.color.primary}}>
         <List.Item
             title="Juanita"
             description="perez"
             style={{flex: 1}}
         />
-        <Avatar.Image style={{flex: 1, backgroundColor: '#373737', marginRight: 10}} source={{uri: 'https://img.icons8.com/color/96/000000/user-female-skin-type-6.png'}}/>
+        <Avatar.Image style={{flex: 1, backgroundColor: theme.color.primary, marginRight: 10}} source={{uri: 'https://img.icons8.com/color/96/000000/user-female-skin-type-6.png'}}/>
     </View>
     );
 }
@@ -90,15 +94,18 @@ export function Messages() {
 //       },
 //     ];
 
-    const {images, onView, onViewOff} = React.useContext(ImageViewContext) as ImageViewContextType;
+    const {images, onView, onViewOff, sender} = React.useContext(ImageViewContext) as ImageViewContextType;
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
     return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
         <ImageView
             images={images}
             imageIndex={0}
             visible={onView}
             onRequestClose={onViewOff}
+            animationType='fade'
+            backgroundColor={sender ? theme.color.userPrimary : theme.color.friendPrimary} //TODO set this color to sender or receiver color
         />
         <Tiler/>
         <FloatingActions/>
