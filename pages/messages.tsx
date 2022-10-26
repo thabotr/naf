@@ -9,9 +9,13 @@ import {ImageViewContextType} from '../types/images';
 import {ImageViewContext} from '../context/images';
 import { ThemeContext } from '../context/theme';
 import { ThemeContextType } from '../types/theme';
+import { MessageEditorContext, MessageEditorProvider } from '../context/messageEditor';
+import { MessageEditorContextType } from '../types/MessageEditor';
+import { OnlyShow } from '../components/helper';
 
 const FloatingActions = () => {
     const [expanded, setExpanded] = React.useState(false);
+    const {composing, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const actions = [
         { color: '#d4d4d4', icon: 'microphone'},
         { color: '#b4b4b4', icon: 'attachment'},
@@ -19,6 +23,7 @@ const FloatingActions = () => {
         { color: '#636363', icon: 'pencil'},
     ]
     return (
+    <OnlyShow If={!composing}>
     <View
         style={
         [
@@ -44,7 +49,7 @@ const FloatingActions = () => {
             style={{margin: 3, borderRadius: 0, backgroundColor: '#636363'}}
             icon="pencil"
             onLongPress={()=>setExpanded(true)}
-            onPress={()=>{}}
+            onPress={()=>{setComposeOn(true);}}
         /> :
         actions.map(ab => <IconButton
                 key={ab.icon}
@@ -56,6 +61,7 @@ const FloatingActions = () => {
         )
         }
     </View>
+    </OnlyShow>
     );
 }
 
@@ -98,6 +104,7 @@ export function Messages() {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
     return (
+    <MessageEditorProvider>
     <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
         <ImageView
             images={images}
@@ -110,5 +117,6 @@ export function Messages() {
         <Tiler/>
         <FloatingActions/>
     </SafeAreaView>
+    </MessageEditorProvider>
     );
 }

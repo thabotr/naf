@@ -1,26 +1,29 @@
 import React from 'react';
-import { View, ScrollView, Image} from 'react-native';
+import { View, ScrollView} from 'react-native';
 
-import { DummyMessage, MessageCard, MessageEditorCard } from "./message";
+import { MessageEditorProvider } from '../context/messageEditor';
+import { MessageCard} from "./message";
+import { MessageEditorCard } from './MessageEditor';
 import { VoiceNoteCard } from './voiceNote';
 
 
 export function Tiler({children}:{children?:JSX.Element[]}) {
-    const dummyMessage: DummyMessage = {
+    console.warn("TODO add file preview card");
+    const dummyMessage = {
+        userId: 'user',
+        id: '0',
         text: "spendisse nec elementum risus, in gravida enim. Pellentesque tempus quam in elit euismod, sed tempus ligula maximus. Phasellus ut. And more",
-        audio: [
-            {title: "3s", description: "[recorded] 3.1MB", recorded: true},
-            {title: "34s", description: "[file.txt] 1MB", recorded: false},
-            {title: "19s", description: "[file3.txt] 10MB", recorded: true}
-        ],
-        visuals: [
-            { type: 'image', uri: 'https://picsum.photos/600'},
-            { type: 'image', uri: 'https://picsum.photos/500'},
-            { type: 'vid', uri: 'https://picsum.photos/300'},
-            { type: 'vid', uri: 'https://picsum.photos/3000'},
-            { type: 'image', uri: 'https://picsum.photos/4000'},
-            { type: 'image', uri: 'https://picsum.photos/7000'},
-            { type: 'image', uri: 'https://picsum.photos/8000'},
+        files: [
+            { type: 'audio', duration: 10_000, uri: 'x', title: "3s", name: "recorded", size: 3_000_248_111, recorded: true},
+            { type: 'audio', uri: 'a', title: "34s", name: "file.txt", size: 1001, recorded: false},
+            { type: 'audio', uri: 'c', title: "19s", name: "file3.txt", size: 333, recorded: true},
+            { type: 'image', uri: 'https://picsum.photos/600', size: 0},
+            { type: 'image', uri: 'https://picsum.photos/500', size: 0},
+            { type: 'video', uri: 'https://picsum.photos/300', size: 0},
+            { type: 'video', uri: 'https://picsum.photos/3000', size: 0},
+            { type: 'image', uri: 'https://picsum.photos/4000', size: 0},
+            { type: 'image', uri: 'https://picsum.photos/7000', size: 0},
+            { type: 'image', uri: 'https://picsum.photos/8000', size: 0},
         ]
     }
 
@@ -28,14 +31,14 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
     <ScrollView style={{height: 930}} overScrollMode='auto'>
         <MessageCard sender={false} msg={dummyMessage}/>
         <MessageCard sender msg={{
-            text: '',
-            audio: [],
-            visuals: [{ type: 'vid', uri: 'https://picsum.photos/3000'}]
+            userId: 'user',
+            id: '0',
+            files: [{ type: 'vid', uri: 'https://picsum.photos/3000', size: 10, name: 'cid'}]
         }}/>
         <MessageCard msg={{
-            text: "",
-            visuals: [{type: 'image', uri: 'https://picsum.photos/400'}],
-            audio: []
+            userId: 'user',
+            id: '0',
+            files: [{ type: 'image', uri: 'https://picsum.photos/1000', size: 10333, name: 'img'}]
         }} sender/>
         <MessageEditorCard/>
         <VoiceNoteCard track={{

@@ -4,10 +4,11 @@ import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 import TrackPlayer, {useProgress, usePlaybackState, State, Track} from 'react-native-track-player';
 import { ThemeContext } from '../context/theme';
 import { ThemeContextType } from '../types/theme';
+import { HorizontalView } from './helper';
 
 function zeroPad(num: number):string { return num < 10 ? `0${num}` : `${num}`};
 
-function humanAudioLength(seconds: number): string {
+export function verboseDuration(seconds: number): string {
     seconds = Math.floor(seconds);
     const minSecs = `${zeroPad(Math.floor(seconds/60)%60)}:${zeroPad(seconds%60)}`;
     return seconds/3600 < 1 ? minSecs : `${zeroPad(Math.floor(seconds/3600))}:${minSecs}`;
@@ -33,13 +34,12 @@ export function VoiceNoteCard({track, user=true}:{track: Track, user?: boolean})
     }
 
     return (
-    <Card style={{margin: 5, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}>
-        <Card.Content>
-        <View style={{display: 'flex', flexDirection: 'row'}}>
+    <Card style={{margin: 3, padding: 5, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}>
+        <HorizontalView>
             <View style={{flex: 1}}>
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Paragraph>{humanAudioLength(position)}</Paragraph>
-                    <Paragraph>{humanAudioLength(duration)}</Paragraph>
+                    <Paragraph>{verboseDuration(position)}</Paragraph>
+                    <Paragraph>{verboseDuration(duration)}</Paragraph>
                 </View>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                     {/* Buffered progress */}
@@ -61,8 +61,7 @@ export function VoiceNoteCard({track, user=true}:{track: Track, user?: boolean})
                 onPress={async ()=> isPlaying ? await TrackPlayer.pause() : await play()}
                 icon={ !isPlaying ? "play" : "pause"}
             />
-        </View>
-        </Card.Content>
+        </HorizontalView>
     </Card>
     );
 }

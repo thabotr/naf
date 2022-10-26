@@ -21,3 +21,12 @@ export type MessageThread = {
     title: string,
     messageLinks: Link[]
 }
+
+export type MessageFile = {
+    size?: number;
+    name?: string;
+    type: string;
+    uri: string;
+    thumbnailUrl?: string;
+    duration?: number;
+}

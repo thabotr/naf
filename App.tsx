@@ -7,15 +7,16 @@
  */
 
 import React from 'react';
+import { Provider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ToastManager from 'toastify-react-native';
 
 import {Messages, MessagesHeader} from './pages/messages';
 import {Home, HomeHeader} from './pages/home';
 import {ImageViewProvider} from './context/images';
 import { ThemeContext, ThemeContextProvider } from './context/theme';
 import { ThemeContextType } from './types/theme';
-import { Provider } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,7 @@ function App() {
         <ImageViewProvider>
             <NavigationContainer>
               <N/>
+              <ToastManager duration={5_000} style={{width: '100%', borderRadius: 9}}/>
             </NavigationContainer>
         </ImageViewProvider>
         </ThemeContextProvider>
