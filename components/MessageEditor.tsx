@@ -45,7 +45,7 @@ export const MessageEditorCard = ()=> {
           </OnlyShow>
 
           <OnlyShow If={voiceRecording.uri !== ''}>
-            <VoiceNoteCard uri={voiceRecording.uri} user={true}/>
+            <VoiceNoteCard file={{uri: voiceRecording.uri, size: voiceRecording.size ?? 0}} user={true}/>
           </OnlyShow>
 
           <View style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>

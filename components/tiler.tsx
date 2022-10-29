@@ -39,8 +39,8 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             files: [{ type: 'image', uri: 'https://picsum.photos/1000', size: 10333, name: 'img'}]
         }} sender/>
         <VoiceNoteCard
-            // uri='https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3'
-            uri='file:////data/user/0/com.naf/cache/recording.mp3'
+            file={{uri:'https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3', size: 3_000_123}}
+            // uri='file:////data/user/0/com.naf/cache/recording.mp3'
         />
         <MessageEditorCard/>
         <View style={{height: 500, opacity: 0}}>

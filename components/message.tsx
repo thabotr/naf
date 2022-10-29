@@ -39,6 +39,7 @@ export const VidPreviewCard = ({iconSize=64, source, numberRemaining=0}:{iconSiz
 
 export const AudioPreviewCard = ({audio, user=true}:{audio: MessageFile, user?: boolean}) => {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    console.warn('TODO determine audio length so can add to card');
     return (
         <Card
             onPress={()=>{
@@ -211,14 +212,14 @@ export const MessageCard = ({msg, sender=true}:{msg: {
     }
     if(msgHasOneRecording){
         const t = voiceRecordings[0];
-        return <VoiceNoteCard uri={t.uri} user={sender}/>
+        return <VoiceNoteCard file={{uri:t.uri, size: t.size ?? 0}} user={sender}/>
     }
 
     return (
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <Card.Content>
                 <ExpandableParagraph text={msg.text ?? ''}/>
-                {voiceRecordings.map(t => <VoiceNoteCard key={t.uri} uri={t.uri} user={sender}/>)}
+                {voiceRecordings.map(t => <VoiceNoteCard key={t.uri} file={{uri:t.uri, size: t.size ?? 0}} user={sender}/>)}
                 {renderVisualFiles()}
                 {renderOtherFiles()}
             </Card.Content>

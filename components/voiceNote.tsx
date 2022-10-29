@@ -7,6 +7,7 @@ import { ThemeContext } from '../context/theme';
 import { MessageEditorContextType } from '../types/MessageEditor';
 import { ThemeContextType } from '../types/theme';
 import { HorizontalView, OnlyShow } from './helper';
+import { verboseSize } from './message';
 
 function zeroPad(num: number):string { return num < 10 ? `0${num}` : `${num}`};
 
@@ -22,7 +23,7 @@ const enum PlayState {
     STOPPED
 }
 
-export function VoiceNoteCard({uri, user}:{uri: string, user?: boolean}) {
+export function VoiceNoteCard({file, user}:{file: {size: number, uri: string}, user?: boolean}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {vrState, audioRecorderPlayer, saveVRState} = React.useContext(MessageEditorContext) as MessageEditorContextType;
@@ -35,7 +36,7 @@ export function VoiceNoteCard({uri, user}:{uri: string, user?: boolean}) {
     }
 
     const onStartPlay = async () => {
-        const msg = await audioRecorderPlayer.startPlayer(uri);
+        const msg = await audioRecorderPlayer.startPlayer(file.uri);
         console.log(msg);
         audioRecorderPlayer.addPlayBackListener((e) => {
             if( e.currentPosition === e.duration)
@@ -75,6 +76,7 @@ export function VoiceNoteCard({uri, user}:{uri: string, user?: boolean}) {
             <View style={{flex: 1}}>
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                     <Paragraph>{verboseDuration(playerValues.positionSec)}</Paragraph>
+                    <Paragraph>{verboseSize(file.size)}</Paragraph>
                     <Paragraph>{verboseDuration(playerValues.durationSec)}</Paragraph>
                 </View>
                 <View style={{flex: 1, justifyContent: 'center'}}>
