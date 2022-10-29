@@ -12,18 +12,26 @@ import { ThemeContextType } from '../types/theme';
 import { MessageEditorContext, MessageEditorProvider } from '../context/messageEditor';
 import { MessageEditorContextType } from '../types/MessageEditor';
 import { OnlyShow } from '../components/helper';
+import { VoiceRecorder } from '../components/voiceRecorder';
 
 const FloatingActions = () => {
     const [expanded, setExpanded] = React.useState(false);
-    const {composing, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+    const {composing, setComposeOn, vrState, onStartRecord, showTextInputOn, onAddAttachments} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const actions = [
         { color: '#d4d4d4', icon: 'microphone'},
         { color: '#b4b4b4', icon: 'attachment'},
         { color: '#909090', icon: 'camera'},
         { color: '#636363', icon: 'pencil'},
     ]
+
+
+    const pencilClicked = () => {
+        setComposeOn(true);
+        showTextInputOn(true);
+    }
+
     return (
-    <OnlyShow If={!composing}>
+    <OnlyShow If={!(composing || vrState.recording)}>
     <View
         style={
         [
@@ -49,14 +57,28 @@ const FloatingActions = () => {
             style={{margin: 3, borderRadius: 0, backgroundColor: '#636363'}}
             icon="pencil"
             onLongPress={()=>setExpanded(true)}
-            onPress={()=>{setComposeOn(true);}}
+            onPress={pencilClicked}
         /> :
         actions.map(ab => <IconButton
                 key={ab.icon}
                 style={{margin: 0, borderRadius: 0, backgroundColor: ab.color, width: '50%'}}
                 size={40}
                 icon={ab.icon}
-                onPress={()=>{}}
+                onPress={()=>{
+                    switch( ab.icon){
+                        case 'microphone':
+                            onStartRecord();
+                            break;
+                        case 'pencil':
+                            pencilClicked();
+                            break;
+                        case 'attachment':
+                            onAddAttachments();
+                            break;
+                        default:
+                            console.warn("TODO implement action")
+                    }
+                }}
             />
         )
         }
@@ -80,25 +102,13 @@ export function MessagesHeader() {
 }
 
 export function Messages() {
-        const messages: MessageType[] = [
-            {id: 'id', text: 'text', sender: 'from', recipients: ['to'], media: []},
-            {id: 'id1', text: 'text1', sender: 'from1', recipients: ['to1'], media: []},
-            {id: 'id2', text: 'text2', sender: 'from2', recipients: ['to2'], media: []},
-            {id: 'id3', text: 'text3', sender: 'from3', recipients: ['to3'], media: []},
-            {id: 'id4', text: 'text4', sender: 'from4', recipients: ['to4'], media: []}
-        ];
-
-//     const images = [
-//       {
-//         uri: "https://images.unsplash.com/photo-1571501679680-de32f1e7aad4",
-//       },
-//       {
-//         uri: "https://images.unsplash.com/photo-1573273787173-0eb81a833b34",
-//       },
-//       {
-//         uri: "https://images.unsplash.com/photo-1569569970363-df7b6160d111",
-//       },
-//     ];
+    const messages: MessageType[] = [
+        {id: 'id', text: 'text', sender: 'from', recipients: ['to'], media: []},
+        {id: 'id1', text: 'text1', sender: 'from1', recipients: ['to1'], media: []},
+        {id: 'id2', text: 'text2', sender: 'from2', recipients: ['to2'], media: []},
+        {id: 'id3', text: 'text3', sender: 'from3', recipients: ['to3'], media: []},
+        {id: 'id4', text: 'text4', sender: 'from4', recipients: ['to4'], media: []}
+    ];
 
     const {images, onView, onViewOff, sender} = React.useContext(ImageViewContext) as ImageViewContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
@@ -115,6 +125,7 @@ export function Messages() {
             backgroundColor={sender ? theme.color.userPrimary : theme.color.friendPrimary} //TODO set this color to sender or receiver color
         />
         <Tiler/>
+        <VoiceRecorder/>
         <FloatingActions/>
     </SafeAreaView>
     </MessageEditorProvider>

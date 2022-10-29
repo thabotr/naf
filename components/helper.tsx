@@ -3,7 +3,7 @@ import React from 'react';
 import {View, ViewProps} from 'react-native';
 import { Paragraph, IconButton } from 'react-native-paper';
 
-export function OnlyShow({If=true, children}:{If?:boolean, children: React.ReactNode}) {
+export function OnlyShow({If, children}:{If?:boolean, children: React.ReactNode}) {
   return If ? <>{children}</> : null;
 }
 
@@ -25,7 +25,7 @@ export function OverlayedView(props: ViewProps){
       justifyContent: 'center',
       alignItems: 'center'
     }
-  };
+  }; 
   return <View {...newProps}>
     {props.children}
   </View>

@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, ScrollView} from 'react-native';
 
-import { MessageEditorProvider } from '../context/messageEditor';
 import { MessageCard} from "./message";
 import { MessageEditorCard } from './MessageEditor';
 import { VoiceNoteCard } from './voiceNote';
 
 
 export function Tiler({children}:{children?:JSX.Element[]}) {
-    console.warn("TODO add file preview card");
     const dummyMessage = {
         userId: 'user',
         id: '0',
@@ -40,13 +38,12 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             id: '0',
             files: [{ type: 'image', uri: 'https://picsum.photos/1000', size: 10333, name: 'img'}]
         }} sender/>
+        <VoiceNoteCard
+            // uri='https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3'
+            uri='file:////data/user/0/com.naf/cache/recording.mp3'
+        />
         <MessageEditorCard/>
-        <VoiceNoteCard track={{
-            url: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3',
-            title: 'bad guy',
-            artist: 'a-reece'
-        }}/>
-        <View style={{height: 200, opacity: 0}}>
+        <View style={{height: 500, opacity: 0}}>
         </View>
     </ScrollView>
     );

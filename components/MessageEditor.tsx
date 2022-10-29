@@ -1,22 +1,22 @@
 import React from 'react';
-import { Card, IconButton, List, Paragraph, TextInput} from 'react-native-paper';
+import { Card, IconButton, List, TextInput} from 'react-native-paper';
 import {View} from 'react-native';
 
 import { MessageEditorContext } from '../context/messageEditor';
 import { ThemeContext } from '../context/theme';
 import { MessageEditorContextType } from '../types/MessageEditor';
 import { ThemeContextType } from '../types/theme';
-import { FilePicker } from './filePicker';
 import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, VisualPreview } from './message';
 import { HorizontalView, OnlyShow, Show } from './helper';
+import { VoiceNoteCard } from './voiceNote';
 
-export const MessageEditorCard = ({showTextInput=false}:{showTextInput?: boolean})=> {
+export const MessageEditorCard = ()=> {
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {message, composing} = React.useContext(MessageEditorContext) as MessageEditorContextType;
-  const [inputBox, enableInputBox] = React.useState(showTextInput);
+  const {message, composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments} = React.useContext(MessageEditorContext) as MessageEditorContextType;
 
+  const voiceRecording = message.files.find(f => f.type.split('/')[0] === 'recording') ?? {type: '', uri: ''} ;
   const visualizables = message.files.filter(f => f.type.split('/')[0] === 'video' || f.type.split('/')[0] === 'image');
-  const otherFiles = message.files.filter(f => !(f.type.split('/')[0] === 'video' || f.type.split('/')[0] === 'image'));
+  const otherFiles = message.files.filter(f => !(f.type.split('/')[0] === 'video' || f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'recording'));
 
   return (
   <OnlyShow If={composing}>
@@ -25,21 +25,27 @@ export const MessageEditorCard = ({showTextInput=false}:{showTextInput?: boolean
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{display: 'flex', flexDirection: 'row'}}>
               <IconButton icon="content-save-edit" onPress={()=>console.warn('TODO save draft and disable compose')}/>
-              <IconButton icon="delete" onPress={()=>{console.warn('TODO discard message and disable compose')}}/>
+              <IconButton icon="delete" onPress={()=>{
+                  discardMessage();
+                }}/>
               </View>
 
               <View style={{display: 'flex', flexDirection: 'row'}}>
               <IconButton icon="emoticon-excited-outline" onPress={()=>{}}/>
-              <IconButton icon="microphone" onPress={()=>{}}/>
-              <FilePicker/>
+              <IconButton icon="microphone" onPress={onStartRecord}/>
+              <IconButton icon="attachment" onPress={onAddAttachments}/>
               <IconButton icon="camera" onPress={()=>{}}/>
-              <IconButton icon={inputBox ? 'pencil-minus' : "pencil-plus"} onPress={()=>enableInputBox(!inputBox)}/>
+              <IconButton icon={showTextInput ? 'pencil-minus' : "pencil-plus"} onPress={()=>showTextInputOn(!showTextInput)}/>
               </View>
 
               <IconButton icon="send" onPress={()=>{}}/>
           </View>
-          <OnlyShow If={composing && inputBox}>
+          <OnlyShow If={composing && showTextInput}>
               <TextInput multiline numberOfLines={6} style={{ width: '100%'}} label="message body"/>
+          </OnlyShow>
+
+          <OnlyShow If={voiceRecording.uri !== ''}>
+            <VoiceNoteCard uri={voiceRecording.uri} user={true}/>
           </OnlyShow>
 
           <View style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>

@@ -8,7 +8,7 @@ import {ImageViewContextType} from '../types/images';
 import { ThemeContext } from '../context/theme';
 import { ThemeContextType } from '../types/theme';
 import { MessageFile } from '../types/message';
-import { verboseDuration } from './voiceNote';
+import { verboseDuration, VoiceNoteCard } from './voiceNote';
 import { HorizontalView, numberRemainingOverlay, OnlyShow, Show, vidIconOverlay } from './helper';
 
 // TODO use dynamic value for iconSize
@@ -146,6 +146,7 @@ export const MessageCard = ({msg, sender=true}:{msg: {
     }[]
 }, sender?: boolean}) => {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const voiceRecordings = msg.files.filter(f => f.type === 'recording');
     const visuals = msg.files.filter(f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video');
     const otherFiles = msg.files.filter(f => !(f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video'));
 
@@ -182,10 +183,11 @@ export const MessageCard = ({msg, sender=true}:{msg: {
         );
     }
 
-    const msgHasNoTextNorFiles = !msg.text && otherFiles.length === 0 ;
-    const msgIsEmpty = msgHasNoTextNorFiles && visuals.length === 0;
+    const msgHasNoTextNorFiles = !msg.text && !otherFiles.length;
+    const msgIsEmpty = msgHasNoTextNorFiles && !visuals.length;
     const msgHasJustOneVisual = msgHasNoTextNorFiles && visuals.length === 1;
-    const msgHasJustOneFile = otherFiles.length === 1 && visuals.length === 0;
+    const msgHasJustOneFile = otherFiles.length === 1 && !visuals.length;
+    const msgHasOneRecording = voiceRecordings.length === 1 && !msg.text && !otherFiles.length && !visuals.length
 
     const senderOrFriendColor = sender ? theme.color.userPrimary : theme.color.friendPrimary;
     
@@ -207,11 +209,16 @@ export const MessageCard = ({msg, sender=true}:{msg: {
         const f = otherFiles[0];
         return <FilePreviewCard file={{ name: f.name ?? 'noname', size: f.size ?? 0, type: f.type, uri: f.uri }} user={sender}/>
     }
+    if(msgHasOneRecording){
+        const t = voiceRecordings[0];
+        return <VoiceNoteCard uri={t.uri} user={sender}/>
+    }
 
     return (
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <Card.Content>
                 <ExpandableParagraph text={msg.text ?? ''}/>
+                {voiceRecordings.map(t => <VoiceNoteCard key={t.uri} uri={t.uri} user={sender}/>)}
                 {renderVisualFiles()}
                 {renderOtherFiles()}
             </Card.Content>
