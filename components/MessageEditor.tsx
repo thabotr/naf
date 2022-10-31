@@ -9,12 +9,23 @@ import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, separateFiles, Vi
 import { HorizontalView, OnlyShow, Show } from './helper';
 import { VoiceNoteCard } from './voiceNote';
 import { MessagesContext, MessagesContextType } from '../context/messages';
+import { openCamera } from '../src/camera';
 
 export const MessageEditorCard = ()=> {
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message, saveMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const {messageInFocus} = React.useContext(MessagesContext) as MessagesContextType;
   const {recordings, visuals, others} = separateFiles(message.files);
+
+  const openCamInMode = (mode: 'video' | 'photo') => openCamera(mode)
+    .then(vidOrPic=> {
+      saveMessage({
+        ...message,
+        files: [...message.files, vidOrPic],
+      });
+      setComposeOn(true);
+    })
+    .catch( e => console.warn("camera error " + e));
 
   return (
   <OnlyShow If={composing}>
@@ -32,7 +43,8 @@ export const MessageEditorCard = ()=> {
               <IconButton icon="emoticon-excited-outline" onPress={()=>{}}/>
               <IconButton icon="microphone" onPress={onStartRecord}/>
               <IconButton icon="attachment" onPress={onAddAttachments}/>
-              <IconButton icon="camera" onPress={()=>{}}/>
+              <IconButton icon="camera" onPress={()=>openCamInMode('photo')}/>
+              <IconButton icon="video" onPress={()=>openCamInMode('video')}/>
               <IconButton icon={showTextInput ? 'pencil-minus' : "pencil-plus"} onPress={()=>showTextInputOn(!showTextInput)}/>
               </View>
 
@@ -45,10 +57,10 @@ export const MessageEditorCard = ()=> {
           {recordings.map(r=><VoiceNoteCard file={{uri: r.uri, size: r.size ?? 0, durationSecs: r.duration ?? 0}} user={true}/>)}
 
           <HorizontalView>
-            {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f} numberRemaining={0}/>)}
+            {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f}/>)}
           </HorizontalView>
 
-          <OnlyShow If={others.length > 0}>
+          <OnlyShow If={others.length+visuals.slice(4).length> 0}>
             <View style={{display: 'flex', flexDirection: 'row'}}>
                 <List.Section style={{width: '100%', padding: 0, margin: 0}}>
                     <List.Subheader>Other attachments</List.Subheader>

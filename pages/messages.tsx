@@ -11,9 +11,10 @@ import { MessageEditorContextType } from '../types/MessageEditor';
 import { OnlyShow } from '../components/helper';
 import { VoiceRecorder } from '../components/voiceRecorder';
 import { MessagesContextProvider } from '../context/messages';
+import { openCamera } from '../src/camera';
 
 const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
-    const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+    const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveMessage, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const actions = [
         { color: '#d4d4d4', icon: 'microphone'},
         { color: '#b4b4b4', icon: 'attachment'},
@@ -31,6 +32,18 @@ const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
         return true;
     }
 
+    const takePic = (mode: 'video' | 'photo') => {
+        openCamera(mode)
+        .then(img=> {
+            saveMessage({
+                ...message,
+                files: [...message.files, img],
+            });
+            setComposeOn(true);
+        })
+        .catch( e => console.warn("camera error " + e));
+    }
+
     React.useEffect(()=>{
         BackHandler.addEventListener('hardwareBackPress', backAction);
         return ()=> BackHandler.removeEventListener('hardwareBackPress', backAction);
@@ -42,6 +55,14 @@ const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
                 style={{margin: 0, borderRadius: 0, backgroundColor: ab.color, width: '50%'}}
                 size={40}
                 icon={ab.icon}
+                onLongPress={()=>{
+                    switch( ab.icon){
+                        case 'camera':
+                            takePic('video');
+                            break;
+                        default:
+                    }
+                }}
                 onPress={()=>{
                     switch( ab.icon){
                         case 'microphone':
@@ -52,6 +73,9 @@ const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
                             break;
                         case 'attachment':
                             onAddAttachments();
+                            break;
+                        case 'camera':
+                            takePic('photo');
                             break;
                         default:
                             console.warn("TODO implement action")

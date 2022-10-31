@@ -1,15 +1,14 @@
 import React from 'react';
 import { Image} from 'react-native';
 import { Card, Paragraph, IconButton, List} from 'react-native-paper';
-import {Toast} from 'toastify-react-native';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageFile } from '../types/message';
 import { verboseDuration, VoiceNoteCard } from './voiceNote';
-import { HorizontalView, numberRemainingOverlay, OnlyShow, Show, vidIconOverlay } from './helper';
+import { HorizontalView, OnlyShow, Show, vidIconOverlay } from './helper';
 import { Message } from '../context/messageEditor';
 import { openFile } from '../src/fileViewer';
-import { MessagePK, MessagesContext, MessagesContextType, ViewType } from '../context/messages';
+import { MessagePK, MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
 
 export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
@@ -24,7 +23,7 @@ export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
 }
 
 // TODO use dynamic value for iconSize
-export const VidPreviewCard = ({iconSize=64, source, msgPK}:{ msgPK?: MessagePK,iconSize?: number, source: {uri: string}}) => {
+export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source: {uri: string}}) => {
     return (
     <Card
         onPress={()=>openFile(source.uri)}
@@ -207,7 +206,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
         </>
     }
 
-    return (
+    return (                                      
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <Card.Content>
                 <OnlyShow If={!!msg.text}>
@@ -221,23 +220,16 @@ export const MessageCard = ({msg}:{msg: Message}) => {
     );
 }
 
-export const VisualPreview = ({mFile, numberRemaining=0}:{mFile:MessageFile, numberRemaining?:number})=> {
+export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {
     return <Card
-        onPress={()=>{
-            console.warn("TODO bring up visualizer with this visual on focus and delete options");
-        }}
-        onLongPress={()=>console.warn("TODO bring up media selector for deletion from message")}
-        elevation={0} style={{borderRadius: 0, flex: 1, height: 80, margin: 1, flexGrow: numberRemaining > 0 ? 0.5 : 1}}>
+        onPress={()=>openFile(mFile.uri)}
+        elevation={0} style={{borderRadius: 0, flex: 1, height: 80, margin: 1, flexGrow: 1}}>
         <Show
-            component={<>
-                <Image style={{flex: 1, height: 80, margin: 1, opacity: numberRemaining > 0 ? 0.5 : 1}} source={mFile}/>
-                {numberRemainingOverlay(numberRemaining)}
-            </>}
-            If={mFile.thumbnailUrl === ''}
+            component={<Image style={{flex: 1, height: 80, margin: 1}} source={mFile}/>}
+            If={mFile.type.split('/')[0] === 'image'}
             ElseShow={<>
-                <Image style={{height: '100%' , opacity: numberRemaining > 0 ? 0.5 : 0.8}} source={{ uri: mFile.thumbnailUrl}}/>
+                <Image style={{height: '100%' , opacity: 0.8}} source={{ uri: mFile.thumbnailUrl}}/>
                 {vidIconOverlay(32)}
-                {numberRemainingOverlay(numberRemaining)}
             </>}
         />
     </Card>
