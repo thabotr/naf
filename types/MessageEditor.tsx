@@ -9,6 +9,8 @@ export type MessageEditorContextType = {
   message: Message;
   composing: boolean;
   showTextInput: boolean;
+  previewingFiles: boolean;
+  enableFilesPreview: (b:boolean) => void;
   onAddAttachments: ()=>void;
   showTextInputOn: (b: boolean)=>void;
   onStartRecord: ()=>Promise<void>;

@@ -13,8 +13,9 @@ import { MessageEditorContextType } from '../types/MessageEditor';
 export const MessageEditorContext = React.createContext<MessageEditorContextType|null>(null);
 
 export type Message = {
-  userId: string,
+  senderId: string,
   id: string,
+  recipientId: string,
   text?: string,
   files: MessageFile[],
 }
@@ -44,12 +45,13 @@ const recordingPerms = [
 ];
 
 export function MessageEditorProvider({children}:{children:React.ReactNode}){
-  const [message, setMessage] = React.useState<Message>({userId: '', id: '', files:[]});
+  const [message, setMessage] = React.useState<Message>({senderId: '', id: '', recipientId: '', files:[]});
   const [composing, setComposing] = React.useState(false);
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});
   const [showTextInput, setShowTextInput] = React.useState(false);
   const [recordSecs, setRecordSecs] = React.useState(0);
   const [audioRecorderPlayer] = React.useState<AudioRecorderPlayer>(new AudioRecorderPlayer());
+  const [previewingFiles, setPreviewingFiles] = React.useState(false);
   
   const handleError = (err: unknown) => {
     if (DocumentPicker.isCancel(err)) {
@@ -62,7 +64,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
   }
 
   const onAddAttachments = () => {
-    DocumentPicker.pick({allowMultiSelection: true}).then(
+    DocumentPicker.pick({allowMultiSelection: true, copyTo: "cachesDirectory"}).then(
       ( dprs: Array<DocumentPickerResponse> | null | undefined) => {
         if( dprs){
           const selectedFiles = dprs.map(
@@ -71,11 +73,11 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
                 name: dpr.name ?? undefined,
                 size: dpr.size ?? undefined,
                 type: dpr.type ?? '',
-                uri: dpr.uri,
+                uri: dpr.fileCopyUri ?? dpr.uri,
               }
             }
           )
-          const mFilesNotInSelection = message.files.filter(mf => !selectedFiles.find( sf => sf.uri === mf.uri))
+          const mFilesNotInSelection = message.files.filter(mf => !selectedFiles.find( sf => sf.uri === mf.uri));
           console.warn('TODO generate video thumbnail');
           const updatedMessage: Message = {
             ...message,
@@ -93,7 +95,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const discardMessage = () => {
     setComposeOn(false);
-    saveMessage({files: [], id: '', userId: ''});
+    saveMessage({files: [], id: '', senderId: '', recipientId: ''});
   }
 
   const saveVRState = (s: VRState)=>{
@@ -144,8 +146,12 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
     console.log(result);
   };
 
+  const enableFilesPreview = (b: boolean) => setPreviewingFiles(b);
+
   return <MessageEditorContext.Provider
     value={{
+      previewingFiles: previewingFiles,
+      enableFilesPreview: enableFilesPreview,
       recordSecs: recordSecs,
       onStopRecord: onStopRecord,
       onStartRecord: onStartRecord,

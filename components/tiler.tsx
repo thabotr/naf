@@ -1,50 +1,160 @@
 import React from 'react';
-import { View, ScrollView} from 'react-native';
+import { View, ScrollView, FlatList, KeyboardAvoidingView } from 'react-native';
+import { Dialog, IconButton, Portal} from 'react-native-paper';
 
-import { MessageCard} from "./message";
+import { Message} from '../context/messageEditor';
+import { MessagePK, MessagesContext, MessagesContextType} from '../context/messages';
+import { ThemeContext, ThemeContextType } from '../context/theme';
+import { UserContext, UserContextType } from '../context/user';
+import { AudioPreviewCard, FilePreviewCard, ImagePreviewCard, MessageCard, VidPreviewCard} from "./message";
 import { MessageEditorCard } from './MessageEditor';
-import { VoiceNoteCard } from './voiceNote';
-
 
 export function Tiler({children}:{children?:JSX.Element[]}) {
-    const dummyMessage = {
-        userId: 'user',
-        id: '0',
-        text: "spendisse nec elementum risus, in gravida enim. Pellentesque tempus quam in elit euismod, sed tempus ligula maximus. Phasellus ut. And more",
-        files: [
-            { type: 'audio', duration: 10_000, uri: 'x', title: "3s", name: "recorded", size: 3_000_248_111, recorded: true},
-            { type: 'audio', uri: 'a', title: "34s", name: "file.txt", size: 1001, recorded: false},
-            { type: 'audio', uri: 'c', title: "19s", name: "file3.txt", size: 333, recorded: true},
-            { type: 'image', uri: 'https://picsum.photos/600', size: 0},
-            { type: 'image', uri: 'https://picsum.photos/500', size: 0},
-            { type: 'video', uri: 'https://picsum.photos/300', size: 0},
-            { type: 'video', uri: 'https://picsum.photos/3000', size: 0},
-            { type: 'image', uri: 'https://picsum.photos/4000', size: 0},
-            { type: 'image', uri: 'https://picsum.photos/7000', size: 0},
-            { type: 'image', uri: 'https://picsum.photos/8000', size: 0},
-        ]
-    }
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {messages, addMessages, messageInFocus, openMessage} = React.useContext(MessagesContext) as MessagesContextType;
+    const {userId} = React.useContext(UserContext) as UserContextType;
+
+    React.useEffect(()=>{
+        const dummyMessages: Message[] = [{
+            senderId: 'user1',
+            recipientId: '',
+            id: '0',
+            text: "spendisse nec elementum risus, in gravida enim. Pellentesque" +
+            "tempus quam in elit euismod, sed tempus ligula maximus. Phasellus ut. And more" +
+            "eque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit",
+            files: [
+                { type: 'recording/application/mp3', uri: 'uri7', size: 2_342, duration: 17},
+                { type: 'audio', duration: 10_000, uri: 'x', name: "recorded", size: 3_000_248_111},
+                { type: 'video', uri: 'https://picsum.photos/303', size: 0},
+                { type: 'audio', uri: 'a', name: "file.txt", size: 1001},
+                { type: 'application/pdf', uri: 'a', name: "file.txt", size: 1001},
+                { type: 'audio', uri: 'c', name: "file3.txt", size: 333},
+                { type: 'image', uri: 'https://picsum.photos/600', size: 0},
+                { type: 'image', uri: 'https://picsum.photos/500', size: 0},
+                { type: 'video', uri: 'https://picsum.photos/300', size: 0},
+                { type: 'image', uri: 'https://picsum.photos/400', size: 0},
+                { type: 'image', uri: 'https://picsum.photos/700', size: 0},
+                { type: 'image', uri: 'https://picsum.photos/800', size: 0},
+            ]
+        },
+        {
+            senderId: 'user2',
+            recipientId: 'user1',
+            id: '1',
+            files: [{ type: 'image', uri: 'https://picsum.photos/600', size: 0}]
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user2',
+            id: '2',
+            text: "spendisse nec elementum risus, in gravida enim. Pellentesque how tillas tu",
+            files: []
+        },
+        {
+            senderId: 'user2',
+            recipientId: 'user1',
+            id: '3',
+            files: [{ type: 'application/pdf', uri: 'pdf uri', size: 1_000_000, name: 'document.pdf'}]
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user3',
+            id: '4',
+            files: [
+                { type: 'application/pdf', uri: 'pdf uri', size: 1_000_000, name: 'document.pdf'},
+                { type: 'application/zip', uri: 'pdf uri3', size: 303_101, name: 'document2.pdf'}
+            ]
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user3',
+            id: '5',
+            files: [
+                { type: 'recording/application/mp3', uri: 'pdf uri', size: 2_120_000, duration: 3600},
+                { type: 'application/zip', uri: 'pdf uri3', size: 303_101, name: 'document2.pdf'}
+            ]
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user3',
+            id: '6',
+            files: [
+                { type: 'recording/application/mp3', uri: 'pdf uri', size: 332_000, duration: 31},
+            ]
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user3',
+            id: '7',
+            files: []
+        },
+        {
+            senderId: 'user2',
+            recipientId: 'user1',
+            id: '8',
+            files: [
+                { type: 'video', uri: 'https://picsum.photos/3003', size: 0},
+                { type: 'video', uri: 'https://picsum.photos/3001', size: 0},
+            ],
+            text: 'this text here'
+        },
+        {
+            senderId: 'user2',
+            recipientId: 'user1',
+            id: '8',
+            files: [
+                { type: 'video', uri: 'https://picsum.photos/1001', size: 0},
+            ],
+            text: 'this text here'
+        }
+    ]
+        addMessages(dummyMessages);
+    },[])
 
     return (
-    <ScrollView style={{height: 930}} overScrollMode='auto'>
-        <MessageCard sender={false} msg={dummyMessage}/>
-        <MessageCard sender msg={{
-            userId: 'user',
-            id: '0',
-            files: [{ type: 'vid', uri: 'https://picsum.photos/3000', size: 10, name: 'cid'}]
-        }}/>
-        <MessageCard msg={{
-            userId: 'user',
-            id: '0',
-            files: [{ type: 'image', uri: 'https://picsum.photos/1000', size: 10333, name: 'img'}]
-        }} sender/>
-        <VoiceNoteCard
-            file={{uri:'https://up.fakazaweb.com/wp-content/uploads/2022/10/A-Reece_-_Bad_Guy_Fakaza.Me.com.mp3', size: 3_000_123}}
-            // uri='file:////data/user/0/com.naf/cache/recording.mp3'
-        />
-        <MessageEditorCard/>
-        <View style={{height: 500, opacity: 0}}>
-        </View>
-    </ScrollView>
+    <KeyboardAvoidingView behavior='height'>
+        <ScrollView
+            style={{maxHeight: 930}}
+            overScrollMode='auto'
+        >
+            <Portal>
+                <Dialog
+                    style={{backgroundColor: messageInFocus?.senderId === userId ? theme.color.userPrimary : theme.color.friendPrimary}}
+                    visible={!!messageInFocus}
+                    onDismiss={()=>openMessage(null)}
+                >
+                    <Dialog.Title>all attachments</Dialog.Title>
+                    <Dialog.Content style={{maxHeight: 700}}>
+                    <FlatList
+                        data={messageInFocus?.files.map((f,i)=> { return {
+                            id: `${i}`,
+                            title: f.uri,
+                        }})}
+                        renderItem={({item})=> {
+                            const f = messageInFocus?.files[Number(item.id)] ?? {type: '', uri: ''};
+                            switch( f.type.split('/')[0]){
+                                case 'image':
+                                    return <ImagePreviewCard source={f}/>
+                                case 'video':
+                                    return <VidPreviewCard source={f}/>
+                                case 'audio':
+                                    return <AudioPreviewCard user={messageInFocus?.senderId === userId} audio={f}/>
+                                default:
+                                    return <FilePreviewCard user={messageInFocus?.senderId === userId} file={{...f, size: f.size ?? 0, name: f.name ?? ''}}/>
+                            }
+                        }}
+                        keyExtractor={(item: {id:string, title:string}) => item.title}
+                    />
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <IconButton icon="close" onPress={()=>openMessage(null)}/>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+            {messages.map(m=><MessageCard msg={m} key={`${m.senderId}${m.recipientId}${m.id}`}/>)}
+            <MessageEditorCard/>
+            <View style={{height: 100}}></View>
+        </ScrollView>
+    </KeyboardAvoidingView>
     );
 }

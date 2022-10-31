@@ -1,7 +1,24 @@
 import React from 'react';
 import {useColorScheme} from 'react-native';
 
-import { ThemeContextType, ThemeType } from "../types/theme";
+export type ThemeType = {
+  dark: boolean;
+  color: {
+    primary: string;
+    secondary: string;
+    userPrimary: string;
+    friendPrimary: string;
+    userSecondary: string;
+    friendSecondary: string;
+  }
+};
+
+export type ThemeContextType = {
+  fabOpacity: number;
+  saveFabOpacity: (v: number)=> void;
+  theme: ThemeType;
+  toggleDarkTheme: ()=>void;
+};
 
 export const ThemeContext = React.createContext<ThemeContextType|null>(null);
 
@@ -31,6 +48,9 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
   }
 
   const [theme, setTheme] = React.useState<ThemeType>(useColorScheme() === 'dark' ? darkTheme : lightTheme);
+  const [fabOpacity, setFabOpacity] = React.useState(1);
+
+  const saveFabOpacity = (v: number) => setFabOpacity(v);
 
   const toggleDarkTheme = () => {
     if( theme.dark)
@@ -39,7 +59,13 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
       setTheme(darkTheme);
   }
 
-  return <ThemeContext.Provider value={{theme, toggleDarkTheme}}>
+  return <ThemeContext.Provider
+    value={{
+      theme:theme,
+      toggleDarkTheme:toggleDarkTheme,
+      saveFabOpacity: saveFabOpacity,
+      fabOpacity: fabOpacity,
+      }}>
     {children}
   </ThemeContext.Provider>
 }

@@ -253,7 +253,9 @@ dependencies {
 
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    
     implementation project(':react-native-audio-recorder-player')
+    implementation project(':react-native-file-viewer')
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 

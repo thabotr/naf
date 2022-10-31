@@ -35,6 +35,8 @@ export const numberRemainingOverlay = (numberRemaining: number)=> <OnlyShow If={
         <OverlayedView>
           <Paragraph style={{
                       textAlign: 'center',
+                      fontSize: 17,
+                      fontWeight: 'bold',
                       transform: [{rotate: '90deg'}],
                       width: '100%'
                   }}
@@ -42,8 +44,8 @@ export const numberRemainingOverlay = (numberRemaining: number)=> <OnlyShow If={
         </OverlayedView>
     </OnlyShow>
 
-export const vidIconOverlay= (iconSize: number) => <OverlayedView>
-      <IconButton size={iconSize} icon="play-circle-outline" />
+export const vidIconOverlay= (iconSize: number, blur?:boolean) => <OverlayedView>
+      <IconButton size={iconSize} icon="play-circle-outline"  style={{opacity: blur ? 0.4 : 1}}/>
     </OverlayedView>
 
 export function HorizontalView(props: ViewProps) {

@@ -2,21 +2,19 @@ import React from 'react';
 import { Card, IconButton, List, TextInput} from 'react-native-paper';
 import {View} from 'react-native';
 
-import { MessageEditorContext } from '../context/messageEditor';
-import { ThemeContext } from '../context/theme';
+import { Message, MessageEditorContext } from '../context/messageEditor';
+import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageEditorContextType } from '../types/MessageEditor';
-import { ThemeContextType } from '../types/theme';
-import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, VisualPreview } from './message';
+import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, separateFiles, VisualPreview } from './message';
 import { HorizontalView, OnlyShow, Show } from './helper';
 import { VoiceNoteCard } from './voiceNote';
+import { MessagesContext, MessagesContextType } from '../context/messages';
 
 export const MessageEditorCard = ()=> {
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {message, composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments} = React.useContext(MessageEditorContext) as MessageEditorContextType;
-
-  const voiceRecording = message.files.find(f => f.type.split('/')[0] === 'recording') ?? {type: '', uri: ''} ;
-  const visualizables = message.files.filter(f => f.type.split('/')[0] === 'video' || f.type.split('/')[0] === 'image');
-  const otherFiles = message.files.filter(f => !(f.type.split('/')[0] === 'video' || f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'recording'));
+  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {messageInFocus} = React.useContext(MessagesContext) as MessagesContextType;
+  const {recordings, visuals, others} = separateFiles(message.files);
 
   return (
   <OnlyShow If={composing}>
@@ -41,24 +39,21 @@ export const MessageEditorCard = ()=> {
               <IconButton icon="send" onPress={()=>{}}/>
           </View>
           <OnlyShow If={composing && showTextInput}>
-              <TextInput multiline numberOfLines={6} style={{ width: '100%'}} label="message body"/>
+              <TextInput autoFocus multiline numberOfLines={6} style={{ width: '100%'}} label="message body"/>
           </OnlyShow>
 
-          <OnlyShow If={voiceRecording.uri !== ''}>
-            <VoiceNoteCard file={{uri: voiceRecording.uri, size: voiceRecording.size ?? 0}} user={true}/>
-          </OnlyShow>
+          {recordings.map(r=><VoiceNoteCard file={{uri: r.uri, size: r.size ?? 0, durationSecs: r.duration ?? 0}} user={true}/>)}
 
-          <View style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
-              {visualizables.slice(0,4).map(f => <VisualPreview key={f.uri} mFile={f} numberRemaining={0}/>)}
-              {visualizables.slice(4,5).map(f => <VisualPreview key={f.uri} mFile={f} numberRemaining={visualizables.slice(5).length}/>)}
-          </View>
+          <HorizontalView>
+            {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f} numberRemaining={0}/>)}
+          </HorizontalView>
 
-          <OnlyShow If={otherFiles.length > 0}>
+          <OnlyShow If={others.length > 0}>
             <View style={{display: 'flex', flexDirection: 'row'}}>
                 <List.Section style={{width: '100%', padding: 0, margin: 0}}>
                     <List.Subheader>Other attachments</List.Subheader>
                     <HorizontalView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-                        {otherFiles.slice(0,2).map(of =>
+                        {others.slice(0,2).map(of =>
                           <Show
                             component={<AudioPreviewCard audio={of}/>}
                             If={of.type.split('/')[0] === 'audio'}
@@ -72,7 +67,7 @@ export const MessageEditorCard = ()=> {
                           />
                         )}
                     </HorizontalView>
-                    <FileRemainingCard numberRemaining={otherFiles.slice(2).length}/>
+                    <FileRemainingCard msg={message} numberRemaining={visuals.slice(4).length+others.slice(2).length}/>
                 </List.Section>
             </View>
           </OnlyShow>

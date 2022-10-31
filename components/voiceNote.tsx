@@ -3,9 +3,8 @@ import {View} from 'react-native';
 import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
 import { MessageEditorContext } from '../context/messageEditor';
-import { ThemeContext } from '../context/theme';
+import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageEditorContextType } from '../types/MessageEditor';
-import { ThemeContextType } from '../types/theme';
 import { HorizontalView, OnlyShow } from './helper';
 import { verboseSize } from './message';
 
@@ -23,11 +22,11 @@ const enum PlayState {
     STOPPED
 }
 
-export function VoiceNoteCard({file, user}:{file: {size: number, uri: string}, user?: boolean}) {
+export function VoiceNoteCard({file, user}:{file: {size: number, uri: string, durationSecs: number}, user?: boolean}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {vrState, audioRecorderPlayer, saveVRState} = React.useContext(MessageEditorContext) as MessageEditorContextType;
-    const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: 0});
+    const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.durationSecs});
 
     const onResumePlay =async () => {
         const msg = await audioRecorderPlayer.resumePlayer();

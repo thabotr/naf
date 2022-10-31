@@ -15,8 +15,8 @@ import ToastManager from 'toastify-react-native';
 import {Messages, MessagesHeader} from './pages/messages';
 import {Home, HomeHeader} from './pages/home';
 import {ImageViewProvider} from './context/images';
-import { ThemeContext, ThemeContextProvider } from './context/theme';
-import { ThemeContextType } from './types/theme';
+import { ThemeContext, ThemeContextProvider, ThemeContextType } from './context/theme';
+import { UserContextProvider } from './context/user';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,16 +48,18 @@ function N(){
 
 function App() {
     return (
-      <Provider>
         <ThemeContextProvider>
-        <ImageViewProvider>
-            <NavigationContainer>
-              <N/>
-              <ToastManager duration={5_000} style={{width: '100%', borderRadius: 9}}/>
-            </NavigationContainer>
-        </ImageViewProvider>
+          <UserContextProvider>
+            <ImageViewProvider>
+                <NavigationContainer>
+                <Provider>
+                  <N/>
+                  <ToastManager duration={5_000} style={{width: '100%', borderRadius: 9}}/>
+                </Provider>
+                </NavigationContainer>
+            </ImageViewProvider>
+          </UserContextProvider>
         </ThemeContextProvider>
-    </Provider>
     );
 };
 
