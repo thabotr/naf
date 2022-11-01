@@ -1,15 +1,3 @@
-export type MediaType = {
-    id: string,
-}
-
-export type MessageType = {
-    id: string,
-    text: string | null,
-    sender: string,
-    recipients: string[],
-    media: MediaType[]
-}
-
 export type Link = {
     id: string,
     nextIds: string[],

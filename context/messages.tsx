@@ -1,5 +1,5 @@
 import React from 'react';
-import { Messages } from '../pages/messages';
+
 import { Message } from './messageEditor';
 
 export type MessagePK = {

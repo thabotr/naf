@@ -6,9 +6,12 @@ import DocumentPicker, {
   isInProgress
 } from 'react-native-document-picker';
 import  RNFetchBlob from 'rn-fetch-blob';
+import { DeliveryStatus } from '../components/message';
 
 import { permissionsGranted, requestPermissions } from '../src/permissions';
+import { MessageFile } from '../types/message';
 import { MessageEditorContextType } from '../types/MessageEditor';
+import { UserContext, UserContextType } from './user';
 
 export const MessageEditorContext = React.createContext<MessageEditorContextType|null>(null);
 
@@ -18,14 +21,8 @@ export type Message = {
   recipientId: string,
   text?: string,
   files: MessageFile[],
-}
-
-export type MessageFile = {
-    name?: string,
-    type: string,
-    uri: string,
-    size?: number,
-    duration?: number,
+  timestamp?: Date,
+  status?: DeliveryStatus,
 }
 
 export type VRState = {
@@ -45,7 +42,8 @@ const recordingPerms = [
 ];
 
 export function MessageEditorProvider({children}:{children:React.ReactNode}){
-  const [message, setMessage] = React.useState<Message>({senderId: '', id: '', recipientId: '', files:[]});
+  const {userId} = React.useContext(UserContext) as UserContextType;
+  const [message, setMessage] = React.useState<Message>({senderId: userId, id: '', recipientId: '', files:[]});
   const [composing, setComposing] = React.useState(false);
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});
   const [showTextInput, setShowTextInput] = React.useState(false);
@@ -94,7 +92,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const discardMessage = () => {
     setComposeOn(false);
-    saveComposeMessage({files: [], id: '', senderId: '', recipientId: ''});
+    saveComposeMessage({files: [], id: '', senderId: userId, recipientId: ''});
   }
 
   const saveVRState = (s: VRState)=>{

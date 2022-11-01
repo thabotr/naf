@@ -1,4 +1,5 @@
-import {launchCamera, ErrorCode} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
+
 import { MessageFile } from '../types/message';
 
 export const openCamera = async (mode: 'video' | 'photo'): Promise<MessageFile>=> {

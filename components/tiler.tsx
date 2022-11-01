@@ -5,7 +5,6 @@ import { Dialog, IconButton, Portal} from 'react-native-paper';
 import { MessagesContext, MessagesContextType} from '../context/messages';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { UserContext, UserContextType } from '../context/user';
-import { OnlyShow, OverlayedView } from './helper';
 import { AudioPreviewCard, FilePreviewCard, ImagePreviewCard, MessageCard, VidPreviewCard} from "./message";
 import { MessageEditorCard } from './MessageEditor';
 
@@ -34,26 +33,27 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
                 { type: 'image', uri: 'https://picsum.photos/400', size: 0},
                 { type: 'image', uri: 'https://picsum.photos/700', size: 0},
                 { type: 'image', uri: 'https://picsum.photos/800', size: 0},
-            ]
+            ],
+            timestamp: new Date(),
         },
         {
             senderId: 'user2',
             recipientId: 'user1',
             id: '1',
-            files: [{ type: 'image', uri: 'https://picsum.photos/600', size: 0}]
+            files: [{ type: 'image', uri: 'https://picsum.photos/600', size: 0}],
         },
         {
             senderId: 'user1',
             recipientId: 'user2',
             id: '2',
             text: "spendisse nec elementum risus, in gravida enim. Pellentesque how tillas tu",
-            files: []
+            files: [],
         },
         {
             senderId: 'user2',
             recipientId: 'user1',
             id: '3',
-            files: [{ type: 'application/pdf', uri: 'pdf uri', size: 1_000_000, name: 'document.pdf'}]
+            files: [{ type: 'application/pdf', uri: 'pdf uri', size: 1_000_000, name: 'document.pdf'}],
         },
         {
             senderId: 'user1',
@@ -62,7 +62,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             files: [
                 { type: 'application/pdf', uri: 'pdf uri', size: 1_000_000, name: 'document.pdf'},
                 { type: 'application/zip', uri: 'pdf uri3', size: 303_101, name: 'document2.pdf'}
-            ]
+            ],
         },
         {
             senderId: 'user1',
@@ -71,7 +71,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             files: [
                 { type: 'recording/application/mp3', uri: 'pdf uri', size: 2_120_000, duration: 3600},
                 { type: 'application/zip', uri: 'pdf uri3', size: 303_101, name: 'document2.pdf'}
-            ]
+            ],
         },
         {
             senderId: 'user1',
@@ -79,13 +79,13 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             id: '6',
             files: [
                 { type: 'recording/application/mp3', uri: 'pdf uri', size: 332_000, duration: 31},
-            ]
+            ],
         },
         {
             senderId: 'user1',
             recipientId: 'user3',
             id: '7',
-            files: []
+            files: [],
         },
         {
             senderId: 'user2',
@@ -95,7 +95,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
                 { type: 'video', uri: 'https://picsum.photos/3003', size: 0},
                 { type: 'video', uri: 'https://picsum.photos/3001', size: 0},
             ],
-            text: 'this text here'
+            text: 'this text here',
         },
         {
             senderId: 'user2',
@@ -104,7 +104,8 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
             files: [
                 { type: 'video', uri: 'https://picsum.photos/1001', size: 0},
             ],
-            text: 'this text here'
+            text: 'this text here',
+            timestamp: new Date(2022, 10, 4),
         },
         {
             senderId: 'user1',
