@@ -35,7 +35,7 @@ export const MessageEditorCard = ()=> {
       <Card.Content>
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{display: 'flex', flexDirection: 'row'}}>
-              <IconButton icon="content-save-edit" onPress={()=>{
+              <IconButton icon="content-save-edit" disabled={!message.text && !message.files.length} onPress={()=>{
                   //set this message id to draft-timestamp
                   //save this message
                   //clear this message edit

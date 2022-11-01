@@ -211,17 +211,27 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                             }}
                         >
                             <IconButton
+                                size={30}
                                 style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
                                 icon='delete'
                                 onPress={deleteThisMessage}
                             />
                             <IconButton
+                                size={30}
                                 style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
                                 icon='pencil'
                                 onPress={()=>{
                                     saveComposeMessage(msg);
                                     deleteThisMessage();
                                     setComposeOn(true);
+                                }}
+                            />
+                            <IconButton
+                                size={30}
+                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                icon='send'
+                                onPress={()=>{
+                                    //TODO send this draft and add it to messages
                                 }}
                             />
                         </View>
