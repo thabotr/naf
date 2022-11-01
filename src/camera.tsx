@@ -38,7 +38,6 @@ export const openCamera = async (mode: 'video' | 'photo'): Promise<MessageFile>=
         type: resultAsset.type ?? '',
         duration: resultAsset.duration,
         size: resultAsset.fileSize,
-        thumbnailUrl: resultAsset.uri,
       });
     })
   })

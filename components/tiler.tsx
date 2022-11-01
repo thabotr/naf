@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, ScrollView, FlatList, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, FlatList, KeyboardAvoidingView, Text, Pressable } from 'react-native';
 import { Dialog, IconButton, Portal} from 'react-native-paper';
 
-import { Message} from '../context/messageEditor';
-import { MessagePK, MessagesContext, MessagesContextType} from '../context/messages';
+import { MessagesContext, MessagesContextType} from '../context/messages';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { UserContext, UserContextType } from '../context/user';
+import { OnlyShow, OverlayedView } from './helper';
 import { AudioPreviewCard, FilePreviewCard, ImagePreviewCard, MessageCard, VidPreviewCard} from "./message";
 import { MessageEditorCard } from './MessageEditor';
 
@@ -13,9 +13,8 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {messages, addMessages, messageInFocus, openMessage} = React.useContext(MessagesContext) as MessagesContextType;
     const {userId} = React.useContext(UserContext) as UserContextType;
-
     React.useEffect(()=>{
-        const dummyMessages: Message[] = [{
+        addMessages([{
             senderId: 'user1',
             recipientId: '',
             id: '0',
@@ -27,7 +26,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
                 { type: 'audio', duration: 10_000, uri: 'x', name: "recorded", size: 3_000_248_111},
                 { type: 'video', uri: 'https://picsum.photos/303', size: 0},
                 { type: 'audio', uri: 'a', name: "file.txt", size: 1001},
-                { type: 'application/pdf', uri: 'a', name: "file.txt", size: 1001},
+                { type: 'application/pdf', uri: 'b', name: "file.txt", size: 1001},
                 { type: 'audio', uri: 'c', name: "file3.txt", size: 333},
                 { type: 'image', uri: 'https://picsum.photos/600', size: 0},
                 { type: 'image', uri: 'https://picsum.photos/500', size: 0},
@@ -91,7 +90,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
         {
             senderId: 'user2',
             recipientId: 'user1',
-            id: '8',
+            id: 'draft8',
             files: [
                 { type: 'video', uri: 'https://picsum.photos/3003', size: 0},
                 { type: 'video', uri: 'https://picsum.photos/3001', size: 0},
@@ -101,15 +100,20 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
         {
             senderId: 'user2',
             recipientId: 'user1',
-            id: '8',
+            id: '9',
             files: [
                 { type: 'video', uri: 'https://picsum.photos/1001', size: 0},
             ],
             text: 'this text here'
+        },
+        {
+            senderId: 'user1',
+            recipientId: 'user2',
+            id: '10',
+            files: [],
         }
-    ]
-        addMessages(dummyMessages);
-    },[])
+    ]);
+    },[]);
 
     return (
     <KeyboardAvoidingView behavior='height'>
@@ -151,7 +155,7 @@ export function Tiler({children}:{children?:JSX.Element[]}) {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
-            {messages.map(m=><MessageCard msg={m} key={`${m.senderId}${m.recipientId}${m.id}`}/>)}
+            {messages.map(m=> <MessageCard msg={m} key={`senderId-[${m.senderId}]recipientId-[${m.recipientId}]messageId-[${m.id}]`}/>)}
             <MessageEditorCard/>
             <View style={{height: 100}}></View>
         </ScrollView>

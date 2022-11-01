@@ -3,8 +3,6 @@ import {SafeAreaView, View, BackHandler} from 'react-native';
 import {FAB, Avatar, IconButton, List} from 'react-native-paper';
 
 import {Tiler} from '../components/tiler';
-import {ImageViewContextType} from '../types/images';
-import {ImageViewContext} from '../context/images';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageEditorContext, MessageEditorProvider } from '../context/messageEditor';
 import { MessageEditorContextType } from '../types/MessageEditor';
@@ -14,7 +12,7 @@ import { MessagesContextProvider } from '../context/messages';
 import { openCamera } from '../src/camera';
 
 const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
-    const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveMessage, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+    const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveComposeMessage, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const actions = [
         { color: '#d4d4d4', icon: 'microphone'},
         { color: '#b4b4b4', icon: 'attachment'},
@@ -35,7 +33,7 @@ const ExtendedActions = ({onBack}:{onBack: ()=>void}) => {
     const takePic = (mode: 'video' | 'photo') => {
         openCamera(mode)
         .then(img=> {
-            saveMessage({
+            saveComposeMessage({
                 ...message,
                 files: [...message.files, img],
             });

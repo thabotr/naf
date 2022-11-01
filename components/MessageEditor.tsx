@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, IconButton, List, TextInput} from 'react-native-paper';
 import {View} from 'react-native';
 
-import { Message, MessageEditorContext } from '../context/messageEditor';
+import { MessageEditorContext } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageEditorContextType } from '../types/MessageEditor';
 import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, separateFiles, VisualPreview } from './message';
@@ -10,16 +10,18 @@ import { HorizontalView, OnlyShow, Show } from './helper';
 import { VoiceNoteCard } from './voiceNote';
 import { MessagesContext, MessagesContextType } from '../context/messages';
 import { openCamera } from '../src/camera';
+import { UserContext, UserContextType } from '../context/user';
 
 export const MessageEditorCard = ()=> {
+  const {userId} = React.useContext(UserContext) as UserContextType;
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message, saveMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
-  const {messageInFocus} = React.useContext(MessagesContext) as MessagesContextType;
+  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message, saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {addMessages} = React.useContext(MessagesContext) as MessagesContextType;
   const {recordings, visuals, others} = separateFiles(message.files);
 
   const openCamInMode = (mode: 'video' | 'photo') => openCamera(mode)
     .then(vidOrPic=> {
-      saveMessage({
+      saveComposeMessage({
         ...message,
         files: [...message.files, vidOrPic],
       });
@@ -33,7 +35,25 @@ export const MessageEditorCard = ()=> {
       <Card.Content>
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{display: 'flex', flexDirection: 'row'}}>
-              <IconButton icon="content-save-edit" onPress={()=>console.warn('TODO save draft and disable compose')}/>
+              <IconButton icon="content-save-edit" onPress={()=>{
+                  //set this message id to draft-timestamp
+                  //save this message
+                  //clear this message edit
+                  //set compose off
+                  addMessages([{
+                    ...message,
+                    id: `draft-${new Date()}`,
+                  }]);
+                  saveComposeMessage({
+                    id: '',
+                    files: [],
+                    senderId: userId,
+                    recipientId: '',
+                    text: undefined,
+                  });
+                  setComposeOn(false);
+                }}
+              />
               <IconButton icon="delete" onPress={()=>{
                   discardMessage();
                 }}/>
@@ -45,13 +65,34 @@ export const MessageEditorCard = ()=> {
               <IconButton icon="attachment" onPress={onAddAttachments}/>
               <IconButton icon="camera" onPress={()=>openCamInMode('photo')}/>
               <IconButton icon="video" onPress={()=>openCamInMode('video')}/>
-              <IconButton icon={showTextInput ? 'pencil-minus' : "pencil-plus"} onPress={()=>showTextInputOn(!showTextInput)}/>
+              <IconButton icon={showTextInput ? 'pencil-minus' : "pencil-plus"} onPress={()=>{
+                if(showTextInput){
+                  saveComposeMessage({
+                    ...message,
+                    text: undefined,
+                  });
+                }
+                showTextInputOn(!showTextInput);
+                }}/>
               </View>
 
               <IconButton icon="send" onPress={()=>{}}/>
           </View>
           <OnlyShow If={composing && showTextInput}>
-              <TextInput autoFocus multiline numberOfLines={6} style={{ width: '100%'}} label="message body"/>
+              <TextInput
+                defaultValue={message.text}
+                onEndEditing={(e)=>{
+                  saveComposeMessage({
+                    ...message,
+                    text: e.nativeEvent.text,
+                  });
+                }}
+                autoFocus
+                multiline
+                numberOfLines={6}
+                style={{ width: '100%'}}
+                label="message body"
+              />
           </OnlyShow>
 
           {recordings.map(r=><VoiceNoteCard file={{uri: r.uri, size: r.size ?? 0, durationSecs: r.duration ?? 0}} user={true}/>)}
@@ -70,7 +111,7 @@ export const MessageEditorCard = ()=> {
                             component={<AudioPreviewCard audio={of}/>}
                             If={of.type.split('/')[0] === 'audio'}
                             ElseShow={<FilePreviewCard file={{
-                              name: of.name ?? 'unnamed.file',
+                              name: of.name ?? '',
                               size: of.size ?? 0,
                               type: of.type,
                               uri: of.uri

@@ -27,6 +27,5 @@ export type MessageFile = {
     name?: string;
     type: string;
     uri: string;
-    thumbnailUrl?: string;
     duration?: number;
 }

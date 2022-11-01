@@ -78,12 +78,11 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
             }
           )
           const mFilesNotInSelection = message.files.filter(mf => !selectedFiles.find( sf => sf.uri === mf.uri));
-          console.warn('TODO generate video thumbnail');
           const updatedMessage: Message = {
             ...message,
             files: mFilesNotInSelection.concat(selectedFiles)
           }
-          saveMessage(updatedMessage);
+          saveComposeMessage(updatedMessage);
           setComposeOn(true);
         }
     }).catch(handleError);
@@ -95,14 +94,14 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const discardMessage = () => {
     setComposeOn(false);
-    saveMessage({files: [], id: '', senderId: '', recipientId: ''});
+    saveComposeMessage({files: [], id: '', senderId: '', recipientId: ''});
   }
 
   const saveVRState = (s: VRState)=>{
     setVRState(s);
   }
 
-  const saveMessage = (m: Message)=> {
+  const saveComposeMessage = (m: Message)=> {
     setMessage(m);
   }
 
@@ -113,7 +112,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
   const onStartRecord = async () => {
     const permsGranted = await permissionsGranted(recordingPerms);
     if( !permsGranted) {
-      requestPermissions(recordingPerms);
+      await requestPermissions(recordingPerms);
       return;
     }
     
@@ -161,7 +160,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
       message: message,
       setComposeOn: setComposeOn,
       composing: composing,
-      saveMessage: saveMessage,
+      saveComposeMessage: saveComposeMessage,
       saveVRState: saveVRState,
       discardMessage: discardMessage,
       showTextInput: showTextInput,

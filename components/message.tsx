@@ -1,15 +1,16 @@
 import React from 'react';
-import { Image} from 'react-native';
+import { Image, View} from 'react-native';
 import { Card, Paragraph, IconButton, List} from 'react-native-paper';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageFile } from '../types/message';
 import { verboseDuration, VoiceNoteCard } from './voiceNote';
-import { HorizontalView, OnlyShow, Show, vidIconOverlay } from './helper';
-import { Message } from '../context/messageEditor';
+import { HorizontalView, OnlyShow, OverlayedView, Show, vidIconOverlay } from './helper';
+import { Message, MessageEditorContext } from '../context/messageEditor';
 import { openFile } from '../src/fileViewer';
-import { MessagePK, MessagesContext, MessagesContextType } from '../context/messages';
+import { MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
+import { MessageEditorContextType } from '../types/MessageEditor';
 
 export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
     return <Card
@@ -37,7 +38,7 @@ export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source:
 
 export const AudioPreviewCard = ({audio, user=true}:{audio: MessageFile, user?: boolean}) => {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    console.warn('TODO determine audio length so can add to card');
+    //TODO determine audio length so can add to card
     return (
         <Card
             onPress={()=>openFile(audio.uri)}
@@ -135,6 +136,9 @@ export function separateFiles( fls: MessageFile[]): SeperatedFiles {
 export const MessageCard = ({msg}:{msg: Message}) => {
     const {userId} = React.useContext(UserContext) as UserContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {deleteMessages} = React.useContext(MessagesContext) as MessagesContextType;
+    const {saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+
     const { visuals, recordings, others} = separateFiles( msg.files);
     const sender = userId === msg.senderId;
 
@@ -174,50 +178,58 @@ export const MessageCard = ({msg}:{msg: Message}) => {
         );
     }
 
-    const msgIsEmpty = !msg.files.length && !msg.text;
-    const msgHasJustOneVisual = visuals.length === 1;
-    const msgHasJustOneFile = msg.files.length === 1;
-
     const senderOrFriendColor = sender ? theme.color.userPrimary : theme.color.friendPrimary;
-    
-    if(msgIsEmpty) return <></>;
-    if(msgHasJustOneVisual){
-        return <Card
-            style={{backgroundColor: senderOrFriendColor,
-            margin: 2,
-            padding: 3}}
-        >
-            <Show
-                component={<ImagePreviewCard source={visuals[0]}/>}
-                If={visuals[0].type === 'image'}
-                ElseShow={<VidPreviewCard source={visuals[0]} iconSize={96}/>}
-            />
-        </Card>
+
+    const deleteThisMessage = ()=>{
+        deleteMessages([{
+            messageId: msg.id,
+            senderId: msg.senderId,
+            recipientId: msg.recipientId,
+        }]);
     }
 
-    if(msgHasJustOneFile){
-        return <>
-            {msg.files.map(f=><Show
-                component={<VoiceNoteCard file={{uri: f.uri, size: f.size ?? 0, durationSecs: f.duration ?? 0}} user={sender}/>}
-                If={f.type.split('/')[0] === 'recording'}
-                ElseShow={<FilePreviewCard file={{ name: f.name ?? 'noname', size: f.size ?? 0, type: f.type, uri: f.uri }} user={sender}/>}
-                key={f.uri}
-            />)}
-        </>
-    }
-
-    return (                                      
+    return <OnlyShow If={!!msg.text || !!msg.files.length}>
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <Card.Content>
                 <OnlyShow If={!!msg.text}>
                     <ExpandableParagraph text={msg.text ?? ''}/>
                 </OnlyShow>
-                {voiceRecordings.map(t => <VoiceNoteCard key={t.uri} file={{uri:t.uri, size: t.size ?? 0, durationSecs: t.duration ?? 0}} user={sender}/>)}
+                {voiceRecordings.map(t => <VoiceNoteCard
+                    key={t.uri}
+                    file={{uri:t.uri, size: t.size ?? 0, durationSecs: t.duration ?? 0}}
+                    user={sender}
+                    />)
+                }
                 {renderVisualFiles()}
                 {renderOtherFiles()}
+                <OnlyShow If={msg.id.includes('draft')}>
+                    <OverlayedView style={{backgroundColor: theme.color.secondary, margin: 3, borderRadius: 3, opacity: 0.8}}>
+                        <View style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            backgroundColor: theme.color.primary,
+                            }}
+                        >
+                            <IconButton
+                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                icon='delete'
+                                onPress={deleteThisMessage}
+                            />
+                            <IconButton
+                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                icon='pencil'
+                                onPress={()=>{
+                                    saveComposeMessage(msg);
+                                    deleteThisMessage();
+                                    setComposeOn(true);
+                                }}
+                            />
+                        </View>
+                    </OverlayedView>
+                </OnlyShow>
             </Card.Content>
         </Card>
-    );
+    </OnlyShow>
 }
 
 export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {
@@ -228,7 +240,7 @@ export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {
             component={<Image style={{flex: 1, height: 80, margin: 1}} source={mFile}/>}
             If={mFile.type.split('/')[0] === 'image'}
             ElseShow={<>
-                <Image style={{height: '100%' , opacity: 0.8}} source={{ uri: mFile.thumbnailUrl}}/>
+                <Image style={{height: '100%' , opacity: 0.8}} source={{ uri: mFile.uri}}/>
                 {vidIconOverlay(32)}
             </>}
         />

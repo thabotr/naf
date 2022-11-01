@@ -16,7 +16,7 @@ export type MessageEditorContextType = {
   onStartRecord: ()=>Promise<void>;
   onStopRecord: ()=>Promise<void>;
   setComposeOn: (b: boolean) => void;
-  saveMessage: (m: Message) => void;
+  saveComposeMessage: (m: Message) => void;
   saveVRState: (s: VRState) => void;
   discardMessage: ()=>void;
 }

@@ -9,13 +9,15 @@ TODO
       <li>smaller preview at foot of viewer DISCARDED</li>
     </ul>
   </li>
-  <li>Modal edit/preview attachments
+  <li>TODO Modal edit/preview attachments
     <ul>
       <li>list all files when clicking</li>
     </ul>
   </li>
-  <li>Launch camera intent</li>
-  <li>Download manager wrapped over openFile</li>
-  <li>Generate vid thumbnail</li>
-  <li>Generate audio file duration</li>
+  <li>Launch camera intent DONE</li>
+  <li>TODO Download manager wrapped over openFile</li>
+  <li>Generate vid thumbnail UNNECESSARY</li>
+  <li>TODO Generate audio file duration</li>
+  <li>Save/edit/delete draft DONE</li>
+  <li>TODO Timestamp message</li>
 </ul>

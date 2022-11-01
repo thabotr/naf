@@ -1,4 +1,5 @@
 import React from 'react';
+import { Messages } from '../pages/messages';
 import { Message } from './messageEditor';
 
 export type MessagePK = {
@@ -18,7 +19,7 @@ export type MessagesContextType = {
   messageInFocus: null | Message;
   messages: Message[];
   addMessages: (msgs: Message[])=> void;
-  deleteMessages: (msgPK: MessagePK)=>void;
+  deleteMessages: (msgPKs: MessagePK[])=>void;
   openMessage: (msg: null | Message)=> void;
 }
 
@@ -31,12 +32,16 @@ export function MessagesContextProvider({children}:{children: React.ReactNode}){
   const [messageInFocus, setMessageOnFocus] = React.useState<null|Message>(null);
 
   const addMessages = (msgs: Message[])=>{
-    // TODO filter already existing messages
-    setMessages(msgs);
+    const newMsgs = msgs.filter( m => !messages.find(em=> em.id === m.id && em.recipientId === m.recipientId && em.senderId === m.senderId));
+    setMessages([
+      ...messages,
+      ...newMsgs
+    ]);
   }
 
-  const deleteMessages = (msgPK: MessagePK)=>{
-    setMessages(messages.filter(m=>!(msgPK.messageId === m.id && msgPK.senderId === m.senderId && msgPK.recipientId === m.recipientId)));
+  const deleteMessages = (msgPKs: MessagePK[])=>{
+    const residualImgs = messages.filter( m => !msgPKs.find(em=> em.messageId === m.id && em.recipientId === m.recipientId && em.senderId === m.senderId));
+    setMessages(residualImgs);
   }
 
   const openMessage = (msg: Message | null)=> {
