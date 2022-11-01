@@ -32,7 +32,7 @@ export const MessageEditorCard = ()=> {
   return (
   <OnlyShow If={composing}>
   <Card style={{backgroundColor: theme.color.userPrimary, margin: 2, paddingBottom: 5}}>
-      <Card.Content>
+      <View style={{padding: 10}}>
           <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
               <View style={{display: 'flex', flexDirection: 'row'}}>
               <IconButton icon="content-save-edit" disabled={!message.text && !message.files.length} onPress={()=>{
@@ -124,7 +124,7 @@ export const MessageEditorCard = ()=> {
                 </List.Section>
             </View>
           </OnlyShow>
-      </Card.Content>
+      </View>
   </Card>
   </OnlyShow>
   );

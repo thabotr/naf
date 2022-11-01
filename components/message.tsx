@@ -190,7 +190,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
 
     return <OnlyShow If={!!msg.text || !!msg.files.length}>
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
-            <Card.Content>
+            <View style={{padding: 7}}>
                 <OnlyShow If={!!msg.text}>
                     <ExpandableParagraph text={msg.text ?? ''}/>
                 </OnlyShow>
@@ -237,7 +237,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                         </View>
                     </OverlayedView>
                 </OnlyShow>
-            </Card.Content>
+            </View>
         </Card>
     </OnlyShow>
 }
