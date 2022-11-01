@@ -4,17 +4,9 @@ import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
 import { MessageEditorContext } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
+import { verboseDuration, verboseSize } from '../src/helper';
 import { MessageEditorContextType } from '../types/MessageEditor';
 import { HorizontalView, OnlyShow } from './helper';
-import { verboseSize } from './message';
-
-function zeroPad(num: number):string { return num < 10 ? `0${num}` : `${num}`};
-
-export function verboseDuration(seconds: number): string {
-    seconds = Math.floor(seconds);
-    const minSecs = `${zeroPad(Math.floor(seconds/60)%60)}:${zeroPad(seconds%60)}`;
-    return seconds/3600 < 1 ? minSecs : `${zeroPad(Math.floor(seconds/3600))}:${minSecs}`;
-}
 
 const enum PlayState {
     PAUSED,
@@ -25,7 +17,7 @@ const enum PlayState {
 export function VoiceNoteCard({file, user}:{file: {size: number, uri: string, durationSecs: number}, user?: boolean}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {vrState, audioRecorderPlayer, saveVRState} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+    const {audioRecorderPlayer} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.durationSecs});
 
     const onResumePlay =async () => {

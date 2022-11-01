@@ -19,5 +19,12 @@ TODO
   <li>Generate vid thumbnail UNNECESSARY</li>
   <li>TODO Generate audio file duration</li>
   <li>Save/edit/delete draft DONE</li>
-  <li>TODO Timestamp message</li>
+  <li>Timestamp message DONE</li>
+  <li>Chats provider
+    <ul>
+    <li>User type[name, surname, *handle, profileUri, landscapeUri{vid/movingPic/pic}]</li>
+    <li>Chat type[*handle1, *handle2, Message[]{userId1, userId2, id, ...}, messageThread[]{id, []{messageId, messageIdNext, MessageIdPrev}}]</li>
+    <li></li>
+    </ul>
+  </li>
 </ul>

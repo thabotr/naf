@@ -4,14 +4,13 @@ import { IconButton, Paragraph } from 'react-native-paper';
 import  RNFetchBlob from 'rn-fetch-blob';
 
 import { MessageEditorContext } from '../context/messageEditor';
-import { ThemeContext } from '../context/theme';
+import { ThemeContext, ThemeContextType } from '../context/theme';
+import { verboseDuration } from '../src/helper';
 import { MessageEditorContextType } from '../types/MessageEditor';
-import { ThemeContextType } from '../types/theme';
 import { HorizontalView, OnlyShow} from './helper';
-import { verboseDuration } from './voiceNote';
 
 export function VoiceRecorder() {
-  const {audioRecorderPlayer, vrState, onStopRecord, recordSecs, message, saveMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {audioRecorderPlayer, vrState, onStopRecord, recordSecs, message, saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const [recordingPaused, pauseRecording] = React.useState(false);
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
@@ -45,7 +44,7 @@ export function VoiceRecorder() {
       return;
     }
     const recordingFileStat = await RNFetchBlob.fs.stat(recordingUri);
-    saveMessage({
+    saveComposeMessage({
       ...message,
       files: message.files.filter( f => f.type.split('/')[0] !== 'recording').concat([{
         type: `recording/${recordingFileStat.type}`,
