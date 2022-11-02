@@ -142,13 +142,13 @@ export enum DeliveryStatus {
 }
 
 export const MessageCard = ({msg}:{msg: Message}) => {
-    const {userId} = React.useContext(UserContext) as UserContextType;
+    const {user} = React.useContext(UserContext) as UserContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {deleteMessages} = React.useContext(MessagesContext) as MessagesContextType;
     const {saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
 
     const { visuals, recordings, others} = separateFiles( msg.files);
-    const sender = userId === msg.senderId;
+    const sender = user.handle === msg.from;
 
     const otherFiles = others;
     const voiceRecordings = recordings;
@@ -191,8 +191,8 @@ export const MessageCard = ({msg}:{msg: Message}) => {
     const deleteThisMessage = ()=>{
         deleteMessages([{
             messageId: msg.id,
-            senderId: msg.senderId,
-            recipientId: msg.recipientId,
+            from: msg.from,
+            to: msg.to,
         }]);
     }
     const deliveryStatuses = new Map<DeliveryStatus,{icon: string, message: string}>([

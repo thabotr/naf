@@ -1,21 +1,28 @@
 import React from 'react';
-import { Card, IconButton, List, TextInput} from 'react-native-paper';
+import {Card, IconButton, List, TextInput} from 'react-native-paper';
 import {View} from 'react-native';
 
-import { MessageEditorContext } from '../context/messageEditor';
-import { ThemeContext, ThemeContextType } from '../context/theme';
-import { MessageEditorContextType } from '../types/MessageEditor';
-import { AudioPreviewCard, FilePreviewCard, FileRemainingCard, separateFiles, VisualPreview } from './message';
-import { HorizontalView, OnlyShow, Show } from './helper';
-import { VoiceNoteCard } from './voiceNote';
-import { MessagesContext, MessagesContextType } from '../context/messages';
-import { openCamera } from '../src/camera';
-import { UserContext, UserContextType } from '../context/user';
+import {MessageEditorContext, MessageEditorContextType} from '../context/messageEditor';
+import {ThemeContext, ThemeContextType} from '../context/theme';
+import {AudioPreviewCard, FilePreviewCard, FileRemainingCard, separateFiles, VisualPreview} from './message';
+import {HorizontalView, OnlyShow, Show} from './helper';
+import {VoiceNoteCard} from './voiceNote';
+import {MessagesContext, MessagesContextType} from '../context/messages';
+import {openCamera} from '../src/camera';
+import {UserContext, UserContextType} from '../context/user';
 
 export const MessageEditorCard = ()=> {
-  const {userId} = React.useContext(UserContext) as UserContextType;
+  const {user} = React.useContext(UserContext) as UserContextType;
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {composing, onStartRecord, discardMessage, showTextInput, showTextInputOn, onAddAttachments, message, saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {composing,
+    onStartRecord,
+    discardMessage,
+    showTextInput,
+    showTextInputOn,
+    onAddAttachments,
+    message,
+    saveComposeMessage,
+    setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const {addMessages} = React.useContext(MessagesContext) as MessagesContextType;
   const {recordings, visuals, others} = separateFiles(message.files);
 
@@ -47,8 +54,8 @@ export const MessageEditorCard = ()=> {
                   saveComposeMessage({
                     id: '',
                     files: [],
-                    senderId: userId,
-                    recipientId: '',
+                    from: user.handle,
+                    to: '',
                     text: undefined,
                   });
                   setComposeOn(false);

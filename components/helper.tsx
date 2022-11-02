@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {View, ViewProps} from 'react-native';
-import { Paragraph, IconButton } from 'react-native-paper';
+import {View, ViewProps, ImageProps, Image as RNImage} from 'react-native';
+import { Paragraph, IconButton, ActivityIndicator } from 'react-native-paper';
 
 export function OnlyShow({If, children}:{If?:boolean, children: React.ReactNode}) {
   return If ? <>{children}</> : null;
@@ -16,19 +16,26 @@ export function OverlayedView(props: ViewProps){
   const newProps: ViewProps = {
     ...props,
     style: {
-      ...style,
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       bottom: 0,
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      ...style,
     }
   }; 
   return <View {...newProps}>
     {props.children}
   </View>
+}
+
+export function Lay({component, over}:{component:React.ReactNode, over:React.ReactNode}){
+  return <>
+    {over}
+    {<OverlayedView>{component}</OverlayedView>}
+  </>
 }
 
 export const numberRemainingOverlay = (numberRemaining: number)=> <OnlyShow If={numberRemaining > 0}>
@@ -53,5 +60,51 @@ export function HorizontalView(props: ViewProps) {
   const newProps: ViewProps = {...props, style: {...style, display: 'flex', flexDirection: 'row'}};
   return <View {...newProps}>
     {props.children}
+  </View>
+}
+
+export function Image(props: ImageProps & {alt?: React.ReactNode, indicatorColor?: string, indicatorSize?:number}){
+  enum IMState {
+    LOADING,
+    ERROR,
+    SUCCESS,
+  }
+  const [state, setState] = React.useState<IMState>(IMState.LOADING);
+  const intermediateCompont = ()=>{
+    switch(state){
+      case IMState.LOADING:
+        return <>
+          <IconButton icon='image' size={props.indicatorSize ?? 35}/>
+          <OverlayedView>
+            <ActivityIndicator color={props.indicatorColor?? 'gray' } size={(props.indicatorSize ?? 35)+3} animating/>
+          </OverlayedView>
+        </>
+      case IMState.ERROR:
+        return <IconButton icon='alert-circle' size={props.indicatorSize ?? 35}/>
+      case IMState.SUCCESS:
+        return null;
+  }
+  }
+  return <View style={[{justifyContent: 'center', alignContent: 'center'}, props.style]}>
+    <RNImage
+      {...props}
+      onError={(e)=>{
+        setState(IMState.ERROR);
+        props.onError?.(e);
+      }}
+      onLoad={(e)=>{
+        setState(IMState.SUCCESS);
+        props.onLoad?.(e);
+      }}
+      onLoadStart={()=>{
+        setState(IMState.LOADING);
+        props.onLoadStart?.();
+      }}
+    />
+    <OnlyShow If={state !== IMState.SUCCESS}>
+      <OverlayedView>
+        {intermediateCompont()}
+      </OverlayedView>
+    </OnlyShow>
   </View>
 }
