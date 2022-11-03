@@ -6,11 +6,10 @@ import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageFile } from '../types/message';
 import { VoiceNoteCard } from './voiceNote';
 import { HorizontalView, OnlyShow, OverlayedView, Show, vidIconOverlay } from './helper';
-import { Message, MessageEditorContext } from '../context/messageEditor';
+import { Message, MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { openFile } from '../src/fileViewer';
 import { MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
-import { MessageEditorContextType } from '../types/MessageEditor';
 import { verboseDuration, verboseSize, verboseTime } from '../src/helper';
 
 export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {

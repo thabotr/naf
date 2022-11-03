@@ -2,6 +2,9 @@ import React from 'react';
 
 import {View, ViewProps, ImageProps, Image as RNImage} from 'react-native';
 import { Paragraph, IconButton, ActivityIndicator } from 'react-native-paper';
+import {ImageColorsResult, Config} from 'react-native-image-colors/lib/typescript/types';
+import ImageColors from 'react-native-image-colors';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export function OnlyShow({If, children}:{If?:boolean, children: React.ReactNode}) {
   return If ? <>{children}</> : null;
@@ -63,7 +66,14 @@ export function HorizontalView(props: ViewProps) {
   </View>
 }
 
-export function Image(props: ImageProps & {alt?: React.ReactNode, indicatorColor?: string, indicatorSize?:number}){
+export function Image(props: ImageProps & {
+  alt?: React.ReactNode, 
+  indicatorColor?: string, 
+  indicatorSize?:number, 
+  onImageColors?:(icr: ImageColorsResult)=>void, 
+  imageColorsConfig?: Config
+})
+{
   enum IMState {
     LOADING,
     ERROR,
@@ -94,6 +104,18 @@ export function Image(props: ImageProps & {alt?: React.ReactNode, indicatorColor
       }}
       onLoad={(e)=>{
         setState(IMState.SUCCESS);
+
+        if( !!props.onImageColors){
+          const b64URI = RNFetchBlob.base64.encode(e.nativeEvent.source.uri);
+          const cachedColors = ImageColors.cache.getItem(b64URI);
+          if(!!cachedColors) {
+            props.onImageColors(cachedColors);
+          }else{
+            ImageColors.getColors(e.nativeEvent.source.uri, props.imageColorsConfig)
+            .then( icr => props.onImageColors?.(icr));
+          }
+        }
+
         props.onLoad?.(e);
       }}
       onLoadStart={()=>{

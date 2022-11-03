@@ -1,9 +1,9 @@
 import React from 'react';
-import {View, Image, ScrollView, TouchableOpacity, Pressable, Text} from 'react-native';
+import {View, ScrollView, TouchableOpacity, Pressable, Text} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple} from 'react-native-paper';
-import {HorizontalView, Lay, OverlayedView} from '../components/helper';
-import {MessagesContext, MessagesContextType} from '../context/messages';
 
+import {HorizontalView, Lay, OverlayedView, Image} from '../components/helper';
+import {MessagesContext, MessagesContextType} from '../context/messages';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import {UserContext, UserContextType} from '../context/user';
 import {Chat} from '../types/chat';
@@ -17,17 +17,35 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
 
     const latestMessage = chat.messages.slice(-1).find(e=>true);
 
-    const avatarPrimary = '#8B4513';
-    const avatarSecondary = '#F4A460';
+    // const avatarPrimary = '#8B4513';
+    // const avatarSecondary = '#F4A460';
+    const [{avatarPrimary, avatarSecondary}, setAC] = React.useState<{avatarPrimary: string, avatarSecondary: string}>({
+        avatarPrimary: theme.color.primary, avatarSecondary: theme.color.secondary,
+    });
 
-    return <Card style={{borderRadius: 5, margin: 2, padding: 4}}>
+    return <Card style={{borderRadius: 5, margin: 2, padding: 4, backgroundColor: avatarSecondary}}>
     <Card.Cover source={{uri: chat.user.landscapeURI}} style={{opacity: landscapeClicked ? 0.8 : 1}}/>
     <OverlayedView style={{justifyContent: 'flex-start', alignItems: 'flex-start', borderColor: avatarPrimary, borderWidth: 2}}>
         <HorizontalView>
             <View style={{height: '100%', width: '25%'}}>
                 <View style={{height: '50%', width: '100%'}}>
                     <Lay
-                        component={<Image style={{width: '100%', height: '100%'}} source={{uri: chat.user.avatarURI}}/>}
+                        component={<Image
+                            style={{width: '100%', height: '100%'}}
+                            source={{uri: chat.user.avatarURI}}
+                            imageColorsConfig={{cache: true}}
+                            onImageColors={imgColors=>{
+                                switch( imgColors.platform){
+                                    case 'android':
+                                        setAC({
+                                            avatarPrimary: ( theme.dark ? imgColors.darkVibrant : imgColors.average) ?? avatarPrimary,
+                                            avatarSecondary:( theme.dark ? imgColors.darkMuted : imgColors.dominant) ?? avatarSecondary,
+                                        })
+                                        return;
+                                }
+                            }}
+                        />
+                        }
                         over={<View style={{height: '100%', width: '100%', backgroundColor: avatarPrimary, opacity: 1}}/>}
                     />
                 </View>
