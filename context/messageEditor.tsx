@@ -22,6 +22,7 @@ export type Message = {
   files: MessageFile[],
   timestamp?: Date,
   status?: DeliveryStatus,
+  unread?: boolean,
 }
 
 export type VRState = {

@@ -5,4 +5,5 @@ export type User = {
   avatarURI: string,
   landscapeURI: string,
   listenWithMeURI: string,
+  initials: string,
 }

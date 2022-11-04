@@ -18,6 +18,8 @@ export type ThemeContextType = {
   saveFabOpacity: (v: number)=> void;
   theme: ThemeType;
   toggleDarkTheme: ()=>void;
+  setDarkTheme: ()=>void;
+  setLightTheme: ()=>void;
 };
 
 export const ThemeContext = React.createContext<ThemeContextType|null>(null);
@@ -26,24 +28,24 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
   const darkTheme: ThemeType = {
     dark: true,
     color: {
-      primary:          '#2e2e2e',
-      secondary:        '#4f4f4f',
-      userPrimary:      '#a473ce',
-      userSecondary:    '#a582bc',
-      friendPrimary:    '#73aac9',
-      friendSecondary:  '#8dbdd9',
+      primary: '#1d2126',
+      secondary: '#363636',
+      userPrimary: '#404040',
+      userSecondary: '#5c5c5c',
+      friendPrimary: '#2a4365',
+      friendSecondary: '#18474e',
     }
   }
 
   const lightTheme: ThemeType = {
     dark: false,
     color: {
-      primary: '#dfdfdf',
-      secondary: '#ffffef',
-      userPrimary: '#8530d1',
-      userSecondary: '#a473ce',
-      friendPrimary: '#0fa2f7',
-      friendSecondary: '#41b6fa',
+      primary: '#87cefa',
+      secondary: '#dbdbdb',
+      userPrimary: '#c0c0c0',
+      userSecondary: '#f5f5f5',
+      friendPrimary: '#b0c4de',
+      friendSecondary: '#b0e0e6',
     }
   }
 
@@ -59,9 +61,14 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
       setTheme(darkTheme);
   }
 
+  const setDarkTheme = ()=> setTheme(darkTheme);
+  const setLightTheme = ()=> setTheme(lightTheme);
+
   return <ThemeContext.Provider
     value={{
       theme:theme,
+      setDarkTheme: setDarkTheme,
+      setLightTheme: setLightTheme,
       toggleDarkTheme:toggleDarkTheme,
       saveFabOpacity: saveFabOpacity,
       fabOpacity: fabOpacity,

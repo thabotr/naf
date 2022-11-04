@@ -247,7 +247,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                 </HorizontalView>
 
                 <OnlyShow If={msg.id.includes('draft')}>
-                    <OverlayedView style={{backgroundColor: theme.color.secondary, margin: 3, borderRadius: 3, opacity: 0.8}}>
+                    <OverlayedView style={{backgroundColor: theme.color.userSecondary, margin: 3, borderRadius: 3, opacity: 0.8}}>
                         <View style={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -256,13 +256,13 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                         >
                             <IconButton
                                 size={30}
-                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
                                 icon='delete'
                                 onPress={deleteThisMessage}
                             />
                             <IconButton
                                 size={30}
-                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
                                 icon='pencil'
                                 onPress={()=>{
                                     saveComposeMessage(msg);
@@ -272,7 +272,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                             />
                             <IconButton
                                 size={30}
-                                style={{backgroundColor: theme.color.primary, borderRadius: 0, margin: 0}}
+                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
                                 icon='send'
                                 onPress={()=>{
                                     //TODO send this draft and add it to messages
