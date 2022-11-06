@@ -32,7 +32,7 @@ export const getFilePath = async (url: string, headers?:{[key:string]:string}):P
       return null;
     }
   }catch(e){
-    console.error('getting audio path with URL [' +url+'] '+ e);
+    console.error('getting file path with URL [' +url+'] '+ e);
   }
   return null;
 }

@@ -16,8 +16,14 @@ import { getFilePath } from '../src/file';
 import { Image } from './image';
 
 export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
+    const openImage = async () => {
+        if(source.uri.includes('http')){
+            const path = await getFilePath(source.uri);
+            path && openFile(path.filePath);
+        }else openFile(source.uri);
+    }
     return <Card
-        onPress={()=>openFile(source.uri)}
+        onPress={openImage}
         style={{margin: 1, flexGrow: 1}}
     >
         <Card.Cover
@@ -28,9 +34,15 @@ export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
 
 // TODO use dynamic value for iconSize
 export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source: {uri: string}}) => {
+    const openVid = async () => {
+        if(source.uri.includes('http')){
+            const path = await getFilePath(source.uri);
+            path && openFile(path.filePath);
+        }else openFile(source.uri);
+    }
     return (
     <Card
-        onPress={()=>openFile(source.uri)}
+        onPress={openVid}
         style={{flexGrow: 1, margin: 1}}
     >
         <Card.Cover style={{opacity: 0.9}} source={source} />

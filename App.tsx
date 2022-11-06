@@ -33,6 +33,12 @@ const SetupFileStructure = async()=>{
     if(!`${e}`.includes('already exists')) return e;
   }
 
+  try{
+    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/files`);
+  }catch(e){
+    if(!`${e}`.includes('already exists')) return e;
+  }
+
   return null;
 }
 
