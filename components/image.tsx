@@ -8,11 +8,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import { OnlyShow, OverlayedView } from './helper';
 
 export const getImagePath = async (url: string, headers?:{[key:string]:string}):Promise<string|null> => {
-  //if uri then just render from URI
-  //if url
-    // check cache dir for CACHEDIR/B64URL and render from that if found
-    // else, RNFetchBlob
-      // if header says cache forver, then store resource at CACHEDIR/B64URL
+  if(!url.includes('http')) return url; // TODO find better ways to determine if file is remote
   const b64URL = RNFetchBlob.base64.encode(url);
   const path = `${RNFetchBlob.fs.dirs.CacheDir}/images/${b64URL}`;
   try{

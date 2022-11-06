@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Image, ToastAndroid, View} from 'react-native';
+import { FlatList, ToastAndroid, View} from 'react-native';
 import { Card, Paragraph, IconButton, List, Portal, Dialog, Chip} from 'react-native-paper';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
@@ -11,6 +11,9 @@ import { openFile } from '../src/fileViewer';
 import { MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
 import { verboseDuration, verboseSize, verboseTime } from '../src/helper';
+import { getAudioPath } from '../src/audio';
+import { getFilePath } from '../src/file';
+import { Image } from './image';
 
 export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
     return <Card
@@ -38,10 +41,18 @@ export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source:
 
 export const AudioPreviewCard = ({audio, user=true}:{audio: MessageFile, user?: boolean}) => {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    //TODO determine audio length so can add to card
+    //TODO show loading component when opening file
+    const openAudio = async ()=>{
+        if(audio.uri.includes('http')){ // FIXME find better ways of determining whether file is remote or local
+           const res = await getAudioPath(audio.uri);
+           res && openFile(res.filePath);
+        }else {
+            openFile(audio.uri);
+        }
+    }
     return (
         <Card
-            onPress={()=>openFile(audio.uri)}
+            onPress={openAudio}
             style={{flex: 1, margin: 1, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}
         >
             <List.Item
@@ -61,8 +72,17 @@ const fileTypeIcon = new Map([
 
 export const FilePreviewCard = ({file, user=true}:{file: {uri: string, type: string, size: number, name: string}, user?: boolean})=> {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+
+    const openThisFile = async () => {
+        if( file.uri.includes('http')){
+            const res = await getFilePath(file.uri);
+            res && openFile(res.filePath);
+        }
+        else openFile(file.uri);
+    }
+
     return <Card
-                onPress={()=>openFile(file.uri)}
+                onPress={openThisFile}
                 style={{flex: 1, margin: 1, backgroundColor: (user ? theme.color.userSecondary : theme.color.friendSecondary)}}
             >
                 <List.Item
@@ -333,10 +353,10 @@ export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {
         onPress={()=>openFile(mFile.uri)}
         elevation={0} style={{borderRadius: 0, flex: 1, height: 80, margin: 1, flexGrow: 1}}>
         <Show
-            component={<Image style={{flex: 1, height: 80, margin: 1}} source={mFile}/>}
+            component={<Image style={{flex: 1, height: 80, margin: 1}} url={mFile.uri}/>}
             If={mFile.type.split('/')[0] === 'image'}
             ElseShow={<>
-                <Image style={{height: '100%' , opacity: 0.8}} source={{ uri: mFile.uri}}/>
+                <Image style={{height: '100%' , opacity: 0.8}} url={mFile.uri}/>
                 {vidIconOverlay(32)}
             </>}
         />
