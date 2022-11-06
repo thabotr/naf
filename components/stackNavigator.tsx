@@ -35,13 +35,18 @@ export function StackNavigator(){
                   props.navigation.goBack();
                 }}/>
               </OnlyShow>
-              <Appbar.Content title={navBarUser.handle} subtitle={`${navBarUser.name} ${navBarUser.surname}`}/>
+              <Appbar.Content
+                titleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
+                title={navBarUser?.handle}
+                subtitleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
+                subtitle={`${navBarUser?.name} ${navBarUser?.surname}`}
+              />
               <Image
+                url={navBarUser?.avatarURI ?? ''}
                 style={{ height: '100%', borderRadius: 0, width: 50, marginRight: 10}}
-                source={{uri: navBarUser.avatarURI}}
                 alt={<Avatar.Text
                   style={{borderRadius: 0, width: 50, marginRight: 10, backgroundColor: theme.color.primary}}
-                  label={navBarUser.initials}
+                  label={navBarUser?.initials ?? ''}
                 />}
               />
             </Appbar.Header>

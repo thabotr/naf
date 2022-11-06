@@ -1,10 +1,7 @@
 import React from 'react';
 
-import {View, ViewProps, ImageProps, Image as RNImage} from 'react-native';
-import { Paragraph, IconButton, ActivityIndicator } from 'react-native-paper';
-import {ImageColorsResult, Config} from 'react-native-image-colors/lib/typescript/types';
-import ImageColors from 'react-native-image-colors';
-import RNFetchBlob from 'rn-fetch-blob';
+import {View, ViewProps} from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 export function OnlyShow({If, children}:{If?:boolean, children: React.ReactNode}) {
   return If ? <>{children}</> : null;
@@ -40,19 +37,6 @@ export function Lay({component, over}:{component:React.ReactNode, over:React.Rea
     {<OverlayedView>{component}</OverlayedView>}
   </>
 }
-
-export const numberRemainingOverlay = (numberRemaining: number)=> <OnlyShow If={numberRemaining > 0}>
-        <OverlayedView>
-          <Paragraph style={{
-                      textAlign: 'center',
-                      fontSize: 17,
-                      fontWeight: 'bold',
-                      transform: [{rotate: '90deg'}],
-                      width: '100%'
-                  }}
-          >+{numberRemaining} more</Paragraph>
-        </OverlayedView>
-    </OnlyShow>
 
 export const vidIconOverlay= (iconSize: number, blur?:boolean) => <OverlayedView>
       <IconButton size={iconSize} icon="play-circle-outline"  style={{opacity: blur ? 0.4 : 1}}/>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Image, ToastAndroid, View} from 'react-native';
-import { Card, Paragraph, IconButton, List} from 'react-native-paper';
+import { FlatList, Image, ToastAndroid, View} from 'react-native';
+import { Card, Paragraph, IconButton, List, Portal, Dialog, Chip} from 'react-native-paper';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageFile } from '../types/message';
@@ -46,8 +46,8 @@ export const AudioPreviewCard = ({audio, user=true}:{audio: MessageFile, user?: 
         >
             <List.Item
                 style={{margin: 0, padding: 0}}
-                title={<Paragraph>{verboseDuration(audio.duration ?? 0)}</Paragraph>}
-                description={<Paragraph>{`[${audio.name}] ${verboseSize(audio.size ?? 0)}`}</Paragraph>}
+                title={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(audio.duration ?? 0)}</Paragraph>}
+                description={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{`[${audio.name}] ${verboseSize(audio.size ?? 0)}`}</Paragraph>}
                 left={props => <List.Icon {...props} icon="file-music" />}
             />
         </Card>
@@ -67,29 +67,16 @@ export const FilePreviewCard = ({file, user=true}:{file: {uri: string, type: str
             >
                 <List.Item
                     style={{margin: 0, padding: 0}}
-                    title={<Paragraph>{`${verboseSize(file.size)} [${file.type.split('/')[file.type.split('/').length-1]}]`}</Paragraph>}
-                    description={<Paragraph numberOfLines={1}>{`${file.name}`}</Paragraph>}
+                    title={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{`${verboseSize(file.size)} [${file.type.split('/')[file.type.split('/').length-1]}]`}</Paragraph>}
+                    description={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}} numberOfLines={1}>{`${file.name}`}</Paragraph>}
                     left={props => <List.Icon {...props} icon={fileTypeIcon.get(file.type) ?? "file"} />}
                 />
             </Card>
 }
 
-export const FileRemainingCard = ({numberRemaining=0, user=true, msg}:{numberRemaining?: number, user?: boolean, msg: Message})=> {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {openMessage} = React.useContext(MessagesContext) as MessagesContextType;
-    return <OnlyShow If={numberRemaining > 0}>
-      <Card
-        onPress={()=>{
-            openMessage(msg);
-        }}
-        style={{backgroundColor: ( user ? theme.color.userSecondary : theme.color.friendSecondary)}}>
-          <Paragraph style={{textAlign: 'center'}}>+{numberRemaining} more</Paragraph>
-      </Card>
-    </OnlyShow>
-}
-
 export const ExpandableParagraph = ({text}:{text:string}) => {
     const [expanded, setExpanded] = React.useState(false);
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const toggleExpanded = () => {
         if( expanded ) setExpanded( false);
         else setExpanded(true);
@@ -98,7 +85,7 @@ export const ExpandableParagraph = ({text}:{text:string}) => {
     return <Show
         component={
             <>
-            <Paragraph onPress={toggleExpanded} numberOfLines={!expanded ? 2 : 0}>{text}</Paragraph>
+            <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}} onPress={toggleExpanded} numberOfLines={!expanded ? 2 : 0}>{text}</Paragraph>
             <IconButton
                 onPress={toggleExpanded}
                 style={{
@@ -111,7 +98,7 @@ export const ExpandableParagraph = ({text}:{text:string}) => {
             </>
         }
         If={text.length > 150}
-        ElseShow={<Paragraph>{text}</Paragraph>}
+        ElseShow={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{text}</Paragraph>}
     />
 }
 
@@ -140,14 +127,55 @@ export enum DeliveryStatus {
     NONE,
 }
 
+function MessageFilesPreview({msg, onDismiss}:{msg: Message, onDismiss: ()=>void}){
+    const {user} = React.useContext(UserContext) as UserContextType;
+    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const fromUser = msg.from === user?.handle;
+    return <Portal>
+    <Dialog
+        style={{backgroundColor:  fromUser? theme.color.userPrimary : theme.color.friendPrimary}}
+        visible={true}
+        onDismiss={onDismiss}
+    >
+        <Dialog.Title>all attachments</Dialog.Title>
+        <Dialog.Content style={{maxHeight: 700}}>
+        <FlatList
+            data={msg.files.map((f,i)=> { return {
+                id: `${i}`,
+                title: f.uri,
+            }})}
+            renderItem={({item})=> {
+                const f = msg.files[Number(item.id)] ?? {type: '', uri: ''};
+                switch( f.type.split('/')[0]){
+                    case 'image':
+                        return <ImagePreviewCard source={f}/>
+                    case 'video':
+                        return <VidPreviewCard source={f}/>
+                    case 'audio':
+                        return <AudioPreviewCard user={fromUser} audio={f}/>
+                    default:
+                        return <FilePreviewCard user={fromUser} file={{...f, size: f.size ?? 0, name: f.name ?? ''}}/>
+                }
+            }}
+            keyExtractor={(item: {id:string, title:string}) => item.title}
+        />
+        </Dialog.Content>
+        <Dialog.Actions>
+            <IconButton icon="close" onPress={onDismiss}/>
+        </Dialog.Actions>
+    </Dialog>
+</Portal>
+}
+
 export const MessageCard = ({msg}:{msg: Message}) => {
     const {user} = React.useContext(UserContext) as UserContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {deleteMessages} = React.useContext(MessagesContext) as MessagesContextType;
+    const {deleteMessages, addMessages} = React.useContext(MessagesContext) as MessagesContextType;
     const {saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+    const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
     const { visuals, recordings, others} = separateFiles( msg.files);
-    const sender = user.handle === msg.from;
+    const sender = user?.handle === msg.from;
 
     const otherFiles = others;
     const voiceRecordings = recordings;
@@ -179,7 +207,9 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                     />)}
                 </HorizontalView>
                 <OnlyShow If={otherFiles.slice(2).length+visuals.slice(4).length > 0}>
-                    <FileRemainingCard msg={msg} numberRemaining={otherFiles.slice(2).length+visuals.slice(4).length} user={sender}/>
+                <Chip onPress={()=>setPreviewingFiles(true)} style={{borderRadius: 0, margin: 2, backgroundColor: sender ? theme.color.userSecondary : theme.color.friendSecondary}} icon='file-multiple'>
+                    <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>Preview all {otherFiles.slice(2).length+visuals.slice(4).length} attachaments</Paragraph>
+                </Chip>
                 </OnlyShow>
             </>
         );
@@ -205,7 +235,50 @@ export const MessageCard = ({msg}:{msg: Message}) => {
         ToastAndroid.show(deliveryStatuses.get(msg.status??DeliveryStatus.NONE)?.message ?? '', 3_000);
     }
 
-    return <OnlyShow If={!!msg.text || !!msg.files.length}>
+    const draftOverlay = () => {
+        return <OnlyShow If={msg.daft}>
+            <OverlayedView style={{backgroundColor: theme.color.userSecondary, margin: 3, borderRadius: 3, opacity: 0.8}}>
+                <View style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    backgroundColor: theme.color.primary,
+                    }}
+                >
+                    <IconButton
+                        size={30}
+                        style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
+                        icon='delete'
+                        onPress={deleteThisMessage}
+                    />
+                    <IconButton
+                        size={30}
+                        style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
+                        icon='pencil'
+                        onPress={()=>{
+                            saveComposeMessage(msg);
+                            deleteThisMessage();
+                            setComposeOn(true);
+                        }}
+                    />
+                    <IconButton
+                        size={30}
+                        style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
+                        icon='send'
+                        onPress={()=>{
+                            addMessages([{...msg, id: `${new Date().getTime()}`}]);
+                            deleteThisMessage();
+                        }}
+                    />
+                </View>
+            </OverlayedView>
+        </OnlyShow>
+    }
+
+    return <>
+        <OnlyShow If={previewingFiles}>
+            <MessageFilesPreview msg={msg} onDismiss={()=>setPreviewingFiles(false)}/>
+        </OnlyShow>
+        <OnlyShow If={!!msg.text || !!msg.files.length}>
         <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <View style={{padding: 7}}>
                 <OnlyShow If={!!msg.text}>
@@ -235,6 +308,8 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                         style={{
                             alignSelf: 'flex-start',
                             paddingHorizontal: 10,
+                            color: theme.color.textPrimary,
+                            textShadowColor: theme.color.textSecondary,
                             backgroundColor: sender ? theme.color.userSecondary : theme.color.friendSecondary,
                             borderRadius: 5,
                             marginTop: 2,
@@ -246,44 +321,11 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                 </OnlyShow>
                 </HorizontalView>
 
-                <OnlyShow If={msg.id.includes('draft')}>
-                    <OverlayedView style={{backgroundColor: theme.color.userSecondary, margin: 3, borderRadius: 3, opacity: 0.8}}>
-                        <View style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            backgroundColor: theme.color.primary,
-                            }}
-                        >
-                            <IconButton
-                                size={30}
-                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
-                                icon='delete'
-                                onPress={deleteThisMessage}
-                            />
-                            <IconButton
-                                size={30}
-                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
-                                icon='pencil'
-                                onPress={()=>{
-                                    saveComposeMessage(msg);
-                                    deleteThisMessage();
-                                    setComposeOn(true);
-                                }}
-                            />
-                            <IconButton
-                                size={30}
-                                style={{backgroundColor: theme.color.userPrimary, borderRadius: 0, margin: 0}}
-                                icon='send'
-                                onPress={()=>{
-                                    //TODO send this draft and add it to messages
-                                }}
-                            />
-                        </View>
-                    </OverlayedView>
-                </OnlyShow>
+                {draftOverlay()}
             </View>
         </Card>
-    </OnlyShow>
+        </OnlyShow>
+    </>
 }
 
 export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {

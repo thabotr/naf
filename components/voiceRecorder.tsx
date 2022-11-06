@@ -3,10 +3,9 @@ import { View} from 'react-native';
 import { IconButton, Paragraph } from 'react-native-paper';
 import  RNFetchBlob from 'rn-fetch-blob';
 
-import { MessageEditorContext } from '../context/messageEditor';
+import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { verboseDuration } from '../src/helper';
-import { MessageEditorContextType } from '../types/MessageEditor';
 import { HorizontalView, OnlyShow} from './helper';
 
 export function VoiceRecorder() {
@@ -103,7 +102,7 @@ export function VoiceRecorder() {
         />
         </HorizontalView>
         <View style={{justifyContent: 'center', margin: 5}}>
-          <Paragraph style={{fontSize: 20, textAlign: 'center'}}>{verboseDuration(recordSecs)}</Paragraph>
+          <Paragraph style={{fontSize: 20, textAlign: 'center', color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(recordSecs)}</Paragraph>
         </View>
       </View>
     </View>

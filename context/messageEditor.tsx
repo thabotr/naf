@@ -23,6 +23,7 @@ export type Message = {
   timestamp?: Date,
   status?: DeliveryStatus,
   unread?: boolean,
+  daft?:boolean,
 }
 
 export type VRState = {
@@ -62,7 +63,7 @@ export type MessageEditorContextType = {
 
 export function MessageEditorProvider({children}:{children:React.ReactNode}){
   const {user} = React.useContext(UserContext) as UserContextType;
-  const [message, setMessage] = React.useState<Message>({from: user.handle, id: '', to: '', files:[]});
+  const [message, setMessage] = React.useState<Message>({from: user?.handle ?? '', id: '', to: '', files:[]});
   const [composing, setComposing] = React.useState(false);
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});
   const [showTextInput, setShowTextInput] = React.useState(false);
@@ -111,7 +112,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const discardMessage = () => {
     setComposeOn(false);
-    saveComposeMessage({files: [], id: '', from: user.handle, to: ''});
+    saveComposeMessage({files: [], id: '', from: user?.handle ?? '', to: ''});
   }
 
   const saveVRState = (s: VRState)=>{

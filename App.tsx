@@ -12,34 +12,67 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import {ImageViewProvider} from './context/images';
 import { ThemeContextProvider } from './context/theme';
-import { UserContextProvider } from './context/user';
+import { UserContext, UserContextProvider, UserContextType } from './context/user';
 import { MessagesContextProvider } from './context/messages';
 import { ToastySnackbarManager } from './components/snackbar';
 import { StackNavigator } from './components/stackNavigator';
+import { ChatContextProvider } from './context/chat';
+import { Show } from './components/helper';
+import { Login } from './pages/login';
+import RNFetchBlob from 'rn-fetch-blob';
+
+const SetupFileStructure = async()=>{
+  try{
+    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/images`);
+  }catch( e) {
+    return e;
+  }
+}
 
 function SuperContextProvider({children}:{children: React.ReactNode}){
   return (
     <ThemeContextProvider>
-          <UserContextProvider>
+      <UserContextProvider>
+        <ChatContextProvider>    
           <MessagesContextProvider>
             <ImageViewProvider>
-                <NavigationContainer>
+              <NavigationContainer>
                 <Provider>
                   {children}
                 </Provider>
-                </NavigationContainer>
+              </NavigationContainer>
             </ImageViewProvider>
-            </MessagesContextProvider>
-          </UserContextProvider>
-        </ThemeContextProvider>
+          </MessagesContextProvider>
+        </ChatContextProvider>
+      </UserContextProvider>
+    </ThemeContextProvider>
   );
 }
 
 function App() {
+    function PageLoginElseHome(){
+      React.useEffect(()=>{
+        SetupFileStructure().catch( e => {
+          if(!!e && !e.includes('already exists'))
+            console.error('file structure setup failed: '+ e);
+        });
+      }, [])
+      const {user} = React.useContext(UserContext) as UserContextType;
+      return <Show
+      component={<Login/>}
+      If={!user}
+      ElseShow={
+        <>
+          <StackNavigator/>
+          <ToastySnackbarManager/>
+        </>
+      }
+      />
+    }
+
     return (
       <SuperContextProvider>
-        <StackNavigator/>
-        <ToastySnackbarManager/>
+        <PageLoginElseHome/>
       </SuperContextProvider>
     );
 };

@@ -2,10 +2,9 @@ import React from 'react';
 import {View} from 'react-native';
 import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
-import { MessageEditorContext } from '../context/messageEditor';
+import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { verboseDuration, verboseSize } from '../src/helper';
-import { MessageEditorContextType } from '../types/MessageEditor';
 import { HorizontalView, OnlyShow } from './helper';
 
 const enum PlayState {
@@ -66,9 +65,9 @@ export function VoiceNoteCard({file, user}:{file: {size: number, uri: string, du
         <HorizontalView>
             <View style={{flex: 1}}>
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <Paragraph>{verboseDuration(playerValues.positionSec)}</Paragraph>
-                    <Paragraph>{verboseSize(file.size)}</Paragraph>
-                    <Paragraph>{verboseDuration(playerValues.durationSec)}</Paragraph>
+                    <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(playerValues.positionSec)}</Paragraph>
+                    <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseSize(file.size)}</Paragraph>
+                    <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(playerValues.durationSec)}</Paragraph>
                 </View>
                 <View style={{flex: 1, justifyContent: 'center'}}>
                     <ProgressBar color={theme.color.primary} progress={progress}/>

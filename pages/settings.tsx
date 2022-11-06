@@ -1,35 +1,46 @@
 import React from 'react';
-import {View} from 'react-native';
+import { View} from 'react-native';
 import {ToggleButton, List} from 'react-native-paper';
-import {useColorScheme} from 'react-native';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 
 function ThemeController(){
-  const [setting, setSetting] = React.useState("system_default");
-  const {setDarkTheme, setLightTheme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme, saveThemeSetting, themeSetting} = React.useContext(ThemeContext) as ThemeContextType;
+
+  const saveSetting = (s: string)=>{
+    switch(s){
+      case 'light':
+        saveThemeSetting('light');
+        return;
+      case 'dark':
+        saveThemeSetting('dark');
+        return;
+      default:
+        saveThemeSetting('system_default');
+    }
+  }
+
+  function ThemedToggleButton({ts}:{ts:'light' | 'dark' | 'system_default'}){
+    const bgColor = ts === themeSetting ? theme.color.primary : undefined
+    const acLabels:{[key: string]:string} = {'light': 'set light theme', 'dark' : 'set dark theme', 'system_default' : 'use system theme'};
+    const icons:{[key: string]:string} = {'light': 'lightbulb-on', 'dark' : 'lightbulb-off', 'system_default': 'home-lightbulb'};
+
+    return <ToggleButton
+      color={theme.color.textPrimary}
+      style={{backgroundColor: bgColor, borderWidth: 1, borderRadius: 0}}
+      accessibilityLabel={acLabels[ts]}
+      icon={icons[ts]}
+      value={ts}
+    />
+  }
+
   return <ToggleButton.Row
-      value={setting}
-      onValueChange={ value => {
-        setSetting(value);
-        switch(value){
-          case "light":
-            setLightTheme();
-            return;
-          case "dark" :
-            setDarkTheme();
-            return;
-          default:
-            if( useColorScheme() === "dark"){
-              setDarkTheme();
-            }else
-              setLightTheme();
-        }
-      }}
+      value={themeSetting}
+      onValueChange={ value=>saveSetting(value)}
     >
-    <ToggleButton icon='lightbulb-off' value="dark"/>
-    <ToggleButton icon='lightbulb-on' value="light"/>
-    <ToggleButton icon='home-lightbulb' value="system_default"/>
+      <ThemedToggleButton ts="light"/>
+      <ThemedToggleButton ts="dark"/>
+      <ThemedToggleButton ts="system_default"/>
   </ToggleButton.Row>
 }
 
@@ -37,7 +48,7 @@ export function Settings(){
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
   return <View style={{width: '100%', height: '100%', backgroundColor: theme.color.secondary}}>
     <List.Section>
-      <List.Subheader>Theme</List.Subheader>
+      <List.Subheader style={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>Theme</List.Subheader>
       <ThemeController/>
     </List.Section>
   </View>

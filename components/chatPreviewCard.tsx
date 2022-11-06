@@ -1,28 +1,41 @@
 import React from 'react';
-import {View, TouchableOpacity, Pressable, Text} from 'react-native';
+import {View, TouchableOpacity, Pressable, Text, Platform} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, Avatar, List} from 'react-native-paper';
+import TrackPlayer, { usePlaybackState , State as PlayState} from 'react-native-track-player';
 
 import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/helper';
+import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {MessagesContext, MessagesContextType} from '../context/messages';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import {Chat} from '../types/chat';
-import {Image} from './image';
+import {getImagePath, Image} from './image';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {openChat} = React.useContext(MessagesContext) as MessagesContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {saveListeningWith, listeningWith} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
+
     const [landscapeClicked, setLandscapeClicked] = React.useState(false);
-    const [listeningWMe, setListeningWMe] = React.useState(false);
+
+    const [cardUri, setCardUri] = React.useState('');
 
     const latestMessage = chat.messages.slice(-1).find(_=>true);
     const unreadMessageCount = chat.messages.filter(m => !!m.unread).length;
 
-    const [{avatarPrimary, avatarSecondary}, setAC] = React.useState<{avatarPrimary: string, avatarSecondary: string}>({
-        avatarPrimary: theme.color.primary, avatarSecondary: theme.color.secondary,
-    });
+    const [avatarPrimary, setAP] = React.useState(theme.color.primary);
+    const [avatarSecondary, setAS] = React.useState(theme.color.secondary);
+
+    React.useEffect(()=>{
+        getImagePath(chat.user.landscapeURI).then(p=> {
+            if( !!p) setCardUri(Platform.select({android: `file://${p}`,})?? p);
+        }).catch(e => console.error('failed to get landscape uri: '+e));
+    },[])
+
+    const playState = usePlaybackState();
+    const playing = listeningWith === chat.user.handle && playState === PlayState.Playing;
 
     return <Card style={{borderRadius: 5, margin: 2, padding: 4, backgroundColor: avatarSecondary}}>
-    <Card.Cover source={{uri: chat.user.landscapeURI}} style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}/>
+    <Card.Cover source={!!cardUri ? {uri: cardUri} : undefined} style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}/>
     <OverlayedView style={{justifyContent: 'flex-start', alignItems: 'flex-start', borderColor: avatarPrimary, borderWidth: 2}}>
         <HorizontalView>
             <View style={{height: '100%', width: '25%'}}>
@@ -30,21 +43,19 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     <Lay
                         component={<Image
                             style={{width: '100%', height: '100%'}}
-                            source={{uri: chat.user.avatarURI}}
+                            url={chat.user.avatarURI}
                             imageColorsConfig={{cache: true, pixelSpacing: 10}}
                             onImageColors={imgColors=>{
                                 switch( imgColors.platform){
                                     case 'android':
-                                        setAC({
-                                            avatarPrimary: ( theme.dark ? imgColors.darkVibrant : imgColors.average) ?? avatarPrimary,
-                                            avatarSecondary:( theme.dark ? imgColors.darkMuted : imgColors.dominant) ?? avatarSecondary,
-                                        })
+                                        setAP((theme.dark ? imgColors.darkVibrant : imgColors.average) ?? theme.color.primary);
+                                        setAS((theme.dark ? imgColors.darkMuted : imgColors.dominant) ?? theme.color.secondary);
                                         return;
                                 }
                             }}
                             alt={<Avatar.Text
-                                    style={{borderRadius: 0, width: '100%', height: '100%', backgroundColor: avatarPrimary}}
-                                    label={chat.user.initials}
+                                style={{borderRadius: 0, width: '100%', height: '100%', backgroundColor: avatarPrimary}}
+                                label={chat.user.initials}
                             />}
                         />
                         }
@@ -54,8 +65,8 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                 <View style={{height: '50%', width: '100%', alignItems: 'center'}}>
                     <Lay
                         component={<>
-                            <Paragraph style={{ fontWeight: 'bold'}}>{chat.user.handle}</Paragraph>
-                            <Paragraph>{chat.user.name} {chat.user.surname}</Paragraph>
+                            <Paragraph style={{ fontWeight: 'bold', color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{chat.user.handle}</Paragraph>
+                            <Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{chat.user.name} {chat.user.surname}</Paragraph>
                             </>}
                         over={<View style={{height: '100%', width: '100%', backgroundColor: avatarSecondary, opacity: 1}}/>}
                     />
@@ -74,20 +85,41 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                         alignItems: 'center'
                     }}
                     onPress={()=>{
-                        //TODO play theme song
-                        setListeningWMe(!listeningWMe);
-                    }}
-                    onLongPress={()=>{
-                        //TODO view in expanded music player
+                        //TODO if listening with me, play
+                        // else reset player and add our songs
+                        if( playing){
+                            TrackPlayer.pause();
+                        } else if(listeningWith !== chat.user.handle){
+                            saveListeningWith(chat.user.handle);
+                        }else {
+                            if(playState !== PlayState.Paused){
+                                TrackPlayer.getCurrentTrack()
+                                .then(async (ti)=>{
+                                    return TrackPlayer.getQueue()
+                                    .then(ts=>{
+                                        if( (ti) !== null && ts.length)
+                                            return TrackPlayer.skip(ti)
+                                        else
+                                            return TrackPlayer.add({
+                                                url: chat.user.listenWithMeURI,
+                                            });
+                                    })
+                                })
+                                .then(_=>{
+                                    TrackPlayer.play();
+                                })
+                            }else
+                                TrackPlayer.play();
+                        }
                     }}
                 >
                     {/* play theme song  */}
                     <IconButton icon='account-music'/>
                     <Text>Marquue track name</Text>
                     <View>
-                        <IconButton icon={ listeningWMe ?  'play' : 'pause'}/>
+                        <IconButton icon={ playing ?  'pause' : 'play'}/>
                         <OverlayedView>
-                        <ActivityIndicator size={35} animating={listeningWMe} color='gray'/>
+                        <ActivityIndicator size={35} animating={playing} color='gray'/>
                         </OverlayedView>
                     </View>
                 </TouchableOpacity>
@@ -108,7 +140,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     >
                         {/* chats preview */}
                         <Show
-                            component={<Paragraph numberOfLines={1}>
+                            component={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}} numberOfLines={1}>
                                 {`converse with ${chat.user.handle}`}
                             </Paragraph>}
                             If={!latestMessage}

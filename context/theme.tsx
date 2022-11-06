@@ -1,5 +1,6 @@
 import React from 'react';
 import {useColorScheme} from 'react-native';
+import { getSavedThemeSetting, saveThemeSetting as storageSaveThemeSetting } from '../src/theme';
 
 export type ThemeType = {
   dark: boolean;
@@ -10,16 +11,15 @@ export type ThemeType = {
     friendPrimary: string;
     userSecondary: string;
     friendSecondary: string;
+    textPrimary: string;
+    textSecondary: string;
   }
 };
 
 export type ThemeContextType = {
-  fabOpacity: number;
-  saveFabOpacity: (v: number)=> void;
   theme: ThemeType;
-  toggleDarkTheme: ()=>void;
-  setDarkTheme: ()=>void;
-  setLightTheme: ()=>void;
+  themeSetting: 'light' | 'dark' | 'system_default';
+  saveThemeSetting: (ts: 'light' | 'dark' | 'system_default')=>void;
 };
 
 export const ThemeContext = React.createContext<ThemeContextType|null>(null);
@@ -34,6 +34,8 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
       userSecondary: '#5c5c5c',
       friendPrimary: '#2a4365',
       friendSecondary: '#18474e',
+      textPrimary: '#f8f8ff',
+      textSecondary: '#dcdcdc',
     }
   }
 
@@ -46,32 +48,57 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
       userSecondary: '#f5f5f5',
       friendPrimary: '#b0c4de',
       friendSecondary: '#b0e0e6',
+      textPrimary: '#000000',
+      textSecondary: '#a9a9a9',
     }
   }
 
-  const [theme, setTheme] = React.useState<ThemeType>(useColorScheme() === 'dark' ? darkTheme : lightTheme);
-  const [fabOpacity, setFabOpacity] = React.useState(1);
+  const systemThemeIsDark = useColorScheme() === 'dark';
 
-  const saveFabOpacity = (v: number) => setFabOpacity(v);
+  const [theme, setTheme] = React.useState<ThemeType>(darkTheme);
 
-  const toggleDarkTheme = () => {
-    if( theme.dark)
-      setTheme(lightTheme);
-    else
-      setTheme(darkTheme);
+  const [themeSetting, setThemeSetting] = React.useState<'light' | 'dark' | 'system_default'>('system_default');
+
+  React.useEffect(()=>{
+    getSavedThemeSetting().then(s => {
+      switch(s){
+        case 'light':
+          setTheme(lightTheme);
+          setThemeSetting('light');
+          return;
+        case 'dark':
+          setTheme(darkTheme);
+          setThemeSetting('dark');
+          return;
+        default:
+          if(systemThemeIsDark) setTheme(darkTheme);
+          setTheme(lightTheme);
+          setThemeSetting('system_default');
+      }
+    })
+  },[]);
+
+  const saveThemeSetting = ( ts: 'light' | 'dark' | 'system_default')=> {
+    switch(ts){
+      case 'light':
+        setTheme(lightTheme);
+        break;
+      case 'dark':
+        setTheme(darkTheme);
+        break;
+      default:
+        if(systemThemeIsDark) setTheme(darkTheme);
+        setTheme(lightTheme);
+    }
+    setThemeSetting(ts);
+    storageSaveThemeSetting(ts).catch(e=>console.error(e));
   }
-
-  const setDarkTheme = ()=> setTheme(darkTheme);
-  const setLightTheme = ()=> setTheme(lightTheme);
 
   return <ThemeContext.Provider
     value={{
       theme:theme,
-      setDarkTheme: setDarkTheme,
-      setLightTheme: setLightTheme,
-      toggleDarkTheme:toggleDarkTheme,
-      saveFabOpacity: saveFabOpacity,
-      fabOpacity: fabOpacity,
+      saveThemeSetting: saveThemeSetting,
+      themeSetting: themeSetting,
       }}>
     {children}
   </ThemeContext.Provider>

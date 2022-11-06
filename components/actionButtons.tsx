@@ -53,6 +53,7 @@ export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
                   switch( ab.icon){
                       case 'camera':
                           takePic('video');
+                          onBack();
                           break;
                       default:
                   }
@@ -74,6 +75,7 @@ export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
                       default:
                           console.warn("TODO implement action")
                   }
+                  onBack();
               }}
           />
       )}
