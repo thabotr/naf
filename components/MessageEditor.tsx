@@ -106,7 +106,7 @@ export const MessageEditorCard = ()=> {
           saveComposeMessage({
             id: '',
             files: [],
-            from: user?.handle ?? '',
+            from: user?.handle ??'',
             to: '',
             text: undefined,
           });

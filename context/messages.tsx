@@ -1,5 +1,6 @@
 import React from 'react';
 import { Chat } from '../types/chat';
+import { ChatContext, ChatContextType } from './chat';
 
 import { Message } from './messageEditor';
 
@@ -16,28 +17,23 @@ export enum ViewType {
 
 export type MessagesContextType = {
   chat?: Chat;
-  openChat: (chat: Chat)=>void;
-  viewType: ViewType;
-  saveViewType: (vt: ViewType)=>void;
-  messageInFocus: null | Message;
   messages: Message[];
   addMessages: (msgs: Message[])=> void;
   deleteMessages: (msgPKs: MessagePK[])=>void;
-  openMessage: (msg: null | Message)=> void;
 }
 
 export const MessagesContext = React.createContext<MessagesContextType|null>(null);
 
 export function MessagesContextProvider({children}:{children: React.ReactNode}){
+  const {chats, conversingWith} = React.useContext(ChatContext) as ChatContextType;
   const [messages, setMessages] = React.useState<Message[]>([]);
-  const [viewType, setViewType] = React.useState(ViewType.FILES);
-  const [chat, setChat] = React.useState<Chat|undefined>(undefined);
+  const [chat, setChat] = React.useState<Chat|undefined>();
 
-  const [messageInFocus, setMessageOnFocus] = React.useState<null|Message>(null);
-
-  const openChat = (chat: Chat) => {
+  React.useEffect(()=>{
+    const chat = chats.find(c=> c.user.handle === conversingWith?.handle)
     setChat(chat);
-  }
+    chat?.messages && setMessages(chat?.messages);
+  },[conversingWith, chats])
 
   const addMessages = (msgs: Message[])=>{
     const newMsgs = msgs.filter( m => !messages.find(em=> em.id === m.id && em.to === m.to && em.from === m.from));
@@ -52,22 +48,11 @@ export function MessagesContextProvider({children}:{children: React.ReactNode}){
     setMessages(residualImgs);
   }
 
-  const openMessage = (msg: Message | null)=> {
-    setMessageOnFocus(msg);
-  }
-
-  const saveViewType = (vt: ViewType)=> setViewType(vt);
-
   return <MessagesContext.Provider value={{
-    viewType: viewType,
-    saveViewType: saveViewType,
-    messageInFocus: messageInFocus,
     messages: messages,
     addMessages: addMessages,
     deleteMessages: deleteMessages,
-    openMessage: openMessage,
     chat: chat,
-    openChat: openChat,
   }}>
     {children}
   </MessagesContext.Provider>

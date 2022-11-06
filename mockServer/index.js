@@ -70,7 +70,19 @@ const chats = [{
       //   status?: DeliveryStatus,
       //   unread?: boolean,
       //   daft?:boolean,
-    }
+    },
+    {
+      from: '->mikeyrich',
+      to: ourUser.handle,
+      id: 1656495509,
+      files: [{
+        type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg',
+      }],
+      timestamp: 1356495509,
+    //   status?: DeliveryStatus,
+    //   unread?: boolean,
+    //   daft?:boolean,
+  }
   ],
   messageThreads: []
 }]

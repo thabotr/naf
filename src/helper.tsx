@@ -7,10 +7,11 @@ export const verboseSize = (bytes: number):string=> {
   return `${(bytes/1024**3).toFixed(1)}GB`;
 }
 
-export const verboseTime = (time?: Date):string|undefined => {
-  if(!time){
+export const verboseTime = (timestamp?: number):string|undefined => {
+  if(!timestamp){
       return undefined;
   }
+  const time = new Date(timestamp*1_000);
   const now = new Date();
   const timeDiffSec = Math.floor(Math.abs(now.getTime() - time.getTime())/1_000);
   const min = 60;

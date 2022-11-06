@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {ScrollView, Image, View, Platform, ViewStyle} from 'react-native';
 import {Banner, Button, Card, IconButton as RNPIconButton, List, Paragraph, Surface} from 'react-native-paper';
 import TrackPlayer, { RepeatMode, State as PlayState, useTrackPlayerEvents, Event as PlayerEvent, useProgress, Track} from 'react-native-track-player';
@@ -153,6 +153,11 @@ export function Home({navigation}:{navigation:any}) {
         .then(r => {
             if( r.info().status === 200){
                 const cs = r.json() as Chat[] ;
+                cs.forEach(c => {
+                    c.messages.forEach(m=>{
+                        if(!m.files) m.files = []
+                    })
+                })
                 saveChats(cs);
             }
         }).catch(e => console.error('error fetching chats ' + e));

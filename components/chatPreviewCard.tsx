@@ -1,20 +1,20 @@
 import React from 'react';
 import {View, TouchableOpacity, Pressable, Text, Platform} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, Avatar, List} from 'react-native-paper';
-import TrackPlayer, { usePlaybackState , State as PlayState} from 'react-native-track-player';
+import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 
 import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/helper';
+import { ChatContext, ChatContextType } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
-import {MessagesContext, MessagesContextType} from '../context/messages';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import { getAudioPath } from '../src/audio';
 import {Chat} from '../types/chat';
 import {getImagePath, Image} from './image';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
-    const {openChat} = React.useContext(MessagesContext) as MessagesContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
+    const {converseWith} = React.useContext(ChatContext) as ChatContextType;
 
     const [landscapeClicked, setLandscapeClicked] = React.useState(false);
     const [landscapeUri, setLandscapeUri] = React.useState('');
@@ -121,11 +121,10 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     <TouchableRipple
                         style={{ width: '100%', height: '100%', justifyContent: 'center', padding: 5}}
                         onPress={()=>{
-                            openChat(chat);
+                            converseWith(chat.user);
                             navigation.push("Chat");
                         }}
                     >
-                        {/* chats preview */}
                         <Show
                             component={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}} numberOfLines={1}>
                                 {`converse with ${chat.user.handle}`}

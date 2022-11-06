@@ -4,7 +4,7 @@ import {SafeAreaView, View, ScrollView} from 'react-native';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { MessageEditorProvider } from '../context/messageEditor';
 import { VoiceRecorder } from '../components/voiceRecorder';
-import { MessagesContext, MessagesContextType } from '../context/messages';
+import { MessagesContext, MessagesContextProvider, MessagesContextType } from '../context/messages';
 import { MessageCard } from '../components/message';
 import { MessageEditorCard } from '../components/MessageEditor';
 import { FloatingActions } from '../components/actionButtons';
@@ -12,7 +12,6 @@ import { FloatingActions } from '../components/actionButtons';
 export function Tiler() {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {chat} = React.useContext(MessagesContext) as MessagesContextType;
-
     return (
     <ScrollView
         style={{height: '100%', backgroundColor: theme.color.secondary}}
@@ -28,6 +27,7 @@ export function Tiler() {
 export function Messages() {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     return (
+        <MessagesContextProvider>
         <MessageEditorProvider>
         <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
             <Tiler/>
@@ -35,5 +35,6 @@ export function Messages() {
             <FloatingActions/>
         </SafeAreaView>
         </MessageEditorProvider>
+        </MessagesContextProvider>
     );
 }

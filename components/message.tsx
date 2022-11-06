@@ -102,13 +102,13 @@ export const ExpandableParagraph = ({text}:{text:string}) => {
     />
 }
 
-type SeperatedFiles = {
+type SeparatedFiles = {
     recordings: MessageFile[],
     visuals: MessageFile[],
     others: MessageFile[],
 }
 
-export function separateFiles( fls: MessageFile[]): SeperatedFiles {
+export function separateFiles( fls: MessageFile[]): SeparatedFiles {
     return {
         recordings: fls.filter( f=> f.type.split('/')[0] === 'recording'),
         visuals: fls.filter( f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video'),

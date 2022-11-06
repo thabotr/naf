@@ -13,7 +13,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import {ImageViewProvider} from './context/images';
 import { ThemeContextProvider } from './context/theme';
 import { UserContext, UserContextProvider, UserContextType } from './context/user';
-import { MessagesContextProvider } from './context/messages';
 import { ToastySnackbarManager } from './components/snackbar';
 import { StackNavigator } from './components/stackNavigator';
 import { ChatContextProvider } from './context/chat';
@@ -42,7 +41,6 @@ function SuperContextProvider({children}:{children: React.ReactNode}){
     <ThemeContextProvider>
       <UserContextProvider>
         <ChatContextProvider>    
-          <MessagesContextProvider>
             <ImageViewProvider>
               <NavigationContainer>
                 <Provider>
@@ -50,7 +48,6 @@ function SuperContextProvider({children}:{children: React.ReactNode}){
                 </Provider>
               </NavigationContainer>
             </ImageViewProvider>
-          </MessagesContextProvider>
         </ChatContextProvider>
       </UserContextProvider>
     </ThemeContextProvider>

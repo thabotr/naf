@@ -20,7 +20,7 @@ export type Message = {
   id: string,
   text?: string,
   files: MessageFile[],
-  timestamp?: Date,
+  timestamp?: number,
   status?: DeliveryStatus,
   unread?: boolean,
   daft?:boolean,
@@ -95,10 +95,10 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
               }
             }
           )
-          const mFilesNotInSelection = message.files.filter(mf => !selectedFiles.find( sf => sf.uri === mf.uri));
+          const mFilesNotInSelection = message?.files?.filter(mf => !selectedFiles.find( sf => sf.uri === mf.uri));
           const updatedMessage: Message = {
             ...message,
-            files: mFilesNotInSelection.concat(selectedFiles)
+            files: mFilesNotInSelection?.concat(selectedFiles) ?? selectedFiles,
           }
           saveComposeMessage(updatedMessage);
           setComposeOn(true);
