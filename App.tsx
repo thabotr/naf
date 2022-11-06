@@ -23,10 +23,18 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 const SetupFileStructure = async()=>{
   try{
-    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/images`);
-  }catch( e) {
-    return e;
+    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/images`)
+  }catch(e) {
+    if(!`${e}`.includes('already exists')) return e;
   }
+
+  try{
+    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/sounds`);
+  }catch(e){
+    if(!`${e}`.includes('already exists')) return e;
+  }
+
+  return null;
 }
 
 function SuperContextProvider({children}:{children: React.ReactNode}){
@@ -53,8 +61,7 @@ function App() {
     function PageLoginElseHome(){
       React.useEffect(()=>{
         SetupFileStructure().catch( e => {
-          if(!!e && !e.includes('already exists'))
-            console.error('file structure setup failed: '+ e);
+          if(e !== null) console.error('file structure setup error: ' + e); 
         });
       }, [])
       const {user} = React.useContext(UserContext) as UserContextType;

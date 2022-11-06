@@ -90,6 +90,14 @@ app.use((req, resp, next)=>{
       resp.setHeader('width', wHT.width);
       resp.setHeader('height', wHT.height);
     }catch( e) {}
+
+    // TODO dynamic metadata serving
+    // TODO find standard way to return metadata in body
+    if( req.url.includes('listen1')){
+      resp.setHeader('artist', 'Sir Trill');
+      resp.setHeader('title', 'Busisa Iyano');
+      resp.setHeader('album', 'ghost');
+    }
     
     getAudioDurationInSeconds(`./public${req.url}`)
     .then( d => {

@@ -41,3 +41,9 @@ TODO
   </ul>
 <li>Signup</li>
 <li>Login</li>
+<ul>Listening with
+  <li>Desc depending on music genre e.g 'vibing, listening, enjoying, chilling, rocking'</li>
+  <li>album art</li>
+  <li>theme by album art</li>
+</ul>
+<li>replace card covers with cacheable image component</li>

@@ -1,6 +1,6 @@
 import React from 'react';
-import {ScrollView, Image, View} from 'react-native';
-import {Banner, Button, Card, IconButton, List, Paragraph, Surface} from 'react-native-paper';
+import {ScrollView, Image, View, Platform, ViewStyle} from 'react-native';
+import {Banner, Button, Card, IconButton as RNPIconButton, List, Paragraph, Surface} from 'react-native-paper';
 import TrackPlayer, { RepeatMode, State as PlayState, useTrackPlayerEvents, Event as PlayerEvent, useProgress, Track} from 'react-native-track-player';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -10,79 +10,60 @@ import { ChatContext, ChatContextType } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextProvider, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import {UserContext, UserContextType} from '../context/user';
+import { getAudioPath } from '../src/audio';
 import { verboseDuration } from '../src/helper';
 import {Chat} from '../types/chat';
 import { URLS } from '../types/routes';
 import {User} from '../types/user';
 
+function IconButton({If, icon, onPress, style}:{icon: string, onPress: ()=>void, If?:boolean, style?: ViewStyle}){
+    if( If===undefined || If)
+        return <RNPIconButton icon={icon} onPress={onPress} style={style}/>;
+    return null;
+}
 
 function ListenWithMeCard(){
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const [expanded, setExpanded] = React.useState(true);
-    const [playState, setPlayState] = React.useState(PlayState.Stopped);
     const [repeatMode, setRepeatMode] = React.useState(RepeatMode.Off);
-    const {listeningWith} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
+    const {listeningWith, currentTrack, playState, stopPlayer} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
     const {chats} = React.useContext(ChatContext) as ChatContextType;
     const [currentTrackInd, setCurrentTrackInd] = React.useState(0);
     const [tracks, setTracks] = React.useState<Track[]>([]);
 
-    TrackPlayer.setRepeatMode(repeatMode);
+    const toggleRepeatMode = ()=>setRepeatMode((repeatMode+1)%(Object.keys(RepeatMode).length/2));
 
-    const toggleRepeatMode = ()=> {
-        setRepeatMode((repeatMode+1)%(Object.keys(RepeatMode).length/2));
-    }
+    const updateCurrentTrack = ()=>TrackPlayer.getCurrentTrack()
+        .then(i=>{if(i!==null)setCurrentTrackInd(i)});
 
-    const updateCurrentTrack = () => {
-        TrackPlayer.getCurrentTrack()
-        .then(i=>{
-            if(i !== null)
-                setCurrentTrackInd(i);
-        })
-    }
-
-    const updateTracks = () => {
-        TrackPlayer.getQueue().then(ts=>{
-            setTracks(ts);
-        })
-    }
+    const updateTracks = ()=>TrackPlayer.getQueue().then(ts=>setTracks(ts));
 
     React.useEffect(()=>{
+        TrackPlayer.setRepeatMode(repeatMode);
         updateCurrentTrack();
         updateTracks();
     },[])
 
-    useTrackPlayerEvents([PlayerEvent.PlaybackState, PlayerEvent.PlaybackTrackChanged], (event) => {
-        switch(event.type){
-            case PlayerEvent.PlaybackState:
-                setPlayState(event.state);
-                break;
-            case PlayerEvent.PlaybackTrackChanged:
-                updateCurrentTrack();
-                break;
-        }
-    });
-
-    const {position, duration, buffered} = useProgress(1_000);
+    const {position, duration} = useProgress(1_000);
 
     React.useEffect(()=>{
         if(!!listeningWith){
-            updateTracks();
             const chat = chats.find(c=> listeningWith === c.user.handle);
-            if( !!chat)
-            {
-                TrackPlayer.reset().then(_=>{
-                    TrackPlayer.add({
-                        url: chat.user.listenWithMeURI,
-                    })
+            chat && TrackPlayer.reset().then(_=>{
+                getAudioPath(chat.user.listenWithMeURI)
+                .then(res=>{
+                    res && TrackPlayer.add({
+                            ...res.metadata,
+                            url: Platform.select({android: 'file://'.concat(res.filePath)}) ?? res.filePath,
+                        })
                 })
-            }
+            })
         }
     }, [listeningWith])
 
-    const currentTrack = tracks.find((_,i)=>i===currentTrackInd);
-
-    return <OnlyShow If={playState !== PlayState.None}>
+    return <OnlyShow If={!!listeningWith && (PlayState.Playing === playState || PlayState.Paused === playState)}>
     <Card style={{marginHorizontal: 3, marginBottom: 3, paddingHorizontal: 5}}>
+        <Paragraph style={{textAlign: 'center', opacity: 0.5}}>Enjoying the bangers {listeningWith}</Paragraph>
         <OnlyShow If={expanded}>
             <Card.Content>
                 <HorizontalView>
@@ -119,9 +100,8 @@ function ListenWithMeCard(){
                         <OnlyShow If={!!currentTrack?.artist}>
                         <Paragraph>{currentTrack?.artist}</Paragraph>
                         </OnlyShow>
-                        <Paragraph>{currentTrack?.title ?? `track ${currentTrackInd + 1}`} {currentTrack?.album}</Paragraph>
+                        <Paragraph>{currentTrack?.title ?? `track ${currentTrackInd + 1}`}-{currentTrack?.album}</Paragraph>
                     </View>
-                    
                     <Paragraph>{verboseDuration(position)}/{verboseDuration(duration)}</Paragraph>
                 </HorizontalView>
             </OnlyShow>
@@ -136,52 +116,29 @@ function ListenWithMeCard(){
                         }
                     }}
                 />
-                <OnlyShow If={expanded}>
-                    <IconButton icon='rewind-10' onPress={()=>TrackPlayer.seekTo(Math.max(position-10, 0))}/>
-                </OnlyShow>
+                <IconButton If={expanded} icon='rewind-10' onPress={()=>TrackPlayer.seekTo(Math.max(position-10, 0))}/>
                 <IconButton
-                    disabled={playState === PlayState.None}
                     icon={playState !== PlayState.Playing ? 'play' : 'pause'}
-                    onPress={()=>{
-                        if(playState === PlayState.Stopped){
-                            TrackPlayer.getCurrentTrack()
-                            .then(ct => {
-                                if( ct !== null)
-                                    TrackPlayer.skip(ct);
-                            })
-                        }
-                        else if( playState !== PlayState.Playing){
-                            TrackPlayer.play();
-                        }else if(playState === PlayState.Playing){
-                            TrackPlayer.pause();
-                        }
-                    }}
+                    onPress={()=> playState === PlayState.Playing ? TrackPlayer.pause() : TrackPlayer.play()}
                 />
-                <OnlyShow If={playState !== PlayState.Stopped}>
-                    <IconButton icon='stop' onPress={()=>TrackPlayer.reset()}/>
-                </OnlyShow>
-                <OnlyShow If={expanded}>
-                    <IconButton icon='fast-forward-10' onPress={()=>TrackPlayer.seekTo(Math.min(position + 10, duration))}/>
-                </OnlyShow>
+                <IconButton icon='stop' onPress={stopPlayer}/>
+                <IconButton If={expanded} icon='fast-forward-10' onPress={()=>TrackPlayer.seekTo(Math.min(position+10, duration))}/>
                 <IconButton icon='skip-next-circle-outline' onPress={()=>TrackPlayer.skipToNext()}/>
-                <OnlyShow If={expanded}>
-                    <IconButton
-                        style={{opacity: repeatMode === RepeatMode.Off ? 0.5 : 1}}
-                        icon={(()=>{
-                            switch(repeatMode){
-                                case RepeatMode.Queue:
-                                    return 'repeat';
-                                case RepeatMode.Track:
-                                    return 'repeat-once';
-                                default:
-                                    return 'repeat-off';
-                            }
-                        })()}
-                        onPress={toggleRepeatMode}
-                    />
-                </OnlyShow>
+                <IconButton
+                    If={expanded}
+                    style={{opacity: repeatMode === RepeatMode.Off ? 0.5 : 1}}
+                    icon={
+                        repeatMode === RepeatMode.Queue ? 'repeat' :
+                        repeatMode === RepeatMode.Track ? 'repeat-once' : 'repeat-off'
+                    }
+                    onPress={toggleRepeatMode}
+                />
             </Card.Actions>
-            <IconButton style={{borderRadius: 0, alignSelf: 'center'}} icon={expanded ? 'chevron-up' : 'chevron-down'} onPress={()=>setExpanded(!expanded)}/>
+            <IconButton
+                style={{borderRadius: 0, alignSelf: 'center'}}
+                icon={expanded ? 'chevron-up' : 'chevron-down'}
+                onPress={()=>setExpanded(!expanded)}
+            />
         </HorizontalView>
     </Card>
     </OnlyShow>
@@ -203,6 +160,18 @@ export function Home({navigation}:{navigation:any}) {
 
     React.useEffect(()=>{
         fetchChats();
+    },[])
+    return (
+        <ListenWithMeContextProvider>
+        <View style={{height: '100%', backgroundColor: theme.color.secondary}}>
+        <ListenWithMeCard/>
+        <ScrollView style={{backgroundColor: theme.color.secondary}}>
+            {chats.map( c => <ChatPreviewCard key={c.user?.handle ?? ''} chat={c} navigation={navigation}/>)}
+        </ScrollView>
+        </View>
+        </ListenWithMeContextProvider>
+    );
+}
         // const interlocutors: User[] = [{
         //     name: 'Juliana',
         //     surname: 'Alvarez',
@@ -345,15 +314,3 @@ export function Home({navigation}:{navigation:any}) {
         //     }
         // ]
         // saveChats(chats);
-    },[])
-    return (
-        <ListenWithMeContextProvider>
-        <View style={{height: '100%', backgroundColor: theme.color.secondary}}>
-        <ListenWithMeCard/>
-        <ScrollView style={{backgroundColor: theme.color.secondary}}>
-            {chats.map( c => <ChatPreviewCard key={c.user?.handle ?? ''} chat={c} navigation={navigation}/>)}
-        </ScrollView>
-        </View>
-        </ListenWithMeContextProvider>
-    );
-}

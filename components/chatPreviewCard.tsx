@@ -7,17 +7,17 @@ import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {MessagesContext, MessagesContextType} from '../context/messages';
 import {ThemeContext, ThemeContextType} from '../context/theme';
+import { getAudioPath } from '../src/audio';
 import {Chat} from '../types/chat';
 import {getImagePath, Image} from './image';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {openChat} = React.useContext(MessagesContext) as MessagesContextType;
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {saveListeningWith, listeningWith} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
+    const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
 
     const [landscapeClicked, setLandscapeClicked] = React.useState(false);
-
-    const [cardUri, setCardUri] = React.useState('');
+    const [landscapeUri, setLandscapeUri] = React.useState('');
 
     const latestMessage = chat.messages.slice(-1).find(_=>true);
     const unreadMessageCount = chat.messages.filter(m => !!m.unread).length;
@@ -26,16 +26,16 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     const [avatarSecondary, setAS] = React.useState(theme.color.secondary);
 
     React.useEffect(()=>{
-        getImagePath(chat.user.landscapeURI).then(p=> {
-            if( !!p) setCardUri(Platform.select({android: `file://${p}`,})?? p);
-        }).catch(e => console.error('failed to get landscape uri: '+e));
+        getImagePath(chat.user.landscapeURI).then(path=> {
+            path && setLandscapeUri(Platform.select({android: `file://${path}`,}) ?? path);
+        }).catch(e => console.error('failed to get landscape uri: '+ e));
     },[])
 
-    const playState = usePlaybackState();
-    const playing = listeningWith === chat.user.handle && playState === PlayState.Playing;
-
     return <Card style={{borderRadius: 5, margin: 2, padding: 4, backgroundColor: avatarSecondary}}>
-    <Card.Cover source={!!cardUri ? {uri: cardUri} : undefined} style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}/>
+    <Card.Cover
+        source={!!landscapeUri ? {uri: landscapeUri} : undefined}
+        style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}
+    />
     <OverlayedView style={{justifyContent: 'flex-start', alignItems: 'flex-start', borderColor: avatarPrimary, borderWidth: 2}}>
         <HorizontalView>
             <View style={{height: '100%', width: '25%'}}>
@@ -85,41 +85,28 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                         alignItems: 'center'
                     }}
                     onPress={()=>{
-                        //TODO if listening with me, play
-                        // else reset player and add our songs
-                        if( playing){
+                        if(listeningWith === chat.user.handle && playState == PlayState.Playing)
                             TrackPlayer.pause();
-                        } else if(listeningWith !== chat.user.handle){
-                            saveListeningWith(chat.user.handle);
-                        }else {
-                            if(playState !== PlayState.Paused){
-                                TrackPlayer.getCurrentTrack()
-                                .then(async (ti)=>{
-                                    return TrackPlayer.getQueue()
-                                    .then(ts=>{
-                                        if( (ti) !== null && ts.length)
-                                            return TrackPlayer.skip(ti)
-                                        else
-                                            return TrackPlayer.add({
-                                                url: chat.user.listenWithMeURI,
-                                            });
-                                    })
+                        else
+                            getAudioPath(chat.user.listenWithMeURI)
+                            .then(res=> {
+                                res && playUserTrack(chat.user.handle,{
+                                    ...res.metadata,
+                                    url: Platform.select({android: `file://${res.filePath}`}) ?? res.filePath,
                                 })
-                                .then(_=>{
-                                    TrackPlayer.play();
-                                })
-                            }else
-                                TrackPlayer.play();
-                        }
+                            })
                     }}
                 >
-                    {/* play theme song  */}
                     <IconButton icon='account-music'/>
-                    <Text>Marquue track name</Text>
+                    <Paragraph>{listeningWith === chat.user.handle ? currentTrack?.title ?? '' : ''}</Paragraph>
                     <View>
-                        <IconButton icon={ playing ?  'pause' : 'play'}/>
+                        <IconButton icon={listeningWith === chat.user.handle && playState == PlayState.Playing ?  'pause' : 'play'}/>
                         <OverlayedView>
-                        <ActivityIndicator size={35} animating={playing} color='gray'/>
+                            <ActivityIndicator
+                                size={35}
+                                animating={listeningWith === chat.user.handle && playState == PlayState.Playing}
+                                color='gray'
+                            />
                         </OverlayedView>
                     </View>
                 </TouchableOpacity>
@@ -147,7 +134,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                             ElseShow={<List.Item
                                 title={latestMessage?.text ?? "<sent a file>"}
                                 left={_=>latestMessage?.text ? <List.Icon icon='message-text'/> : <List.Icon icon='attachment'/>}
-                                />}
+                            />}
                         />
                     </TouchableRipple>
                     }
