@@ -10,16 +10,25 @@ import { MessageEditorContext, MessageEditorContextType } from '../context/messa
 import { openFile } from '../src/fileViewer';
 import { MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
-import { verboseDuration, verboseSize, verboseTime } from '../src/helper';
-import { getAudioPath } from '../src/audio';
+import { verboseSize, verboseTime } from '../src/helper';
 import { getFilePath } from '../src/file';
 import { Image } from './image';
 
-export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
+const mimeTypeToExtension: {[key: string]:string} = {
+    "video/mp4" : '.mp4',
+    "image/jpeg" : '.jpg',
+    "image/jpg" : '.jpg',
+    "image/png" : '.png',
+    "audio/mpeg" : '.mp3',
+    "video/mpeg" : '.mpeg'
+}
+
+export const ImagePreviewCard = ({source}:{source: FileType}) => {
     const openImage = async () => {
         if(source.uri.includes('http')){
-            const path = await getFilePath(source.uri);
-            path && openFile(path.filePath);
+            const ext = mimeTypeToExtension[source.type];
+            const path = await getFilePath(source.uri, ext);
+            path && openFile(path);
         }else openFile(source.uri);
     }
     return <Card
@@ -33,11 +42,12 @@ export const ImagePreviewCard = ({source}:{source: {uri: string}}) => {
 }
 
 // TODO use dynamic value for iconSize
-export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source: {uri: string}}) => {
+export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source: FileType}) => {
     const openVid = async () => {
         if(source.uri.includes('http')){
-            const path = await getFilePath(source.uri);
-            path && openFile(path.filePath);
+            const ext = mimeTypeToExtension[source.type];
+            const path = await getFilePath(source.uri, ext);
+            path && openFile(path);
         }else openFile(source.uri);
     }
     return (
@@ -60,11 +70,11 @@ export const FilePreviewCard = ({file, user=true}:{file: FileType, user?: boolea
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
     const openThisFile = async () => {
-        if( file.uri.includes('http')){
-            const res = await getFilePath(file.uri);
-            res && openFile(res.filePath);
-        }
-        else openFile(file.uri);
+        if(file.uri.includes('http')){
+            const ext = mimeTypeToExtension[file.type];
+            const path = await getFilePath(file.uri, ext);
+            path && openFile(path);
+        }else openFile(file.uri);
     }
 
     return <Card
@@ -167,7 +177,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
 
     const renderVisualFiles = () => {
         return <HorizontalView>
-            {visuals.slice(0,4).map((vz: {type: string, uri: string}, i:number)=>
+            {visuals.slice(0,4).map((vz: FileType, i:number)=>
                 <Show key={vz.uri}
                     component={<ImagePreviewCard source={vz}/>}
                     If={vz.type.split('/')[0] === 'image'}

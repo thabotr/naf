@@ -86,7 +86,7 @@ const chats = [{
       id: 1666495509,
       files: [
         {type: 'video/mp4', uri: 'http://10.0.2.2:3000/vid1.mp4', size: 68_693_203,},
-        {type: 'audio/mp3', uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
+        {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
       ],
       timestamp: 1666495509,
     }
