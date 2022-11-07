@@ -155,7 +155,8 @@ export function Home({navigation}:{navigation:any}) {
                 const cs = r.json() as Chat[] ;
                 cs.forEach(c => {
                     c.messages.forEach(m=>{
-                        if(!m.files) m.files = []
+                        if(!m.files) m.files = [];
+                        if(!m.voiceRecordings) m.voiceRecordings = [];
                     })
                 })
                 saveChats(cs);

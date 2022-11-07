@@ -4,7 +4,7 @@ import {View, FlatList} from 'react-native';
 
 import {MessageEditorContext, MessageEditorContextType} from '../context/messageEditor';
 import {ThemeContext, ThemeContextType} from '../context/theme';
-import {AudioPreviewCard, FilePreviewCard, ImagePreviewCard, separateFiles, VidPreviewCard, VisualPreview} from './message';
+import {FilePreviewCard, ImagePreviewCard, VisualPreview} from './message';
 import {HorizontalView, OnlyShow, Show} from './helper';
 import {VoiceNoteCard} from './voiceNote';
 import {MessagesContext, MessagesContextType} from '../context/messages';
@@ -28,7 +28,6 @@ export const MessageEditorCard = ()=> {
   } = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const {addMessages} = React.useContext(MessagesContext) as MessagesContextType;
 
-  const {recordings, visuals, others} = separateFiles(message.files);
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
   const openCamInMode = (mode: 'video' | 'photo') => {
@@ -69,11 +68,8 @@ export const MessageEditorCard = ()=> {
               const f = message.files[Number(item.id)] ?? {type: '', uri: ''};
               switch( f.type.split('/')[0]){
                   case 'image':
-                      return withCheckbox(Number(item.id), <ImagePreviewCard source={f}/>);
                   case 'video':
-                      return withCheckbox(Number(item.id), <VidPreviewCard source={f}/>);
-                  case 'audio':
-                      return withCheckbox(Number(item.id), <AudioPreviewCard user audio={f}/>);
+                      return withCheckbox(Number(item.id), <VisualPreview mFile={f}/>);
                   default:
                       return withCheckbox(Number(item.id), <FilePreviewCard user file={{...f, size: f.size ?? 0, name: f.name ?? ''}}/>);
               }
@@ -109,6 +105,7 @@ export const MessageEditorCard = ()=> {
             from: user?.handle ??'',
             to: '',
             text: undefined,
+            voiceRecordings: [],
           });
           setComposeOn(false);
         }}
@@ -158,25 +155,16 @@ export const MessageEditorCard = ()=> {
     </OnlyShow>
   }
 
+  const visuals = message.files.filter(f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video');
+  const others = message.files.filter(f => !(f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video'));
+
   const nonvisualAttachments = () => {
-    return <OnlyShow If={others.length+visuals.slice(4).length> 0}>
+    return <OnlyShow If={others.length > 0}>
     <View style={{display: 'flex', flexDirection: 'row'}}>
         <List.Section style={{width: '100%', padding: 0, margin: 0}}>
             <List.Subheader>Other attachments</List.Subheader>
             <HorizontalView style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-                {others.slice(0,2).map(of =>
-                  <Show
-                    component={<AudioPreviewCard audio={of}/>}
-                    If={of.type.split('/')[0] === 'audio'}
-                    ElseShow={<FilePreviewCard file={{
-                      name: of.name ?? '',
-                      size: of.size ?? 0,
-                      type: of.type,
-                      uri: of.uri
-                    }}/>}
-                    key={of.uri}
-                  />
-                )}
+                {others.slice(0,2).map(f=> <FilePreviewCard key={f.uri} file={f}/>)}
             </HorizontalView>
             <OnlyShow If={!!message.files.length}>
             <Chip onPress={()=>setPreviewingFiles(true)} style={{borderRadius: 0, margin: 2, backgroundColor: theme.color.userSecondary}} icon='file-multiple'>
@@ -194,7 +182,7 @@ export const MessageEditorCard = ()=> {
       <View style={{padding: 10}}>
           {editorActions()}
           {editorTextInput()}
-          {recordings.map(r=><VoiceNoteCard file={{uri: r.uri, size: r.size ?? 0, durationSecs: r.duration ?? 0}} user={true}/>)}
+          {message.voiceRecordings.map(r=><VoiceNoteCard file={r} user={true}/>)}
 
           <HorizontalView>
             {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f}/>)}

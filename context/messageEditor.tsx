@@ -7,24 +7,11 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 import  RNFetchBlob from 'rn-fetch-blob';
 
-import { DeliveryStatus } from '../components/message';
 import { permissionsGranted, requestPermissions } from '../src/permissions';
-import { MessageFile } from '../types/message';
+import { FileType, Message } from '../types/message';
 import { UserContext, UserContextType } from './user';
 
 export const MessageEditorContext = React.createContext<MessageEditorContextType|null>(null);
-
-export type Message = {
-  from: string,
-  to: string,
-  id: string,
-  text?: string,
-  files: MessageFile[],
-  timestamp?: number,
-  status?: DeliveryStatus,
-  unread?: boolean,
-  daft?:boolean,
-}
 
 export type VRState = {
   recordingPermitted: boolean,
@@ -63,7 +50,7 @@ export type MessageEditorContextType = {
 
 export function MessageEditorProvider({children}:{children:React.ReactNode}){
   const {user} = React.useContext(UserContext) as UserContextType;
-  const [message, setMessage] = React.useState<Message>({from: user?.handle ?? '', id: '', to: '', files:[]});
+  const [message, setMessage] = React.useState<Message>({from: user?.handle ?? '', id: '', to: '', files:[], voiceRecordings: []});
   const [composing, setComposing] = React.useState(false);
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});
   const [showTextInput, setShowTextInput] = React.useState(false);
@@ -86,10 +73,10 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
       ( dprs: Array<DocumentPickerResponse> | null | undefined) => {
         if( dprs){
           const selectedFiles = dprs.map(
-            ( dpr: DocumentPickerResponse): MessageFile => {
+            ( dpr: DocumentPickerResponse): FileType => {
               return {
                 name: dpr.name ?? undefined,
-                size: dpr.size ?? undefined,
+                size: dpr.size ?? 0,
                 type: dpr.type ?? '',
                 uri: dpr.fileCopyUri ?? dpr.uri,
               }
@@ -112,7 +99,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const discardMessage = () => {
     setComposeOn(false);
-    saveComposeMessage({files: [], id: '', from: user?.handle ?? '', to: ''});
+    saveComposeMessage({files: [], id: '', from: user?.handle ?? '', to: '', voiceRecordings: []});
   }
 
   const saveVRState = (s: VRState)=>{

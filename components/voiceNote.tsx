@@ -5,6 +5,7 @@ import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { verboseDuration, verboseSize } from '../src/helper';
+import { VoiceNoteType } from '../types/message';
 import { HorizontalView, OnlyShow } from './helper';
 
 const enum PlayState {
@@ -13,11 +14,11 @@ const enum PlayState {
     STOPPED
 }
 
-export function VoiceNoteCard({file, user}:{file: {size: number, uri: string, durationSecs: number}, user?: boolean}) {
+export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {audioRecorderPlayer} = React.useContext(MessageEditorContext) as MessageEditorContextType;
-    const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.durationSecs});
+    const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.duration});
 
     const onResumePlay =async () => {
         const msg = await audioRecorderPlayer.resumePlayer();

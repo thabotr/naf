@@ -3,10 +3,10 @@ import { FlatList, ToastAndroid, View} from 'react-native';
 import { Card, Paragraph, IconButton, List, Portal, Dialog, Chip} from 'react-native-paper';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
-import { MessageFile } from '../types/message';
+import { Message, FileType } from '../types/message';
 import { VoiceNoteCard } from './voiceNote';
 import { HorizontalView, OnlyShow, OverlayedView, Show, vidIconOverlay } from './helper';
-import { Message, MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
+import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { openFile } from '../src/fileViewer';
 import { MessagesContext, MessagesContextType } from '../context/messages';
 import { UserContext, UserContextType } from '../context/user';
@@ -51,38 +51,12 @@ export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source:
     );
 }
 
-export const AudioPreviewCard = ({audio, user=true}:{audio: MessageFile, user?: boolean}) => {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    //TODO show loading component when opening file
-    const openAudio = async ()=>{
-        if(audio.uri.includes('http')){ // FIXME find better ways of determining whether file is remote or local
-           const res = await getAudioPath(audio.uri);
-           res && openFile(res.filePath);
-        }else {
-            openFile(audio.uri);
-        }
-    }
-    return (
-        <Card
-            onPress={openAudio}
-            style={{flex: 1, margin: 1, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}
-        >
-            <List.Item
-                style={{margin: 0, padding: 0}}
-                title={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(audio.duration ?? 0)}</Paragraph>}
-                description={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{`[${audio.name}] ${verboseSize(audio.size ?? 0)}`}</Paragraph>}
-                left={props => <List.Icon {...props} icon="file-music" />}
-            />
-        </Card>
-    );
-}
-
 const fileTypeIcon = new Map([
     ["application/pdf", "file-pdf-box"],
     ["application/zip", "folder-zip"]
 ])
 
-export const FilePreviewCard = ({file, user=true}:{file: {uri: string, type: string, size: number, name: string}, user?: boolean})=> {
+export const FilePreviewCard = ({file, user=true}:{file: FileType, user?: boolean})=> {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
     const openThisFile = async () => {
@@ -134,24 +108,6 @@ export const ExpandableParagraph = ({text}:{text:string}) => {
     />
 }
 
-type SeparatedFiles = {
-    recordings: MessageFile[],
-    visuals: MessageFile[],
-    others: MessageFile[],
-}
-
-export function separateFiles( fls: MessageFile[]): SeparatedFiles {
-    return {
-        recordings: fls.filter( f=> f.type.split('/')[0] === 'recording'),
-        visuals: fls.filter( f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video'),
-        others: fls.filter( f => !(
-            f.type.split('/')[0] === 'recording' ||
-            f.type.split('/')[0] === 'image' ||
-            f.type.split('/')[0] === 'video'
-        ))
-    }
-}
-
 export enum DeliveryStatus {
     ERROR,
     UNSEEN,
@@ -183,8 +139,6 @@ function MessageFilesPreview({msg, onDismiss}:{msg: Message, onDismiss: ()=>void
                         return <ImagePreviewCard source={f}/>
                     case 'video':
                         return <VidPreviewCard source={f}/>
-                    case 'audio':
-                        return <AudioPreviewCard user={fromUser} audio={f}/>
                     default:
                         return <FilePreviewCard user={fromUser} file={{...f, size: f.size ?? 0, name: f.name ?? ''}}/>
                 }
@@ -206,11 +160,10 @@ export const MessageCard = ({msg}:{msg: Message}) => {
     const {saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
-    const { visuals, recordings, others} = separateFiles( msg.files);
     const sender = user?.handle === msg.from;
 
-    const otherFiles = others;
-    const voiceRecordings = recordings;
+    const visuals = msg.files.filter(f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video');
+    const otherFiles = msg.files.filter(f => f.type.split('/')[0] !== 'image' && f.type.split('/')[0] !== 'video');
 
     const renderVisualFiles = () => {
         return <HorizontalView>
@@ -228,15 +181,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
         return (
             <>
                 <HorizontalView>
-                    {otherFiles.slice(0,2).map( f => <Show
-                        component={<AudioPreviewCard audio={f} user={sender}/>}
-                        If={f.type.split('/')[0] === 'audio'}
-                        ElseShow={<FilePreviewCard 
-                            file={{ name: f.name ?? 'noname', size: f.size ?? 0, type: f.type, uri: f.uri }}
-                            user={sender}
-                            />}
-                        key={f.uri}
-                    />)}
+                    {otherFiles.slice(0,2).map( f => <FilePreviewCard key={f.uri} file={f} user={sender}/>)}
                 </HorizontalView>
                 <OnlyShow If={otherFiles.slice(2).length+visuals.slice(4).length > 0}>
                 <Chip onPress={()=>setPreviewingFiles(true)} style={{borderRadius: 0, margin: 2, backgroundColor: sender ? theme.color.userSecondary : theme.color.friendSecondary}} icon='file-multiple'>
@@ -316,11 +261,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
                 <OnlyShow If={!!msg.text}>
                     <ExpandableParagraph text={msg.text ?? ''}/>
                 </OnlyShow>
-                {voiceRecordings.map(t => <VoiceNoteCard
-                    key={t.uri}
-                    file={{uri:t.uri, size: t.size ?? 0, durationSecs: t.duration ?? 0}}
-                    user={sender}
-                    />)
+                {msg.voiceRecordings.map(t => <VoiceNoteCard key={t.uri} file={t} user={sender} />)
                 }
                 {renderVisualFiles()}
                 {renderOtherFiles()}
@@ -360,7 +301,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
     </>
 }
 
-export const VisualPreview = ({mFile}:{mFile:MessageFile})=> {
+export const VisualPreview = ({mFile}:{mFile:FileType})=> {
     return <Card
         onPress={()=>openFile(mFile.uri)}
         elevation={0} style={{borderRadius: 0, flex: 1, height: 80, margin: 1, flexGrow: 1}}>
