@@ -1,5 +1,4 @@
-import { Message } from "../context/messageEditor"
-import { MessageThread } from "./message"
+import { Message, MessageThread } from "./message"
 import { User } from "./user"
 
 export type Chat = {

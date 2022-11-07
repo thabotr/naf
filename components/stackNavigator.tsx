@@ -1,10 +1,9 @@
 import React from 'react';
-import { Appbar, Avatar, IconButton, Paragraph} from 'react-native-paper';
+import { Appbar, Avatar, IconButton} from 'react-native-paper';
 import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { UserContext, UserContextType } from '../context/user';
-import { MessagesContext, MessagesContextType } from '../context/messages';
 import { OnlyShow, Show } from './helper';
 import { Messages } from '../pages/messages';
 import { Home } from '../pages/home';

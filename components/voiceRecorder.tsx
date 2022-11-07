@@ -9,7 +9,15 @@ import { verboseDuration } from '../src/helper';
 import { HorizontalView, OnlyShow} from './helper';
 
 export function VoiceRecorder() {
-  const {audioRecorderPlayer, vrState, onStopRecord, recordSecs, message, saveComposeMessage, setComposeOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {
+    audioRecorderPlayer,
+    vrState,
+    onStopRecord,
+    recordSecs,
+    message,
+    saveComposeMessage,
+    setComposeOn
+  } = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const [recordingPaused, pauseRecording] = React.useState(false);
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
 
@@ -103,7 +111,14 @@ export function VoiceRecorder() {
         />
         </HorizontalView>
         <View style={{justifyContent: 'center', margin: 5}}>
-          <Paragraph style={{fontSize: 20, textAlign: 'center', color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{verboseDuration(recordSecs)}</Paragraph>
+          <Paragraph
+            style={{
+              fontSize: 20, 
+              textAlign: 'center', 
+              color: theme.color.textPrimary, 
+              textShadowColor: theme.color.textSecondary
+            }}
+            >{verboseDuration(recordSecs)}</Paragraph>
         </View>
       </View>
     </View>

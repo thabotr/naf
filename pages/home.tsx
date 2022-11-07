@@ -1,7 +1,7 @@
-import React, { memo } from 'react';
-import {ScrollView, Image, View, Platform, ViewStyle} from 'react-native';
-import {Banner, Button, Card, IconButton as RNPIconButton, List, Paragraph, Surface} from 'react-native-paper';
-import TrackPlayer, { RepeatMode, State as PlayState, useTrackPlayerEvents, Event as PlayerEvent, useProgress, Track} from 'react-native-track-player';
+import React from 'react';
+import {ScrollView, View, ViewStyle} from 'react-native';
+import {Card, IconButton as RNPIconButton, List, Paragraph, Surface} from 'react-native-paper';
+import TrackPlayer, { RepeatMode, State as PlayState, useProgress, Track} from 'react-native-track-player';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import { ChatPreviewCard } from '../components/chatPreviewCard';
@@ -9,12 +9,10 @@ import { HorizontalView, OnlyShow, OverlayedView } from '../components/helper';
 import { ChatContext, ChatContextType } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextProvider, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
-import {UserContext, UserContextType} from '../context/user';
 import { getAudioMetadata } from '../src/audio';
 import { verboseDuration } from '../src/helper';
 import {Chat} from '../types/chat';
 import { URLS } from '../types/routes';
-import {User} from '../types/user';
 
 function IconButton({If, icon, onPress, style}:{icon: string, onPress: ()=>void, If?:boolean, style?: ViewStyle}){
     if( If===undefined || If)
@@ -44,7 +42,7 @@ function ListenWithMeCard(){
         TrackPlayer.setRepeatMode(repeatMode);
         updateCurrentTrack();
         updateTracks();
-    },[])
+    },[listeningWith])
 
     const {position, duration} = useProgress(1000);
 
@@ -62,19 +60,20 @@ function ListenWithMeCard(){
         }
     }, [listeningWith])
 
-    return <OnlyShow If={!!listeningWith && (PlayState.Playing === playState || PlayState.Paused === playState)}>
-    <Card style={{marginHorizontal: 3, marginBottom: 3, paddingHorizontal: 5}}>
+    return <OnlyShow If={!!listeningWith}>
+    <Card style={{marginHorizontal: 3, marginBottom: 3, paddingHorizontal: 5, borderBottomEndRadius: 10, borderBottomLeftRadius: 10}}>
         <Paragraph style={{textAlign: 'center', opacity: 0.5}}>Enjoying the bangers {listeningWith}</Paragraph>
         <OnlyShow If={expanded}>
             <Card.Content>
                 <HorizontalView>
-                <Surface style={{flex: 1, height: 150, elevation: 3}}>
+                <Surface style={{flex: 1, height: 150, elevation: 3, width: '40%'}}>
                     <ScrollView>
                     {tracks.map((t,i)=> <List.Item
                         style={{borderWidth: 1, borderRadius: 3, margin: 5}}
                         onPress={()=>TrackPlayer.skip(i).then(_=> TrackPlayer.play()).catch(e=>console.log('failed to play track', e))}
                         title={t.title ?? `track ${i+1}`}
                         description={`${t.duration ? verboseDuration(t.duration) : ''} ${t.artist ?? ''}${t.album ? '/'.concat(t.album) : ''}`}
+                        key={t.url}
                         />
                     )}
                     </ScrollView>

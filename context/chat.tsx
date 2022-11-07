@@ -1,7 +1,5 @@
 import React from 'react';
-import { MessageThread } from '../types/message';
 import { Chat } from '../types/chat';
-import { Message } from './messageEditor';
 import { User } from '../types/user';
 
 export type ChatContextType = {

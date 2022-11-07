@@ -1,4 +1,5 @@
 import {launchCamera} from 'react-native-image-picker';
+
 import { FileType } from '../types/message';
 
 export const openCamera = async (mode: 'video' | 'photo'): Promise<FileType|undefined>=> {

@@ -1,4 +1,4 @@
-import TrackPlayer, {Event, RepeatMode, Capability, AppKilledPlaybackBehavior} from 'react-native-track-player';
+import TrackPlayer, {Event, RepeatMode} from 'react-native-track-player';
 
 export const PlaybackService = async function() {
     await TrackPlayer.setRepeatMode(RepeatMode.Off);

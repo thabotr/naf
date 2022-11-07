@@ -9,11 +9,6 @@ export type MessagePK = {
   messageId: string
 }
 
-export enum ViewType {
-  VISUALS,
-  FILES
-}
-
 export type MessagesContextType = {
   chat?: Chat;
   messages: Message[];

@@ -4,8 +4,8 @@ import {View, FlatList} from 'react-native';
 
 import {MessageEditorContext, MessageEditorContextType} from '../context/messageEditor';
 import {ThemeContext, ThemeContextType} from '../context/theme';
-import {FilePreviewCard, ImagePreviewCard, VisualPreview} from './message';
-import {HorizontalView, OnlyShow, Show} from './helper';
+import {FilePreviewCard, VisualPreview} from './message';
+import {HorizontalView, OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
 import {MessagesContext, MessagesContextType} from '../context/messages';
 import {openCamera} from '../src/camera';
