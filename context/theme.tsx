@@ -72,7 +72,7 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
           return;
         default:
           if(systemThemeIsDark) setTheme(darkTheme);
-          setTheme(lightTheme);
+          else setTheme(lightTheme);
           setThemeSetting('system_default');
       }
     })
