@@ -7,9 +7,10 @@ import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/
 import { ChatContext, ChatContextType } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
-import { getAudioPath } from '../src/audio';
+import { getAudioMetadata} from '../src/audio';
+import { getFilePath } from '../src/file';
 import {Chat} from '../types/chat';
-import {getImagePath, Image} from './image';
+import {Image} from './image';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
@@ -26,7 +27,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     const [avatarSecondary, setAS] = React.useState(theme.color.secondary);
 
     React.useEffect(()=>{
-        getImagePath(chat.user.landscapeURI).then(path=> {
+        getFilePath(chat.user.landscapeURI).then(path=> {
             path && setLandscapeUri(Platform.select({android: `file://${path}`,}) ?? path);
         }).catch(e => console.error('failed to get landscape uri: '+ e));
     },[])
@@ -86,15 +87,12 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     }}
                     onPress={()=>{
                         if(listeningWith === chat.user.handle && playState == PlayState.Playing)
-                            TrackPlayer.pause();
+                            TrackPlayer.pause()
+                            .catch(e => console.log(e));
                         else
-                            getAudioPath(chat.user.listenWithMeURI)
-                            .then(res=> {
-                                res && playUserTrack(chat.user.handle,{
-                                    ...res.metadata,
-                                    url: Platform.select({android: `file://${res.filePath}`}) ?? res.filePath,
-                                })
-                            })
+                            getAudioMetadata(`http://10.0.2.2:3000/listenwithme/${chat.user.handle.replace('->', '')}/listen1`)
+                            .then(track=> track && playUserTrack(chat.user.handle, track))
+                            .catch( e => console.log(e));
                     }}
                 >
                     <IconButton icon='account-music'/>
@@ -105,7 +103,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                             <ActivityIndicator
                                 size={35}
                                 animating={listeningWith === chat.user.handle && playState == PlayState.Playing}
-                                color='gray'
+                                color={theme.color.secondary}
                             />
                         </OverlayedView>
                     </View>

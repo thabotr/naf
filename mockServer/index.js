@@ -104,6 +104,10 @@ app.get('/chats', (req, resp) => {
   resp.send(JSON.stringify(chats));
 })
 
+app.get('/listenwithme/mikeyrich/listen1', (req, resp) => {
+  resp.send(JSON.stringify({title: 'Busisa iyano', album: 'Ghost', artist: 'Sir Trill', url: 'http://10.0.2.2:3000/listen1.mp3',}));
+})
+
 app.use((req, resp, next)=>{
   if( req.url.includes('.')){
     try{

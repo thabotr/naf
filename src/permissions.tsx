@@ -5,14 +5,14 @@ export const requestPermissions = async (requiredPerms: Permission[]) => {
     PermissionsAndroid.requestMultiple(requiredPerms).then( grants => {
       const permsGranted = requiredPerms.every( rp => grants[rp] === PermissionsAndroid.RESULTS.GRANTED)
       if( permsGranted) {
-        ToastAndroid.showWithGravity("Permissions granted", 5_000, ToastAndroid.TOP);
+        ToastAndroid.showWithGravity("Permissions granted", 5000, ToastAndroid.TOP);
       }else {
-        ToastAndroid.showWithGravity("Permissions required", 5_000, ToastAndroid.TOP);
+        ToastAndroid.showWithGravity("Permissions required", 5000, ToastAndroid.TOP);
       }
     })
     .catch( e => {
       console.error("permissions request error: " + e);
-      ToastAndroid.showWithGravity("Oops! Something went wrong. Please report this issue to us.", 5_000, ToastAndroid.CENTER)}
+      ToastAndroid.showWithGravity("Oops! Something went wrong. Please report this issue to us.", 5000, ToastAndroid.CENTER)}
     );
   }
 }

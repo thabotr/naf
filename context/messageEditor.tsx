@@ -128,7 +128,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
     const uri = await audioRecorderPlayer.startRecorder(path);
     audioRecorderPlayer.addRecordBackListener((e) => {
-      setRecordSecs(e.currentPosition/1_000);
+      setRecordSecs(e.currentPosition/1000);
     });
 
     setVRState({

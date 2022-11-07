@@ -33,13 +33,13 @@ export const MessageEditorCard = ()=> {
   const openCamInMode = (mode: 'video' | 'photo') => {
     openCamera(mode)
     .then(vidOrPic=> {
-      saveComposeMessage({
+      vidOrPic && saveComposeMessage({
         ...message,
         files: [...message.files, vidOrPic],
       });
       setComposeOn(true);
     })
-    .catch( e => console.warn("camera error " + e));
+    .catch( e => console.warn("camera error", e));
   }
 
   function FilesPreviewDialog() {

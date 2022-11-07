@@ -10,7 +10,7 @@ enum Actions {
 
 export function ToastySnackbarComponent({children, action=Actions.NONE, restoreState}:{children: React.ReactNode, action?:Actions, restoreState?:()=>void}) {
   const [visible, setVisible] = React.useState(true);
-  const [duration, setDuration] = React.useState(3_000);
+  const [duration, setDuration] = React.useState<number>(3000);
 
   const dismissSB = ()=> setVisible(false);
   const getAppropriateAction = ( a: Actions) => {
@@ -18,10 +18,10 @@ export function ToastySnackbarComponent({children, action=Actions.NONE, restoreS
       case Actions.UNDO:
         return {
           label: 'Undo',
-          onPress: ()=>{
+          onPress: (()=>{
             restoreState?.();
             dismissSB();
-          }
+          }),
         }
       default:
         return undefined;

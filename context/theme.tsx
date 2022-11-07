@@ -76,6 +76,7 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
           setThemeSetting('system_default');
       }
     })
+    .catch(e => console.log('error when saving theme settings', e));
   },[]);
 
   const saveThemeSetting = ( ts: 'light' | 'dark' | 'system_default')=> {

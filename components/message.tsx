@@ -212,7 +212,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
     ])
 
     const displayMessageStatus = () => {
-        ToastAndroid.show(deliveryStatuses.get(msg.status??DeliveryStatus.NONE)?.message ?? '', 3_000);
+        ToastAndroid.show(deliveryStatuses.get(msg.status??DeliveryStatus.NONE)?.message ?? '', 3000);
     }
 
     const draftOverlay = () => {

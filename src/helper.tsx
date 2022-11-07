@@ -11,9 +11,9 @@ export const verboseTime = (timestamp?: number):string|undefined => {
   if(!timestamp){
       return undefined;
   }
-  const time = new Date(timestamp*1_000);
+  const time = new Date(timestamp*1000);
   const now = new Date();
-  const timeDiffSec = Math.floor(Math.abs(now.getTime() - time.getTime())/1_000);
+  const timeDiffSec = Math.floor(Math.abs(now.getTime() - time.getTime())/1000);
   const min = 60;
   const hour = min*60;
   const day = hour*24;

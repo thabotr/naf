@@ -27,7 +27,8 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
         const ext = mimeTypeToExtension[file.type];
         if(file.uri.includes('http'))
             getFilePath(file.uri, ext)
-            .then(path => path && setURI(path));
+            .then(path => path && setURI(path))
+            .catch(e => console.log('found err', e, 'whilst getting voice note file path'));
     }, [])
 
     const onResumePlay =async () => {
@@ -42,8 +43,8 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
                 onStopPlay();
 
             setPlayerValues({
-                positionSec: e.currentPosition/1_000,
-                durationSec: e.duration/1_000,
+                positionSec: e.currentPosition/1000,
+                durationSec: e.duration/1000,
             })
           return;
         });

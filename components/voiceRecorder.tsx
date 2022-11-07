@@ -39,7 +39,7 @@ export function VoiceRecorder() {
     onStopRecord();
     const recordingUri = vrState.recordingUri ?? '';
     if( recordingUri === '') {
-      ToastAndroid.show('Ooops! Something went wrong.', 3_000);
+      ToastAndroid.show('Ooops! Something went wrong.', 3000);
       console.error("recording error: uri of recording not found in VRState.");
       return;
     }

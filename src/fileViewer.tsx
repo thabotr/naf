@@ -5,7 +5,7 @@ export const openFile = async (uri: string):Promise<void> => {
   await FileViewer.open(uri, { showOpenWithDialog: true, showAppsSuggestions: true})
     .catch((e)=>{
       if( `${e}`.includes('No app associated with this mime type'))
-        ToastAndroid.show('Oops! We found no apps to open this file type.', 4_000);
+        ToastAndroid.show('Oops! We found no apps to open this file type.', 4000);
       console.error(`when opening file ${uri} ` + e)
     });
 }

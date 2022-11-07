@@ -27,15 +27,15 @@ export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
   }
 
   const takePic = (mode: 'video' | 'photo') => {
-      openCamera(mode)
-      .then(img=> {
-          saveComposeMessage({
-              ...message,
-              files: [...message.files, img],
-          });
-          setComposeOn(true);
-      })
-      .catch( e => console.warn("camera error " + e));
+    openCamera(mode)
+    .then(pic=> {
+      pic && saveComposeMessage({
+        ...message,
+        files: [...message.files, pic],
+      });
+      setComposeOn(true);
+    })
+    .catch( e => console.warn("camera error", e));
   }
 
   React.useEffect(()=>{
