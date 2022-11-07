@@ -4,7 +4,9 @@ import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
 import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { ThemeContext, ThemeContextType } from '../context/theme';
+import { getFilePath } from '../src/file';
 import { verboseDuration, verboseSize } from '../src/helper';
+import { mimeTypeToExtension } from '../types/file';
 import { VoiceNoteType } from '../types/message';
 import { HorizontalView, OnlyShow } from './helper';
 
@@ -19,16 +21,21 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {audioRecorderPlayer} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.duration});
+    const [uri, setURI] = React.useState(file.uri);
+
+    React.useEffect(()=>{
+        const ext = mimeTypeToExtension[file.type];
+        getFilePath(file.uri, ext)
+        .then(path => path && setURI(path));
+    }, [])
 
     const onResumePlay =async () => {
         const msg = await audioRecorderPlayer.resumePlayer();
         setPlayState(PlayState.PLAYING);
-        console.log(msg);
     }
 
     const onStartPlay = async () => {
-        const msg = await audioRecorderPlayer.startPlayer(file.uri);
-        console.log(msg);
+        const msg = await audioRecorderPlayer.startPlayer(uri);
         audioRecorderPlayer.addPlayBackListener((e) => {
             if( e.currentPosition === e.duration)
                 onStopPlay();
@@ -44,12 +51,10 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
       
       const onPausePlay = async () => {
         const msg = await audioRecorderPlayer.pausePlayer();
-        console.log(msg);
         setPlayState(PlayState.PAUSED);
       };
       
       const onStopPlay = async () => {
-        console.log('onStopPlay');
         audioRecorderPlayer.stopPlayer();
         audioRecorderPlayer.removePlayBackListener();
         setPlayState(PlayState.STOPPED);

@@ -74,22 +74,23 @@ const chats = [{
     {
       from: '->mikeyrich',
       to: ourUser.handle,
-      id: 1656495509,
+      id: 1667840200,
       files: [{
         type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg', size: 2121,
       }],
-      timestamp: 1356495509,
+      timestamp: 1667840200,
     },
     {
       from: ourUser.handle,
       to: '->mikeyrich',
-      id: 1666495509,
+      id: 1667840200,
+      voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
       files: [
         {type: 'image/jpeg', uri: 'http://10.0.2.2:3000/avatar1.jpg', size: 2_121,},
         {type: 'video/mp4', uri: 'http://10.0.2.2:3000/vid1.mp4', size: 68_693_203,},
         {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
       ],
-      timestamp: 1666495509,
+      timestamp: 1667840200,
     }
   ],
   messageThreads: []
