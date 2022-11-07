@@ -27,6 +27,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     const [avatarSecondary, setAS] = React.useState(theme.color.secondary);
 
     React.useEffect(()=>{
+        if(chat.user.landscapeURI.includes('http'))
         getFilePath(chat.user.landscapeURI).then(path=> {
             path && setLandscapeUri(Platform.select({android: `file://${path}`,}) ?? path);
         }).catch(e => console.error('failed to get landscape uri: '+ e));

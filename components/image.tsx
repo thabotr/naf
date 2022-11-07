@@ -44,12 +44,15 @@ export function Image(props: ImageProps & {
   }
 
   React.useEffect(()=>{
-    getFilePath(props.url, undefined, props.headers).then(path=> {
-      (path && setURI(path)) || setState(IMState.ERROR);
-    }).catch(e => {
-      console.error('encountered image error', e);
-      setState(IMState.ERROR);
-    })
+    if( props.url.includes('http')){
+      getFilePath(props.url, undefined, props.headers).then(path=> {
+        (path && setURI(path)) || setState(IMState.ERROR);
+      }).catch(e => {
+        console.error('encountered image error', e);
+        setState(IMState.ERROR);
+      })
+    }
+    else setURI(props.url);
   },[])
 
   return <View style={[{justifyContent: 'center', alignContent: 'center'}, props.style]}>

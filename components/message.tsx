@@ -259,7 +259,7 @@ export const MessageCard = ({msg}:{msg: Message}) => {
             <MessageFilesPreview msg={msg} onDismiss={()=>setPreviewingFiles(false)}/>
         </OnlyShow>
         <OnlyShow If={!!msg.text || !!msg.files.length}>
-        <Card style={{backgroundColor: senderOrFriendColor, margin: 2}}>
+        <Card mode='outlined' style={{backgroundColor: senderOrFriendColor, margin: 2}}>
             <View style={{padding: 7}}>
                 <OnlyShow If={!!msg.text}>
                     <ExpandableParagraph text={msg.text ?? ''}/>

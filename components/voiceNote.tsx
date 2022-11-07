@@ -16,7 +16,7 @@ const enum PlayState {
     STOPPED
 }
 
-export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}) {
+export function VoiceNoteCard({file, user, style}:{file: VoiceNoteType, user?: boolean, style?:{[key:string]:any}}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {audioRecorderPlayer} = React.useContext(MessageEditorContext) as MessageEditorContextType;
@@ -69,7 +69,7 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
     const progress = playerValues.durationSec === 0 ? 0 : playerValues.positionSec / playerValues.durationSec;
 
     return (
-    <Card style={{margin: 3, padding: 5, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}>
+    <Card style={{ ...style,margin: 3, padding: 5, backgroundColor: user ? theme.color.userSecondary : theme.color.friendSecondary}}>
         <HorizontalView>
             <View style={{flex: 1}}>
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>

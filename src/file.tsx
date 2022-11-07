@@ -1,6 +1,8 @@
 import RNFetchBlob from "rn-fetch-blob";
 
 export const getFilePath = async (url: string, extension?: string, headers?:{[key:string]:string}):Promise<string|undefined> => {
+  if( !url.includes('http'))
+    return url;
   const b64URL = RNFetchBlob.base64.encode(url);
   const path = RNFetchBlob.fs.dirs.CacheDir.concat('/files/').concat(b64URL).concat(extension ?? '');
   try{

@@ -182,7 +182,20 @@ export const MessageEditorCard = ()=> {
       <View style={{padding: 10}}>
           {editorActions()}
           {editorTextInput()}
-          {message.voiceRecordings.map(r=><VoiceNoteCard key={r.uri} file={r} user={true}/>)}
+          {message.voiceRecordings.map(r=>
+          <HorizontalView style={{alignItems: 'center'}} key={r.uri}>
+            <VoiceNoteCard style={{flex: 1}} file={r} user={true}/>
+            <IconButton
+              style={{backgroundColor: theme.color.secondary, borderRadius: 0}}
+              icon='delete'
+              onPress={()=>saveComposeMessage({
+                  ...message,
+                  voiceRecordings: message.voiceRecordings.filter(v=> v.uri !== r.uri),
+                })
+              }
+            />
+          </HorizontalView>
+          )}
 
           <HorizontalView>
             {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f}/>)}
