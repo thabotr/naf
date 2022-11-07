@@ -52,12 +52,12 @@ function ListenWithMeCard(){
         if(!!listeningWith){
             const chat = chats.find(c=> listeningWith === c.user.handle);
             chat && TrackPlayer.reset().then(_=>{
-                getAudioMetadata(chat.user.listenWithMeURI)
+                getAudioMetadata(`http://10.0.2.2:3000/listenwithme/${chat.user.handle.replace('->', '')}/listen1`)
                 .then( res => {
                     res && TrackPlayer.add(res)
                     .catch(e => console.log('error when adding listen with me track', e));
                 })
-                .catch( e => console.log('on get audio metadata ', e));
+                .catch( e => console.log('on get audio metadata', e));
             })
         }
     }, [listeningWith])

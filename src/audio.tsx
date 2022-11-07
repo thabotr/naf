@@ -3,7 +3,7 @@ import RNFetchBlob from "rn-fetch-blob";
 
 export const getAudioMetadata = async (url: string, headers?:{[key:string]:string}):Promise<Track|undefined> => {
   try {
-    const resp = await RNFetchBlob.config({fileCache: true,}).fetch('GET', url, headers);
+    const resp = await RNFetchBlob.fetch('GET', url, headers);
     if(resp.info().status === 200){
       return resp.json() as Track;
     }else {
