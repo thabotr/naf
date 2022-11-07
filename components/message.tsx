@@ -13,15 +13,7 @@ import { UserContext, UserContextType } from '../context/user';
 import { verboseSize, verboseTime } from '../src/helper';
 import { getFilePath } from '../src/file';
 import { Image } from './image';
-
-const mimeTypeToExtension: {[key: string]:string} = {
-    "video/mp4" : '.mp4',
-    "image/jpeg" : '.jpg',
-    "image/jpg" : '.jpg',
-    "image/png" : '.png',
-    "audio/mpeg" : '.mp3',
-    "video/mpeg" : '.mpeg'
-}
+import { mimeTypeToExtension } from '../types/file';
 
 export const ImagePreviewCard = ({source}:{source: FileType}) => {
     const openImage = async () => {
@@ -61,10 +53,11 @@ export const VidPreviewCard = ({iconSize=64, source}:{iconSize?: number, source:
     );
 }
 
-const fileTypeIcon = new Map([
-    ["application/pdf", "file-pdf-box"],
-    ["application/zip", "folder-zip"]
-])
+const fileType: {[key: string]:string} = {
+    "audio/mpeg" : 'file-music',
+    "application/zip" : 'folder-zip',
+    "application/pdf" : 'file-pdf-box',
+}
 
 export const FilePreviewCard = ({file, user=true}:{file: FileType, user?: boolean})=> {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
@@ -85,7 +78,7 @@ export const FilePreviewCard = ({file, user=true}:{file: FileType, user?: boolea
                     style={{margin: 0, padding: 0}}
                     title={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}>{`${verboseSize(file.size)} [${file.type.split('/')[file.type.split('/').length-1]}]`}</Paragraph>}
                     description={<Paragraph style={{color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}} numberOfLines={1}>{`${file.name}`}</Paragraph>}
-                    left={props => <List.Icon {...props} icon={fileTypeIcon.get(file.type) ?? "file"} />}
+                    left={props => <List.Icon {...props} icon={fileType[file.type] ?? "file"} />}
                 />
             </Card>
 }
