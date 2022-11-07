@@ -1,11 +1,11 @@
 import React from 'react';
-import { Appbar, Avatar, IconButton} from 'react-native-paper';
+import { Appbar, Avatar, IconButton, Paragraph} from 'react-native-paper';
 import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import { ThemeContext, ThemeContextType } from '../context/theme';
 import { UserContext, UserContextType } from '../context/user';
 import { MessagesContext, MessagesContextType } from '../context/messages';
-import { OnlyShow } from './helper';
+import { OnlyShow, Show } from './helper';
 import { Messages } from '../pages/messages';
 import { Home } from '../pages/home';
 import { Image } from './image';
@@ -33,11 +33,19 @@ export function StackNavigator(){
                   props.navigation.goBack();
                 }}/>
               </OnlyShow>
-              <Appbar.Content
-                titleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
-                title={navBarUser?.handle}
-                subtitleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
-                subtitle={`${navBarUser?.name} ${navBarUser?.surname}`}
+              <Show
+                component={
+                <Appbar.Content
+                  titleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
+                  title={navBarUser?.handle}
+                  subtitleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
+                  subtitle={`${navBarUser?.name} ${navBarUser?.surname}`}
+                />
+                }
+                If={props.route.name !== 'Settings'}
+                ElseShow={
+                  <Appbar.Content title='Settings'/>
+                }
               />
               <Image
                 url={navBarUser?.avatarURI ?? ''}
