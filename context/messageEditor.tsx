@@ -57,6 +57,7 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
   const [recordSecs, setRecordSecs] = React.useState(0);
   const [audioRecorderPlayer] = React.useState<AudioRecorderPlayer>(new AudioRecorderPlayer());
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
+  const [recordingName, setRecordingName] = React.useState<string>((new Date()).getTime().toString());
   
   const handleError = (err: unknown) => {
     if (DocumentPicker.isCancel(err)) {
@@ -121,9 +122,8 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
       return;
     }
     
-    const dirs = RNFetchBlob.fs.dirs;
     const path = Platform.select({
-      android: `${dirs.CacheDir}/recording.mp3`
+      android: `${RNFetchBlob.fs.dirs.CacheDir}/${recordingName}.mp3`
     })
 
     const uri = await audioRecorderPlayer.startRecorder(path);
@@ -140,14 +140,14 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
   };
   
   const onStopRecord = async () => {
-    const result = await audioRecorderPlayer.stopRecorder();
+    setRecordingName((new Date()).getTime().toString());
+    await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     const oldVrState = {...vrState};
     setVRState({
       ...oldVrState,
       recording: false,
     });
-    console.log(result);
   };
 
   const enableFilesPreview = (b: boolean) => setPreviewingFiles(b);

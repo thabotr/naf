@@ -25,8 +25,9 @@ export function VoiceNoteCard({file, user}:{file: VoiceNoteType, user?: boolean}
 
     React.useEffect(()=>{
         const ext = mimeTypeToExtension[file.type];
-        getFilePath(file.uri, ext)
-        .then(path => path && setURI(path));
+        if(file.uri.includes('http'))
+            getFilePath(file.uri, ext)
+            .then(path => path && setURI(path));
     }, [])
 
     const onResumePlay =async () => {

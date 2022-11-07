@@ -182,7 +182,7 @@ export const MessageEditorCard = ()=> {
       <View style={{padding: 10}}>
           {editorActions()}
           {editorTextInput()}
-          {message.voiceRecordings.map(r=><VoiceNoteCard file={r} user={true}/>)}
+          {message.voiceRecordings.map(r=><VoiceNoteCard key={r.uri} file={r} user={true}/>)}
 
           <HorizontalView>
             {visuals.slice(0,4).map( f=> <VisualPreview key={f.uri} mFile={f}/>)}

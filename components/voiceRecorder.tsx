@@ -1,5 +1,5 @@
 import React from 'react';
-import { View} from 'react-native';
+import { View, ToastAndroid} from 'react-native';
 import { IconButton, Paragraph } from 'react-native-paper';
 import  RNFetchBlob from 'rn-fetch-blob';
 
@@ -39,18 +39,19 @@ export function VoiceRecorder() {
     onStopRecord();
     const recordingUri = vrState.recordingUri ?? '';
     if( recordingUri === '') {
-      console.error("Oops! Something went wrong. Upon stopping recorder, uri of recording not found in VRSTate.");
+      ToastAndroid.show('Ooops! Something went wrong.', 3_000);
+      console.error("recording error: uri of recording not found in VRState.");
       return;
     }
     const recordingFileStat = await RNFetchBlob.fs.stat(recordingUri);
     saveComposeMessage({
       ...message,
-      files: message.files.filter( f => f.type.split('/')[0] !== 'recording').concat([{
-        type: `recording/${recordingFileStat.type}`,
-        uri: recordingUri,
-        duration: recordSecs,
-        size: recordingFileStat.size,
-      }]),
+      voiceRecordings: message.voiceRecordings.concat({
+        uri: recordingFileStat.path, 
+        size: recordingFileStat.size, 
+        duration: recordSecs, 
+        type: recordingFileStat.type,
+      }),
     });
     setComposeOn(true);
   }
