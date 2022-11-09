@@ -16,13 +16,13 @@ const Stack = createNativeStackNavigator();
 export function StackNavigator(){
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
   const {user} = React.useContext(UserContext) as UserContextType;
-  const {conversingWith} = React.useContext(ChatContext) as ChatContextType;
+  const {chattingWith} = React.useContext(ChatContext) as ChatContextType;
 
   return <Stack.Navigator
     initialRouteName="Home"
     screenOptions={{
         header: props => {
-          const navBarUser = props.route.name !== "Chat" ? user : conversingWith;
+          const navBarUser = props.route.name !== "Chat" ? user : chattingWith;
           return <Appbar.Header style={{backgroundColor: theme.color.primary}}>
               <OnlyShow If={props.route.name === "Home"}>
                 <IconButton icon='menu' onPress={()=>props.navigation.navigate('Settings')}/>

@@ -1,15 +1,9 @@
 const express = require('express');
-const statik = require('node-static');
 const sizeOfImg = require('image-size');
 const { getAudioDurationInSeconds } = require('get-audio-duration')
 
-const fs = require('fs');
-// const stats = fs.statSync('./public/avatar1.jpg');
-
 const app = express();
 const port = 3000;
-
-const file = new statik.Server('./public');
 
 // type User = {
 //   name: string,
@@ -70,6 +64,16 @@ const chats = [{
       //   status?: DeliveryStatus,
       //   unread?: boolean,
       //   daft?:boolean,
+    },
+    {
+        from: ourUser.handle,
+        to: '->mikeyrich',
+        id: 1666666666,
+        text: "this draft message over here",
+        timestamp: 1666666666,
+      //   status?: DeliveryStatus,
+      //   unread?: boolean,
+        draft: true,
     },
     {
       from: '->mikeyrich',

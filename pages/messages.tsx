@@ -1,40 +1,43 @@
 import React from 'react';
 import {SafeAreaView, View, ScrollView} from 'react-native';
 
-import { ThemeContext, ThemeContextType } from '../context/theme';
-import { MessageEditorProvider } from '../context/messageEditor';
-import { VoiceRecorder } from '../components/voiceRecorder';
-import { MessagesContext, MessagesContextProvider, MessagesContextType } from '../context/messages';
-import { MessageCard } from '../components/message';
-import { MessageEditorCard } from '../components/MessageEditor';
-import { FloatingActions } from '../components/actionButtons';
+import {ThemeContext, ThemeContextType} from '../context/theme';
+import {MessageEditorProvider} from '../context/messageEditor';
+import {VoiceRecorder} from '../components/voiceRecorder';
+import {MessageCard} from '../components/message';
+import {MessageEditorCard} from '../components/MessageEditor';
+import {FloatingActions} from '../components/actionButtons';
+import {ChatContext, ChatContextType} from '../context/chat';
 
 export function Tiler() {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {chat} = React.useContext(MessagesContext) as MessagesContextType;
-    return (
+  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {getActiveChat} = React.useContext(ChatContext) as ChatContextType;
+  const chat = getActiveChat();
+  return (
     <ScrollView
-        style={{height: '100%', backgroundColor: theme.color.secondary}}
-        overScrollMode='auto'
-    >
-        {chat?.messages.map(m=> <MessageCard msg={m} key={`senderId-[${m.from}]recipientId-[${m.to}]messageId-[${m.id}]`}/>)}
-        <MessageEditorCard/>
-        <View style={{height: 100}}></View>
+      style={{height: '100%', backgroundColor: theme.color.secondary}}
+      overScrollMode="auto">
+      {chat?.messages.map(m => (
+        <MessageCard
+          msg={m}
+          key={`senderId-[${m.from}]recipientId-[${m.to}]messageId-[${m.id}]`}
+        />
+      ))}
+      <MessageEditorCard />
+      <View style={{height: 100}}></View>
     </ScrollView>
-    );
+  );
 }
 
 export function Messages() {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    return (
-        <MessagesContextProvider>
-        <MessageEditorProvider>
-        <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
-            <Tiler/>
-            <VoiceRecorder/>
-            <FloatingActions/>
-        </SafeAreaView>
-        </MessageEditorProvider>
-        </MessagesContextProvider>
-    );
+  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  return (
+    <MessageEditorProvider>
+      <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
+        <Tiler />
+        <VoiceRecorder />
+        <FloatingActions />
+      </SafeAreaView>
+    </MessageEditorProvider>
+  );
 }

@@ -15,7 +15,7 @@ import {Image} from './image';
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
-    const {converseWith} = React.useContext(ChatContext) as ChatContextType;
+    const {chatWith} = React.useContext(ChatContext) as ChatContextType;
 
     const [landscapeClicked, setLandscapeClicked] = React.useState(false);
     const [landscapeUri, setLandscapeUri] = React.useState('');
@@ -120,7 +120,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     <TouchableRipple
                         style={{ width: '100%', height: '100%', justifyContent: 'center', padding: 5}}
                         onPress={()=>{
-                            converseWith(chat.user);
+                            chatWith(chat.user);
                             navigation.push("Chat");
                         }}
                     >
@@ -130,8 +130,8 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                             </Paragraph>}
                             If={!latestMessage}
                             ElseShow={<List.Item
-                                title={latestMessage?.text ?? "<sent a file>"}
-                                left={_=>latestMessage?.text ? <List.Icon icon='message-text'/> : <List.Icon icon='attachment'/>}
+                                title={!latestMessage?.text ? "<sent a file>" : latestMessage.text}
+                                left={_=><List.Icon icon={latestMessage?.draft ? 'content-save-edit' : latestMessage?.text ? 'message-text' : 'attachment'}/>}
                             />}
                         />
                     </TouchableRipple>
