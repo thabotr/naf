@@ -4,7 +4,7 @@ import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, 
 import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 
 import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/helper';
-import { ChatContext, ChatContextType } from '../context/chat';
+import { useChats } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import { getAudioMetadata} from '../src/audio';
@@ -15,7 +15,7 @@ import {Image} from './image';
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
     const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
-    const {chatWith} = React.useContext(ChatContext) as ChatContextType;
+    const {saveActiveChat} = useChats();
 
     const [landscapeClicked, setLandscapeClicked] = React.useState(false);
     const [landscapeUri, setLandscapeUri] = React.useState('');
@@ -120,7 +120,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                     <TouchableRipple
                         style={{ width: '100%', height: '100%', justifyContent: 'center', padding: 5}}
                         onPress={()=>{
-                            chatWith(chat.user);
+                            saveActiveChat(chat);
                             navigation.push("Chat");
                         }}
                     >

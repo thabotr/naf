@@ -9,20 +9,20 @@ import { Messages } from '../pages/messages';
 import { Home } from '../pages/home';
 import { Image } from './image';
 import { Settings } from '../pages/settings';
-import { ChatContext, ChatContextType } from '../context/chat';
+import {useChats} from '../context/chat';
 
 const Stack = createNativeStackNavigator();
 
 export function StackNavigator(){
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
   const {user} = React.useContext(UserContext) as UserContextType;
-  const {chattingWith} = React.useContext(ChatContext) as ChatContextType;
+  const {activeChat} = useChats();
 
   return <Stack.Navigator
     initialRouteName="Home"
     screenOptions={{
         header: props => {
-          const navBarUser = props.route.name !== "Chat" ? user : chattingWith;
+          const navBarUser = props.route.name !== "Chat" ? user : activeChat()?.user;
           return <Appbar.Header style={{backgroundColor: theme.color.primary}}>
               <OnlyShow If={props.route.name === "Home"}>
                 <IconButton icon='menu' onPress={()=>props.navigation.navigate('Settings')}/>

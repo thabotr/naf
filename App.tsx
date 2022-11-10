@@ -15,7 +15,7 @@ import { ThemeContextProvider } from './context/theme';
 import { UserContext, UserContextProvider, UserContextType } from './context/user';
 import { ToastySnackbarManager } from './components/snackbar';
 import { StackNavigator } from './components/stackNavigator';
-import { ChatContextProvider } from './context/chat';
+import { ChatsProvider } from './context/chat';
 import { Show } from './components/helper';
 import { Login } from './pages/login';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -42,11 +42,15 @@ const SetupFileStructure = async()=>{
   return null;
 }
 
-function SuperContextProvider({children}:{children: React.ReactNode}){
+type Props = {
+  children: React.ReactNode;
+}
+
+function SuperContextProvider({children}: Props){
   return (
     <ThemeContextProvider>
       <UserContextProvider>
-        <ChatContextProvider>    
+        <ChatsProvider>    
             <ImageViewProvider>
               <NavigationContainer>
                 <Provider>
@@ -54,7 +58,7 @@ function SuperContextProvider({children}:{children: React.ReactNode}){
                 </Provider>
               </NavigationContainer>
             </ImageViewProvider>
-        </ChatContextProvider>
+        </ChatsProvider>
       </UserContextProvider>
     </ThemeContextProvider>
   );

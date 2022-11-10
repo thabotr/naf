@@ -30,7 +30,7 @@ import {verboseSize, verboseTime} from '../src/helper';
 import {getFilePath} from '../src/file';
 import {Image} from './image';
 import {mimeTypeToExtension} from '../types/file';
-import {ChatContext, ChatContextType} from '../context/chat';
+import {useChats} from '../context/chat';
 
 export const ImagePreviewCard = ({source}: {source: FileType}) => {
   const openImage = async () => {
@@ -241,9 +241,7 @@ function MessageFilesPreview({
 
 export const MessageCard = ({msg}: {msg: Message}) => {
   const {user} = React.useContext(UserContext) as UserContextType;
-  const {deleteChatMessages, addChatMessages} = React.useContext(
-    ChatContext,
-  ) as ChatContextType;
+  const {deleteChatMessages, addChatMessages} = useChats();
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
   const {saveComposeMessage, setComposeOn, showTextInputOn} = React.useContext(
     MessageEditorContext,

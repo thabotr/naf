@@ -7,17 +7,16 @@ import {VoiceRecorder} from '../components/voiceRecorder';
 import {MessageCard} from '../components/message';
 import {MessageEditorCard} from '../components/MessageEditor';
 import {FloatingActions} from '../components/actionButtons';
-import {ChatContext, ChatContextType} from '../context/chat';
+import {useChats} from '../context/chat';
 
 export function Tiler() {
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {getActiveChat} = React.useContext(ChatContext) as ChatContextType;
-  const chat = getActiveChat();
+  const {activeChat} = useChats();
   return (
     <ScrollView
       style={{height: '100%', backgroundColor: theme.color.secondary}}
       overScrollMode="auto">
-      {chat?.messages.map(m => (
+      {activeChat()?.messages.map(m => (
         <MessageCard
           msg={m}
           key={`senderId-[${m.from}]recipientId-[${m.to}]messageId-[${m.id}]`}

@@ -4,7 +4,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import { ChatPreviewCard } from '../components/chatPreviewCard';
 import { ListenWithMeCard } from '../components/listenWithCard';
-import { ChatContext, ChatContextType } from '../context/chat';
+import {useChats} from '../context/chat';
 import { ListenWithMeContextProvider, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import {Chat} from '../types/chat';
@@ -12,7 +12,7 @@ import { URLS } from '../types/routes';
 
 export function Home({navigation}:{navigation:any}) {
     const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-    const {saveChats, chats} = React.useContext(ChatContext) as ChatContextType;
+    const {saveChats, chats} = useChats();
 
     const fetchChats = () => {
         RNFetchBlob.fetch('GET', URLS.CHATS)

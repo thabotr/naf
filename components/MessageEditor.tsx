@@ -22,14 +22,13 @@ import {HorizontalView, OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
 import {openCamera} from '../src/camera';
 import {UserContext, UserContextType} from '../context/user';
-import {ChatContext, ChatContextType} from '../context/chat';
+import {useChats} from '../context/chat';
 
 export const MessageEditorCard = () => {
   const {user} = React.useContext(UserContext) as UserContextType;
   const {theme} = React.useContext(ThemeContext) as ThemeContextType;
-  const {chattingWith, addChatMessages} = React.useContext(
-    ChatContext,
-  ) as ChatContextType;
+  const {addChatMessages, activeChat} = useChats();
+  
   const {
     composing,
     onStartRecord,
@@ -157,7 +156,7 @@ export const MessageEditorCard = () => {
                   ...message,
                   id: timestamp.toString(),
                   from: user?.handle ?? '',
-                  to: chattingWith?.handle ?? '',
+                  to: activeChat()?.user.handle ?? '',
                   draft: true,
                   timestamp: timestamp/1_000,
                 },

@@ -4,7 +4,7 @@ import {Card, IconButton as RNPIconButton, List, Paragraph, Surface} from 'react
 import TrackPlayer, { RepeatMode, State as PlayState, useProgress, Track} from 'react-native-track-player';
 
 import { HorizontalView, OnlyShow, OverlayedView } from '../components/helper';
-import { ChatContext, ChatContextType } from '../context/chat';
+import {useChats} from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {ThemeContext, ThemeContextType} from '../context/theme';
 import { getAudioMetadata } from '../src/audio';
@@ -21,7 +21,7 @@ export function ListenWithMeCard(){
   const [expanded, setExpanded] = React.useState(true);
   const [repeatMode, setRepeatMode] = React.useState(RepeatMode.Off);
   const {listeningWith, currentTrack, playState, stopPlayer} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
-  const {chats} = React.useContext(ChatContext) as ChatContextType;
+  const {chats} = useChats();
   const [currentTrackInd, setCurrentTrackInd] = React.useState(0);
   const [tracks, setTracks] = React.useState<Track[]>([]);
 
