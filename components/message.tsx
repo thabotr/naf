@@ -434,7 +434,6 @@ export const MessageCard = ({msg}: {msg: Message}) => {
               </OnlyShow>
               <LiveTimeStamp timestamp={msg.timestamp} sender={sender} />
             </HorizontalView>
-
             {draftOverlay()}
           </View>
         </Card>

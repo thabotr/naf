@@ -5,16 +5,6 @@ const { getAudioDurationInSeconds } = require('get-audio-duration')
 const app = express();
 const port = 3000;
 
-// type User = {
-//   name: string,
-//   surname: string,
-//   handle: string,
-//   avatarURI: string,
-//   landscapeURI: string,
-//   listenWithMeURI: string,
-//   initials: string,
-// }
-
 const ourUser = {
   name: 'Unai',
   surname: 'Emery',
@@ -25,32 +15,14 @@ const ourUser = {
   listenWithMeURI: 'http://10.0.2.2:3000/listen1.mp3',
 }
 
-// export type Chat = {
-//   user: User,
-//   messages: Message[],
-//   messageThreads: MessageThread[]
-// }
-
-// export type Message = {
-//   from: string,
-//   to: string,
-//   id: string,
-//   text?: string,
-//   files: MessageFile[],
-//   timestamp?: Date,
-//   status?: DeliveryStatus,
-//   unread?: boolean,
-//   daft?:boolean,
-// }
-
 const chats = [{
   user: {
     name: 'Micah',
     surname: 'Richards',
     handle: '->mikeyrich',
     initials: 'MR',
-    avatarURI: 'http://10.0.2.2:3000/avatar1.jpg',
-    landscapeURI: 'http://10.0.2.2:3000/image1.jpg',
+    avatarURI: 'https://picsum.photos/128',
+    landscapeURI: 'https://picsum.photos/1703',
     listenWithMeURI: 'http://10.0.2.2:3000/listen1.mp3',
   },
   messages : [
@@ -59,11 +31,7 @@ const chats = [{
         to: '->mikeyrich',
         id: 1356495509,
         text: "this text over here",
-        // files: MessageFile[],
         timestamp: 1356495509,
-      //   status?: DeliveryStatus,
-      //   unread?: boolean,
-      //   daft?:boolean,
     },
     {
         from: ourUser.handle,
@@ -71,8 +39,6 @@ const chats = [{
         id: 1666666666,
         text: "this draft message over here",
         timestamp: 1666666666,
-      //   status?: DeliveryStatus,
-      //   unread?: boolean,
         draft: true,
     },
     {
@@ -95,6 +61,27 @@ const chats = [{
         {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
       ],
       timestamp: 1667840200,
+    }
+  ],
+  messageThreads: []
+},
+{
+  user: {
+    name: 'Sergino',
+    surname: 'Dest',
+    handle: '->dustyD',
+    initials: 'SD',
+    avatarURI: 'https://picsum.photos/120',
+    landscapeURI: 'https://picsum.photos/3171',
+    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/09/AKA_ft_Nasty_C_-_Lemons_Lemonade__Fakaza.Me.com.mp3',
+  },
+  messages : [
+    {
+        from: ourUser.handle,
+        to: '->dustyD',
+        id: 1666616666,
+        text: "again",
+        timestamp: 1666616666,
     }
   ],
   messageThreads: []
