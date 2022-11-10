@@ -6,7 +6,7 @@ import TrackPlayer, { RepeatMode, State as PlayState, useProgress, Track} from '
 import { HorizontalView, OnlyShow, OverlayedView } from '../components/helper';
 import {useChats} from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
-import {ThemeContext, ThemeContextType} from '../context/theme';
+import {useTheme} from '../context/theme';
 import { getAudioMetadata } from '../src/audio';
 import { verboseDuration } from '../src/helper';
 
@@ -17,7 +17,7 @@ function IconButton({If, icon, onPress, style}:{icon: string, onPress: ()=>void,
 }
 
 export function ListenWithMeCard(){
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const [expanded, setExpanded] = React.useState(true);
   const [repeatMode, setRepeatMode] = React.useState(RepeatMode.Off);
   const {listeningWith, currentTrack, playState, stopPlayer} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;

@@ -4,7 +4,7 @@ import { IconButton, Paragraph } from 'react-native-paper';
 import  RNFetchBlob from 'rn-fetch-blob';
 
 import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
-import { ThemeContext, ThemeContextType } from '../context/theme';
+import {useTheme} from '../context/theme';
 import { verboseDuration } from '../src/helper';
 import { HorizontalView, OnlyShow} from './helper';
 
@@ -19,7 +19,7 @@ export function VoiceRecorder() {
     setComposeOn
   } = React.useContext(MessageEditorContext) as MessageEditorContextType;
   const [recordingPaused, pauseRecording] = React.useState(false);
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
 
   const onResumeRecording = async () => {
     const msg = await audioRecorderPlayer.resumeRecorder();

@@ -16,7 +16,7 @@ import {
   MessageEditorContext,
   MessageEditorContextType,
 } from '../context/messageEditor';
-import {ThemeContext, ThemeContextType} from '../context/theme';
+import {useTheme} from '../context/theme';
 import {FilePreviewCard, VisualPreview} from './message';
 import {HorizontalView, OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
@@ -26,7 +26,7 @@ import {useChats} from '../context/chat';
 
 export const MessageEditorCard = () => {
   const {user} = React.useContext(UserContext) as UserContextType;
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const {addChatMessages, activeChat} = useChats();
   
   const {

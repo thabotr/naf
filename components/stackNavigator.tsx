@@ -2,7 +2,7 @@ import React from 'react';
 import { Appbar, Avatar, IconButton} from 'react-native-paper';
 import { createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import { ThemeContext, ThemeContextType } from '../context/theme';
+import {useTheme} from '../context/theme';
 import { UserContext, UserContextType } from '../context/user';
 import { OnlyShow, Show } from './helper';
 import { Messages } from '../pages/messages';
@@ -14,7 +14,7 @@ import {useChats} from '../context/chat';
 const Stack = createNativeStackNavigator();
 
 export function StackNavigator(){
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const {user} = React.useContext(UserContext) as UserContextType;
   const {activeChat} = useChats();
 

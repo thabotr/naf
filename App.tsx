@@ -11,7 +11,7 @@ import { Provider} from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 
 import {ImageViewProvider} from './context/images';
-import { ThemeContextProvider } from './context/theme';
+import { ThemeProvider } from './context/theme';
 import { UserContext, UserContextProvider, UserContextType } from './context/user';
 import { ToastySnackbarManager } from './components/snackbar';
 import { StackNavigator } from './components/stackNavigator';
@@ -48,7 +48,7 @@ type Props = {
 
 function SuperContextProvider({children}: Props){
   return (
-    <ThemeContextProvider>
+    <ThemeProvider>
       <UserContextProvider>
         <ChatsProvider>    
             <ImageViewProvider>
@@ -60,7 +60,7 @@ function SuperContextProvider({children}: Props){
             </ImageViewProvider>
         </ChatsProvider>
       </UserContextProvider>
-    </ThemeContextProvider>
+    </ThemeProvider>
   );
 }
 

@@ -6,12 +6,12 @@ import { ChatPreviewCard } from '../components/chatPreviewCard';
 import { ListenWithMeCard } from '../components/listenWithCard';
 import {useChats} from '../context/chat';
 import { ListenWithMeContextProvider, ListenWithMeContextType } from '../context/listenWithMe';
-import {ThemeContext, ThemeContextType} from '../context/theme';
+import {useTheme} from '../context/theme';
 import {Chat} from '../types/chat';
 import { URLS } from '../types/routes';
 
 export function Home({navigation}:{navigation:any}) {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {theme} = useTheme();
     const {saveChats, chats} = useChats();
 
     const fetchChats = () => {

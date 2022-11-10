@@ -22,9 +22,9 @@ export type ThemeContextType = {
   saveThemeSetting: (ts: 'light' | 'dark' | 'system_default')=>void;
 };
 
-export const ThemeContext = React.createContext<ThemeContextType|null>(null);
+const ThemeContext = React.createContext<ThemeContextType|null>(null);
 
-export function ThemeContextProvider({children}:{children: React.ReactNode}){
+function ThemeProvider({children}:{children: React.ReactNode}){
   const darkTheme: ThemeType = {
     dark: true,
     color: {
@@ -95,12 +95,23 @@ export function ThemeContextProvider({children}:{children: React.ReactNode}){
     storageSaveThemeSetting(ts).catch(e=>console.error(e));
   }
 
-  return <ThemeContext.Provider
-    value={{
-      theme:theme,
-      saveThemeSetting: saveThemeSetting,
-      themeSetting: themeSetting,
-      }}>
+  const providerValue = {
+    theme:theme,
+    saveThemeSetting: saveThemeSetting,
+    themeSetting: themeSetting,
+  }
+
+  return <ThemeContext.Provider value={providerValue}>
     {children}
   </ThemeContext.Provider>
 }
+
+const useTheme = (): ThemeContextType => {
+  const context = React.useContext(ThemeContext);
+  if(!context){
+    throw new Error("Encapsulate useTheme in ThemeProvider");
+  }
+  return context;
+}
+
+export {useTheme, ThemeProvider};

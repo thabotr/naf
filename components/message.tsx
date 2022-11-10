@@ -10,7 +10,7 @@ import {
   Chip,
 } from 'react-native-paper';
 
-import {ThemeContext, ThemeContextType} from '../context/theme';
+import {useTheme} from '../context/theme';
 import {Message, FileType} from '../types/message';
 import {VoiceNoteCard} from './voiceNote';
 import {
@@ -83,7 +83,7 @@ export const FilePreviewCard = ({
   file: FileType;
   user?: boolean;
 }) => {
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
 
   const openThisFile = async () => {
     if (file.uri.includes('http')) {
@@ -132,7 +132,7 @@ export const FilePreviewCard = ({
 
 export const ExpandableParagraph = ({text}: {text: string}) => {
   const [expanded, setExpanded] = React.useState(false);
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const toggleExpanded = () =>
     expanded ? setExpanded(false) : setExpanded(true);
 
@@ -191,7 +191,7 @@ function MessageFilesPreview({
   onDismiss: () => void;
 }) {
   const {user} = React.useContext(UserContext) as UserContextType;
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const fromUser = msg.from === user?.handle;
   return (
     <Portal>
@@ -242,7 +242,7 @@ function MessageFilesPreview({
 export const MessageCard = ({msg}: {msg: Message}) => {
   const {user} = React.useContext(UserContext) as UserContextType;
   const {deleteChatMessages, addChatMessages} = useChats();
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const {saveComposeMessage, setComposeOn, showTextInputOn} = React.useContext(
     MessageEditorContext,
   ) as MessageEditorContextType;

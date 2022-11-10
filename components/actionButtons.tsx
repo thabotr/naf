@@ -2,7 +2,7 @@ import React from 'react';
 import {View, BackHandler} from 'react-native';
 import {FAB, IconButton} from 'react-native-paper';
 
-import { ThemeContext, ThemeContextType } from '../context/theme';
+import {useTheme} from '../context/theme';
 import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
 import { OnlyShow, Show } from '../components/helper';
 import { openCamera } from '../src/camera';
@@ -83,7 +83,7 @@ export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
 }
 
 export const FloatingActions = () => {
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const [expanded, setExpanded] = React.useState(false);
   const {composing, setComposeOn, vrState, showTextInputOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
   

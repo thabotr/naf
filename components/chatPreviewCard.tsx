@@ -6,14 +6,14 @@ import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/helper';
 import { useChats } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
-import {ThemeContext, ThemeContextType} from '../context/theme';
+import {useTheme} from '../context/theme';
 import { getAudioMetadata} from '../src/audio';
 import { getFilePath } from '../src/file';
 import {Chat} from '../types/chat';
 import {Image} from './image';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {theme} = useTheme();
     const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
     const {saveActiveChat} = useChats();
 

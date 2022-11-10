@@ -3,14 +3,14 @@ import { Button, Paragraph, Surface } from "react-native-paper";
 import RNFetchBlob from 'rn-fetch-blob';
 
 import { OnlyShow } from '../components/helper';
-import { ThemeContext, ThemeContextType } from '../context/theme';
+import {useTheme} from '../context/theme';
 import { UserContext, UserContextType } from "../context/user";
 import { URLS } from '../types/routes';
 import { User } from '../types/user';
 
 export function Login(){
   const {loginAs} = React.useContext(UserContext) as UserContextType;
-  const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+  const {theme} = useTheme();
   const [loginError, setLoginError] = React.useState(false);
   const login = () => {
     RNFetchBlob.fetch('GET', URLS.PROFILE)

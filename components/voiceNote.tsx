@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
 import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
-import { ThemeContext, ThemeContextType } from '../context/theme';
+import {useTheme} from '../context/theme';
 import { getFilePath } from '../src/file';
 import { verboseDuration, verboseSize } from '../src/helper';
 import { mimeTypeToExtension } from '../types/file';
@@ -18,7 +18,7 @@ const enum PlayState {
 
 export function VoiceNoteCard({file, user, style}:{file: VoiceNoteType, user?: boolean, style?:{[key:string]:any}}) {
     const [playState, setPlayState] = React.useState<PlayState>(PlayState.STOPPED);
-    const {theme} = React.useContext(ThemeContext) as ThemeContextType;
+    const {theme} = useTheme();
     const {audioRecorderPlayer} = React.useContext(MessageEditorContext) as MessageEditorContextType;
     const [playerValues, setPlayerValues] = React.useState({positionSec: 0, durationSec: file.duration});
     const [uri, setURI] = React.useState(file.uri);
