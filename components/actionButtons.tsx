@@ -3,12 +3,12 @@ import {View, BackHandler} from 'react-native';
 import {FAB, IconButton} from 'react-native-paper';
 
 import {useTheme} from '../context/theme';
-import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
+import {useMessageComposer} from '../context/messageEditor';
 import { OnlyShow, Show } from '../components/helper';
 import { openCamera } from '../src/camera';
 
 export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
-  const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveComposeMessage, message} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveComposeMessage, message} = useMessageComposer();
   const actions = [
       { color: '#d4d4d4', icon: 'microphone'},
       { color: '#b4b4b4', icon: 'attachment'},
@@ -85,7 +85,7 @@ export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
 export const FloatingActions = () => {
   const {theme} = useTheme();
   const [expanded, setExpanded] = React.useState(false);
-  const {composing, setComposeOn, vrState, showTextInputOn} = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  const {composing, setComposeOn, vrState, showTextInputOn} = useMessageComposer();
   
   const pencilClicked = () => {
       setComposeOn(true);

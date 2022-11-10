@@ -12,10 +12,7 @@ import {
 } from 'react-native-paper';
 import {View, FlatList} from 'react-native';
 
-import {
-  MessageEditorContext,
-  MessageEditorContextType,
-} from '../context/messageEditor';
+import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import {FilePreviewCard, VisualPreview} from './message';
 import {HorizontalView, OnlyShow} from './helper';
@@ -39,7 +36,7 @@ export const MessageEditorCard = () => {
     message,
     saveComposeMessage,
     setComposeOn,
-  } = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  } = useMessageComposer();
 
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 

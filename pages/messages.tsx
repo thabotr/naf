@@ -2,7 +2,7 @@ import React from 'react';
 import {SafeAreaView, View, ScrollView} from 'react-native';
 
 import {useTheme} from '../context/theme';
-import {MessageEditorProvider} from '../context/messageEditor';
+import {MessageComposerProvider} from '../context/messageEditor';
 import {VoiceRecorder} from '../components/voiceRecorder';
 import {MessageCard} from '../components/message';
 import {MessageEditorCard} from '../components/MessageEditor';
@@ -31,12 +31,12 @@ export function Tiler() {
 export function Messages() {
   const {theme} = useTheme();
   return (
-    <MessageEditorProvider>
+    <MessageComposerProvider>
       <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
         <Tiler />
         <VoiceRecorder />
         <FloatingActions />
       </SafeAreaView>
-    </MessageEditorProvider>
+    </MessageComposerProvider>
   );
 }

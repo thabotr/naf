@@ -11,7 +11,7 @@ import { permissionsGranted, requestPermissions } from '../src/permissions';
 import { FileType, Message } from '../types/message';
 import { UserContext, UserContextType } from './user';
 
-export const MessageEditorContext = React.createContext<MessageEditorContextType|null>(null);
+const MessageComposerContext = React.createContext<MessageComposerContextType|null>(null);
 
 export type VRState = {
   recordingPermitted: boolean,
@@ -29,7 +29,7 @@ const recordingPerms = [
   PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
 ];
 
-export type MessageEditorContextType = {
+export type MessageComposerContextType = {
   recordSecs: number;
   vrState: VRState;
   audioRecorderPlayer: AudioRecorderPlayer;
@@ -48,7 +48,11 @@ export type MessageEditorContextType = {
   discardMessage: ()=>void;
 }
 
-export function MessageEditorProvider({children}:{children:React.ReactNode}){
+type Props = {
+  children: React.ReactNode,
+}
+
+const MessageComposerProvider = ({children}: Props) => {
   const {user} = React.useContext(UserContext) as UserContextType;
   const [message, setMessage] = React.useState<Message>({from: user?.handle ?? '', id: '', to: '', files:[], voiceRecordings: []});
   const [composing, setComposing] = React.useState(false);
@@ -152,26 +156,34 @@ export function MessageEditorProvider({children}:{children:React.ReactNode}){
 
   const enableFilesPreview = (b: boolean) => setPreviewingFiles(b);
 
-  return <MessageEditorContext.Provider
-    value={{
-      previewingFiles: previewingFiles,
-      enableFilesPreview: enableFilesPreview,
-      recordSecs: recordSecs,
-      onStopRecord: onStopRecord,
-      onStartRecord: onStartRecord,
-      onAddAttachments: onAddAttachments,
-      audioRecorderPlayer: audioRecorderPlayer,
-      vrState: vrState,
-      message: message,
-      setComposeOn: setComposeOn,
-      composing: composing,
-      saveComposeMessage: saveComposeMessage,
-      saveVRState: saveVRState,
-      discardMessage: discardMessage,
-      showTextInput: showTextInput,
-      showTextInputOn: showTextInputOn,
-    }}
-    >
+  const providerValue = {
+    previewingFiles: previewingFiles,
+    enableFilesPreview: enableFilesPreview,
+    recordSecs: recordSecs,
+    onStopRecord: onStopRecord,
+    onStartRecord: onStartRecord,
+    onAddAttachments: onAddAttachments,
+    audioRecorderPlayer: audioRecorderPlayer,
+    vrState: vrState,
+    message: message,
+    setComposeOn: setComposeOn,
+    composing: composing,
+    saveComposeMessage: saveComposeMessage,
+    saveVRState: saveVRState,
+    discardMessage: discardMessage,
+    showTextInput: showTextInput,
+    showTextInputOn: showTextInputOn,
+  }
+  return <MessageComposerContext.Provider value={providerValue}>
     {children}
-  </MessageEditorContext.Provider>
+  </MessageComposerContext.Provider>
 }
+
+const useMessageComposer = (): MessageComposerContextType => {
+  const context = React.useContext(MessageComposerContext);
+  if( !context)
+    throw new Error("Encapsulate useMessageComposer with MessageComposerProvider");
+  return context;
+}
+
+export {MessageComposerProvider, useMessageComposer};

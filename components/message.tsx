@@ -20,10 +20,7 @@ import {
   Show,
   vidIconOverlay,
 } from './helper';
-import {
-  MessageEditorContext,
-  MessageEditorContextType,
-} from '../context/messageEditor';
+import {useMessageComposer} from '../context/messageEditor';
 import {openFile} from '../src/fileViewer';
 import {UserContext, UserContextType} from '../context/user';
 import {verboseSize, verboseTime} from '../src/helper';
@@ -243,9 +240,7 @@ export const MessageCard = ({msg}: {msg: Message}) => {
   const {user} = React.useContext(UserContext) as UserContextType;
   const {deleteChatMessages, addChatMessages} = useChats();
   const {theme} = useTheme();
-  const {saveComposeMessage, setComposeOn, showTextInputOn} = React.useContext(
-    MessageEditorContext,
-  ) as MessageEditorContextType;
+  const {saveComposeMessage, setComposeOn, showTextInputOn} = useMessageComposer();
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
   const sender = user?.handle === msg.from;

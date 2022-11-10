@@ -3,7 +3,7 @@ import { View, ToastAndroid} from 'react-native';
 import { IconButton, Paragraph } from 'react-native-paper';
 import  RNFetchBlob from 'rn-fetch-blob';
 
-import { MessageEditorContext, MessageEditorContextType } from '../context/messageEditor';
+import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import { verboseDuration } from '../src/helper';
 import { HorizontalView, OnlyShow} from './helper';
@@ -17,7 +17,7 @@ export function VoiceRecorder() {
     message,
     saveComposeMessage,
     setComposeOn
-  } = React.useContext(MessageEditorContext) as MessageEditorContextType;
+  } = useMessageComposer();
   const [recordingPaused, pauseRecording] = React.useState(false);
   const {theme} = useTheme();
 
