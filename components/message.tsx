@@ -148,14 +148,9 @@ export const ExpandableParagraph = ({text}: {text: string}) => {
           </Paragraph>
           <IconButton
             onPress={toggleExpanded}
-            style={{
-              width: '100%',
-              transform: [{rotate: expanded ? '180deg' : '0deg'}],
-            }}
-            size={10}
-            icon={{
-              uri: 'https://img.icons8.com/material-sharp/24/000000/give-way--v1.png',
-            }}
+            style={{width: '100%', height: 10}}
+            size={15}
+            icon={expanded ? 'chevron-up' : 'chevron-down'}
           />
         </>
       }

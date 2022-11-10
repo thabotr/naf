@@ -30,7 +30,7 @@ const chats = [{
         from: ourUser.handle,
         to: '->mikeyrich',
         id: 1356495509,
-        text: "this text over here",
+        text: "this text over here this text over here this text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over here",
         timestamp: 1356495509,
     },
     {
