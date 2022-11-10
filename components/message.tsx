@@ -240,7 +240,8 @@ export const MessageCard = ({msg}: {msg: Message}) => {
   const {user} = useLoggedInUser();
   const {deleteChatMessages, addChatMessages} = useChats();
   const {theme} = useTheme();
-  const {saveComposeMessage, setComposeOn, showTextInputOn} = useMessageComposer();
+  const {saveComposeMessage, setComposeOn, showTextInputOn} =
+    useMessageComposer();
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
   const sender = user?.handle === msg.from;
@@ -379,7 +380,14 @@ export const MessageCard = ({msg}: {msg: Message}) => {
               onPress={() => {
                 // TODO sync with remote
                 const timestamp = new Date().getTime();
-                addChatMessages([{...msg, id: timestamp.toString(), timestamp: timestamp/1_000, draft: undefined}]);
+                addChatMessages([
+                  {
+                    ...msg,
+                    id: timestamp.toString(),
+                    timestamp: timestamp / 1_000,
+                    draft: undefined,
+                  },
+                ]);
                 deleteThisMessage();
               }}
             />
@@ -424,23 +432,7 @@ export const MessageCard = ({msg}: {msg: Message}) => {
                   style={{padding: 0, margin: 0, borderRadius: 0}}
                 />
               </OnlyShow>
-              <OnlyShow If={!!msg.timestamp}>
-                <Paragraph
-                  style={{
-                    alignSelf: 'flex-start',
-                    paddingHorizontal: 10,
-                    color: theme.color.textPrimary,
-                    textShadowColor: theme.color.textSecondary,
-                    backgroundColor: sender
-                      ? theme.color.userSecondary
-                      : theme.color.friendSecondary,
-                    borderRadius: 5,
-                    marginTop: 2,
-                    opacity: 0.5,
-                  }}>
-                  {verboseTime(msg.timestamp)}
-                </Paragraph>
-              </OnlyShow>
+              <LiveTimeStamp timestamp={msg.timestamp} sender={sender} />
             </HorizontalView>
 
             {draftOverlay()}
@@ -448,6 +440,36 @@ export const MessageCard = ({msg}: {msg: Message}) => {
         </Card>
       </OnlyShow>
     </>
+  );
+};
+
+const LiveTimeStamp = ({
+  timestamp,
+  sender,
+}: {
+  timestamp?: number;
+  sender?: boolean;
+}) => {
+  const {theme} = useTheme();
+  // TODO update time stamp live
+  return (
+    <OnlyShow If={!!timestamp}>
+      <Paragraph
+        style={{
+          alignSelf: 'flex-start',
+          paddingHorizontal: 10,
+          color: theme.color.textPrimary,
+          textShadowColor: theme.color.textSecondary,
+          backgroundColor: sender
+            ? theme.color.userSecondary
+            : theme.color.friendSecondary,
+          borderRadius: 5,
+          marginTop: 2,
+          opacity: 0.5,
+        }}>
+        {verboseTime(timestamp)}
+      </Paragraph>
+    </OnlyShow>
   );
 };
 

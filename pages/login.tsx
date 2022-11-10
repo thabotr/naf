@@ -1,36 +1,50 @@
 import React from 'react';
-import { Button, Paragraph, Surface } from "react-native-paper";
-import RNFetchBlob from 'rn-fetch-blob';
+import {Button, Paragraph, Surface} from 'react-native-paper';
 
-import { OnlyShow } from '../components/helper';
+import {OnlyShow} from '../components/helper';
 import {useTheme} from '../context/theme';
-import {useLoggedInUser} from "../context/user";
-import { URLS } from '../types/routes';
-import { User } from '../types/user';
+import {useLoggedInUser} from '../context/user';
+import {useAppState} from '../providers/AppStateProvider';
+import {remoteSignIn} from '../remote/login';
 
-export function Login(){
-  const {loginAs} = useLoggedInUser();
+export function Login() {
   const {theme} = useTheme();
   const [loginError, setLoginError] = React.useState(false);
+  const {loggedInUser, saveAppLoggedInUser} = useAppState();
+  const {loginAs} = useLoggedInUser();
+
+  React.useEffect(() => {
+    loggedInUser && loginAs(loggedInUser);
+  }, [loggedInUser]);
+
   const login = () => {
-    RNFetchBlob.fetch('GET', URLS.PROFILE)
-    .then( r => {
-      if( r.info()['status'] === 200){
-        const body = r.json();
-        const user = body as User;
+    remoteSignIn().then(user => {
+      if (user) {
         setLoginError(false);
         loginAs(user);
+        saveAppLoggedInUser(user);
+      } else {
+        setLoginError(true);
       }
-    })
-    .catch( e => {
-      setLoginError(true);
-      console.error(e);
-    })
-  }
-  return <Surface style={{width: '100%', height: '100%', justifyContent: 'center', backgroundColor: theme.color.secondary}}>
-    <OnlyShow If={loginError}>
-      <Paragraph style={{color: 'red', textAlign: 'center'}}>Login failed!</Paragraph>
-    </OnlyShow>
-    <Button style={{backgroundColor: theme.color.primary}} onPress={login}>Login</Button>
-  </Surface>
+    });
+  };
+
+  return (
+    <Surface
+      style={{
+        width: '100%',
+        height: '100%',
+        justifyContent: 'center',
+        backgroundColor: theme.color.secondary,
+      }}>
+      <OnlyShow If={loginError}>
+        <Paragraph style={{color: 'red', textAlign: 'center'}}>
+          Login failed!
+        </Paragraph>
+      </OnlyShow>
+      <Button style={{backgroundColor: theme.color.primary}} onPress={login}>
+        Login
+      </Button>
+    </Surface>
+  );
 }

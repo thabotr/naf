@@ -1,6 +1,7 @@
 import React from 'react';
 import {useColorScheme} from 'react-native';
-import { getSavedThemeSetting, saveThemeSetting as storageSaveThemeSetting } from '../src/theme';
+import {useAppState} from '../providers/AppStateProvider';
+import {ThemeSetting} from '../types/settings';
 
 export type ThemeType = {
   dark: boolean;
@@ -13,105 +14,97 @@ export type ThemeType = {
     friendSecondary: string;
     textPrimary: string;
     textSecondary: string;
-  }
+  };
 };
 
 export type ThemeContextType = {
   theme: ThemeType;
-  themeSetting: 'light' | 'dark' | 'system_default';
-  saveThemeSetting: (ts: 'light' | 'dark' | 'system_default')=>void;
+  saveThemeFromSetting: (ts: ThemeSetting) => void;
+  themeSetting: ThemeSetting;
 };
 
-const ThemeContext = React.createContext<ThemeContextType|null>(null);
+export const ThemeSettingFromString: {[key: string]: ThemeSetting} = {
+  light: 'light',
+  dark: 'dark',
+  system_default: 'system_default',
+};
 
-function ThemeProvider({children}:{children: React.ReactNode}){
-  const darkTheme: ThemeType = {
-    dark: true,
-    color: {
-      primary: '#1d2126',
-      secondary: '#363636',
-      userPrimary: '#404040',
-      userSecondary: '#5c5c5c',
-      friendPrimary: '#2a4365',
-      friendSecondary: '#18474e',
-      textPrimary: '#f8f8ff',
-      textSecondary: '#dcdcdc',
-    }
-  }
+const darkTheme: ThemeType = {
+  dark: true,
+  color: {
+    primary: '#1d2126',
+    secondary: '#363636',
+    userPrimary: '#404040',
+    userSecondary: '#5c5c5c',
+    friendPrimary: '#2a4365',
+    friendSecondary: '#18474e',
+    textPrimary: '#f8f8ff',
+    textSecondary: '#dcdcdc',
+  },
+};
+const lightTheme: ThemeType = {
+  dark: false,
+  color: {
+    primary: '#87cefa',
+    secondary: '#dbdbdb',
+    userPrimary: '#c0c0c0',
+    userSecondary: '#f5f5f5',
+    friendPrimary: '#b0c4de',
+    friendSecondary: '#b0e0e6',
+    textPrimary: '#000000',
+    textSecondary: '#a9a9a9',
+  },
+};
 
-  const lightTheme: ThemeType = {
-    dark: false,
-    color: {
-      primary: '#87cefa',
-      secondary: '#dbdbdb',
-      userPrimary: '#c0c0c0',
-      userSecondary: '#f5f5f5',
-      friendPrimary: '#b0c4de',
-      friendSecondary: '#b0e0e6',
-      textPrimary: '#000000',
-      textSecondary: '#a9a9a9',
-    }
-  }
+const ThemeContext = React.createContext<ThemeContextType | null>(null);
 
-  const systemThemeIsDark = useColorScheme() === 'dark';
-
+function ThemeProvider({children}: {children: React.ReactNode}) {
+  const {settings, saveAppSettings} = useAppState();
+  const [themeSetting, setThemeSetting] = React.useState<ThemeSetting>('dark');
+  const isSystemDark = useColorScheme() === 'dark';
   const [theme, setTheme] = React.useState<ThemeType>(darkTheme);
 
-  const [themeSetting, setThemeSetting] = React.useState<'light' | 'dark' | 'system_default'>('system_default');
-
-  React.useEffect(()=>{
-    getSavedThemeSetting().then(s => {
-      switch(s){
-        case 'light':
-          setTheme(lightTheme);
-          setThemeSetting('light');
-          return;
-        case 'dark':
-          setTheme(darkTheme);
-          setThemeSetting('dark');
-          return;
-        default:
-          if(systemThemeIsDark) setTheme(darkTheme);
-          else setTheme(lightTheme);
-          setThemeSetting('system_default');
-      }
-    })
-    .catch(e => console.log('error when saving theme settings', e));
-  },[]);
-
-  const saveThemeSetting = ( ts: 'light' | 'dark' | 'system_default')=> {
-    switch(ts){
+  const themeFromSetting = (ts: ThemeSetting) => {
+    switch (ts) {
       case 'light':
-        setTheme(lightTheme);
-        break;
+        return lightTheme;
       case 'dark':
-        setTheme(darkTheme);
-        break;
+        return darkTheme;
       default:
-        if(systemThemeIsDark) setTheme(darkTheme);
-        setTheme(lightTheme);
+        return isSystemDark ? darkTheme : lightTheme;
     }
+  };
+
+  React.useEffect(() => {
+    setTheme(themeFromSetting(settings.theme));
+    setThemeSetting(settings.theme);
+  }, [settings, isSystemDark]);
+
+  const saveThemeFromSetting = (ts: ThemeSetting) => {
+    setTheme(themeFromSetting(ts));
     setThemeSetting(ts);
-    storageSaveThemeSetting(ts).catch(e=>console.error(e));
-  }
+    saveAppSettings({...settings, theme: ts});
+  };
 
   const providerValue = {
-    theme:theme,
-    saveThemeSetting: saveThemeSetting,
+    theme: theme,
+    saveThemeFromSetting: saveThemeFromSetting,
     themeSetting: themeSetting,
-  }
+  };
 
-  return <ThemeContext.Provider value={providerValue}>
-    {children}
-  </ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={providerValue}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 const useTheme = (): ThemeContextType => {
   const context = React.useContext(ThemeContext);
-  if(!context){
-    throw new Error("Encapsulate useTheme in ThemeProvider");
+  if (!context) {
+    throw new Error('Encapsulate useTheme in ThemeProvider');
   }
   return context;
-}
+};
 
 export {useTheme, ThemeProvider};
