@@ -9,7 +9,7 @@ import  RNFetchBlob from 'rn-fetch-blob';
 
 import { permissionsGranted, requestPermissions } from '../src/permissions';
 import { FileType, Message } from '../types/message';
-import { UserContext, UserContextType } from './user';
+import {useLoggedInUser} from './user';
 
 const MessageComposerContext = React.createContext<MessageComposerContextType|null>(null);
 
@@ -53,7 +53,7 @@ type Props = {
 }
 
 const MessageComposerProvider = ({children}: Props) => {
-  const {user} = React.useContext(UserContext) as UserContextType;
+  const {user} = useLoggedInUser();
   const [message, setMessage] = React.useState<Message>({from: user?.handle ?? '', id: '', to: '', files:[], voiceRecordings: []});
   const [composing, setComposing] = React.useState(false);
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});

@@ -18,11 +18,11 @@ import {FilePreviewCard, VisualPreview} from './message';
 import {HorizontalView, OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
 import {openCamera} from '../src/camera';
-import {UserContext, UserContextType} from '../context/user';
+import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 
 export const MessageEditorCard = () => {
-  const {user} = React.useContext(UserContext) as UserContextType;
+  const {user} = useLoggedInUser();
   const {theme} = useTheme();
   const {addChatMessages, activeChat} = useChats();
   

@@ -1,20 +1,39 @@
 import React from 'react';
 import { User } from '../types/user';
 
-export type UserContextType = {
+export type LoggedInUserContextType = {
   user?: User,
   loginAs: (u: User)=>void,
 }
 
-export const UserContext = React.createContext<UserContextType|null>(null);
+const LoggedInUserContext = React.createContext<LoggedInUserContextType | null>(null);
 
-export function UserContextProvider({children}:{children: React.ReactNode}){
+type Props = {
+  children: React.ReactNode,
+}
+
+const LoggedInUserProvider = ({children}: Props)=>{
   const [user, setUser] = React.useState<User>();
 
   const loginAs = (u: User) => {
     setUser(u);
   }
-  return <UserContext.Provider value={{user: user, loginAs: loginAs}}>
+
+  const providerValue = {
+    user: user, 
+    loginAs: loginAs
+  }
+
+  return <LoggedInUserContext.Provider value={providerValue}>
     {children}
-  </UserContext.Provider>
+  </LoggedInUserContext.Provider>
 }
+
+const useLoggedInUser = (): LoggedInUserContextType => {
+  const context = React.useContext(LoggedInUserContext);
+  if(!context)
+    throw new Error("Encapsulate useLoggedInUser with LoggedInUserProvider");
+  return context;
+}
+
+export {LoggedInUserProvider, useLoggedInUser};

@@ -12,7 +12,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import {ImageViewProvider} from './context/images';
 import { ThemeProvider } from './context/theme';
-import { UserContext, UserContextProvider, UserContextType } from './context/user';
+import {useLoggedInUser, LoggedInUserProvider } from './context/user';
 import { ToastySnackbarManager } from './components/snackbar';
 import { StackNavigator } from './components/stackNavigator';
 import { ChatsProvider } from './context/chat';
@@ -49,7 +49,7 @@ type Props = {
 function SuperContextProvider({children}: Props){
   return (
     <ThemeProvider>
-      <UserContextProvider>
+      <LoggedInUserProvider>
         <ChatsProvider>    
             <ImageViewProvider>
               <NavigationContainer>
@@ -59,7 +59,7 @@ function SuperContextProvider({children}: Props){
               </NavigationContainer>
             </ImageViewProvider>
         </ChatsProvider>
-      </UserContextProvider>
+      </LoggedInUserProvider>
     </ThemeProvider>
   );
 }
@@ -71,7 +71,7 @@ function App() {
           if(e !== null) console.error('file structure setup error: ' + e); 
         });
       }, [])
-      const {user} = React.useContext(UserContext) as UserContextType;
+      const {user} = useLoggedInUser();
       return <Show
       component={<Login/>}
       If={!user}

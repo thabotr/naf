@@ -4,12 +4,12 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import { OnlyShow } from '../components/helper';
 import {useTheme} from '../context/theme';
-import { UserContext, UserContextType } from "../context/user";
+import {useLoggedInUser} from "../context/user";
 import { URLS } from '../types/routes';
 import { User } from '../types/user';
 
 export function Login(){
-  const {loginAs} = React.useContext(UserContext) as UserContextType;
+  const {loginAs} = useLoggedInUser();
   const {theme} = useTheme();
   const [loginError, setLoginError] = React.useState(false);
   const login = () => {

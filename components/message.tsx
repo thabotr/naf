@@ -22,7 +22,7 @@ import {
 } from './helper';
 import {useMessageComposer} from '../context/messageEditor';
 import {openFile} from '../src/fileViewer';
-import {UserContext, UserContextType} from '../context/user';
+import {useLoggedInUser} from '../context/user';
 import {verboseSize, verboseTime} from '../src/helper';
 import {getFilePath} from '../src/file';
 import {Image} from './image';
@@ -187,7 +187,7 @@ function MessageFilesPreview({
   msg: Message;
   onDismiss: () => void;
 }) {
-  const {user} = React.useContext(UserContext) as UserContextType;
+  const {user} = useLoggedInUser();
   const {theme} = useTheme();
   const fromUser = msg.from === user?.handle;
   return (
@@ -237,7 +237,7 @@ function MessageFilesPreview({
 }
 
 export const MessageCard = ({msg}: {msg: Message}) => {
-  const {user} = React.useContext(UserContext) as UserContextType;
+  const {user} = useLoggedInUser();
   const {deleteChatMessages, addChatMessages} = useChats();
   const {theme} = useTheme();
   const {saveComposeMessage, setComposeOn, showTextInputOn} = useMessageComposer();
