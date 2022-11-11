@@ -3,14 +3,15 @@ import {View, TouchableOpacity, Pressable, Platform} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, Avatar, List} from 'react-native-paper';
 import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 
-import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from '../components/helper';
+import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from './helper';
 import { useChats } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
-import { getAudioMetadata} from '../src/audio';
-import { getFilePath } from '../src/file';
+import { getAudioMetadata} from '../audio';
+import { getFilePath } from '../file';
 import {Chat} from '../types/chat';
 import {Image} from './image';
+import { CardCover } from './CardCover';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {theme} = useTheme();
@@ -34,10 +35,11 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     },[])
 
     return <Card style={{borderRadius: 5, margin: 2, padding: 4, backgroundColor: avatarSecondary}}>
-    <Card.Cover
-        source={!!landscapeUri ? {uri: landscapeUri} : undefined}
+    {/* <CardCover
+        source={landscapeUri}
         style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}
-    />
+    /> */}
+    <CardCover source={'file:///data/user/0/com.naf/cache/files/aHR0cDovLzEwLjAuMi4yOjMwMDAvYXZhdGFyMS5qcGc='}/>
     <OverlayedView style={{justifyContent: 'flex-start', alignItems: 'flex-start', borderColor: avatarPrimary, borderWidth: 2}}>
         <HorizontalView>
             <View style={{height: '100%', width: '25%'}}>

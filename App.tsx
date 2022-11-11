@@ -10,16 +10,16 @@ import React from 'react';
 import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {ImageViewProvider} from './context/images';
-import {ThemeProvider} from './context/theme';
-import {useLoggedInUser, LoggedInUserProvider} from './context/user';
-import {ToastySnackbarManager} from './components/snackbar';
-import {StackNavigator} from './components/stackNavigator';
-import {ChatsProvider} from './context/chat';
-import {Show} from './components/helper';
-import {Login} from './pages/login';
+import {ImageViewProvider} from './src/context/images';
+import {ThemeProvider} from './src/context/theme';
+import {useLoggedInUser, LoggedInUserProvider} from './src/context/user';
+import {ToastySnackbarManager} from './src/components/snackbar';
+import {StackNavigator} from './src/components/stackNavigator';
+import {ChatsProvider} from './src/context/chat';
+import {Show} from './src/components/helper';
+import {Login} from './src/pages/login';
 import RNFetchBlob from 'rn-fetch-blob';
-import {AppStateProvider} from './providers/AppStateProvider';
+import {AppStateProvider} from './src/providers/AppStateProvider';
 // import {AppStateProvider} from './providers/AppStateProvider';
 
 const SetupFileStructure = async () => {

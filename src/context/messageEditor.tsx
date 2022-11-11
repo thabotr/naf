@@ -7,7 +7,7 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 import  RNFetchBlob from 'rn-fetch-blob';
 
-import { permissionsGranted, requestPermissions } from '../src/permissions';
+import { permissionsGranted, requestPermissions } from '../permissions';
 import { FileType, Message } from '../types/message';
 import {useLoggedInUser} from './user';
 

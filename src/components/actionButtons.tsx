@@ -4,8 +4,8 @@ import {FAB, IconButton} from 'react-native-paper';
 
 import {useTheme} from '../context/theme';
 import {useMessageComposer} from '../context/messageEditor';
-import { OnlyShow, Show } from '../components/helper';
-import { openCamera } from '../src/camera';
+import { OnlyShow, Show } from './helper';
+import { openCamera } from '../camera';
 
 export const ExtendedActionButtons = ({onBack}:{onBack: ()=>void}) => {
   const {setComposeOn, onStartRecord, showTextInputOn, onAddAttachments, saveComposeMessage, message} = useMessageComposer();

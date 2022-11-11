@@ -17,7 +17,7 @@ import {useTheme} from '../context/theme';
 import {FilePreviewCard, VisualPreview} from './message';
 import {HorizontalView, OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
-import {openCamera} from '../src/camera';
+import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 

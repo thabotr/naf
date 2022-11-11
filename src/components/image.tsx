@@ -6,7 +6,14 @@ import {ImageColorsResult, Config} from 'react-native-image-colors/lib/typescrip
 import ImageColors from 'react-native-image-colors';
 import RNFetchBlob from 'rn-fetch-blob';
 import { OnlyShow, OverlayedView } from './helper';
-import { getFilePath } from '../src/file';
+import { getFilePath } from '../file';
+
+export enum IMState {
+  FETCHING,
+  LOADING,
+  ERROR,
+  SUCCESS,
+}
 
 export function Image(props: ImageProps & {
   url: string,
@@ -18,12 +25,6 @@ export function Image(props: ImageProps & {
   imageColorsConfig?: Config
 })
 {
-  enum IMState {
-    FETCHING,
-    LOADING,
-    ERROR,
-    SUCCESS,
-  }
   const [state, setState] = React.useState<IMState>(IMState.FETCHING);
   const [uri, setURI] = React.useState('');
   const intermediateCompont = ()=>{

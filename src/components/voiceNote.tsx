@@ -4,9 +4,9 @@ import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
 
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
-import { getFilePath } from '../src/file';
-import { verboseDuration, verboseSize } from '../src/helper';
-import { mimeTypeToExtension } from '../types/file';
+import { getFilePath } from '../file';
+import { verboseDuration, verboseSize } from '../helper';
+import { FileManagerHelper } from '../services/FileManagerHelper';
 import { VoiceNoteType } from '../types/message';
 import { HorizontalView, OnlyShow } from './helper';
 
@@ -24,7 +24,7 @@ export function VoiceNoteCard({file, user, style}:{file: VoiceNoteType, user?: b
     const [uri, setURI] = React.useState(file.uri);
 
     React.useEffect(()=>{
-        const ext = mimeTypeToExtension[file.type];
+        const ext = FileManagerHelper.ExtForMimetypes[file.type];
         if(file.uri.includes('http'))
             getFilePath(file.uri, ext)
             .then(path => path && setURI(path))

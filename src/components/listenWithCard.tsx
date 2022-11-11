@@ -14,15 +14,15 @@ import TrackPlayer, {
   Track,
 } from 'react-native-track-player';
 
-import {HorizontalView, OnlyShow, OverlayedView} from '../components/helper';
+import {HorizontalView, OnlyShow, OverlayedView} from './helper';
 import {useChats} from '../context/chat';
 import {
   ListenWithMeContext,
   ListenWithMeContextType,
 } from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
-import {getAudioMetadata} from '../src/audio';
-import {verboseDuration} from '../src/helper';
+import {getAudioMetadata} from '../audio';
+import {verboseDuration} from '../helper';
 
 function IconButton({
   If,

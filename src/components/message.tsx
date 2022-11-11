@@ -21,18 +21,18 @@ import {
   vidIconOverlay,
 } from './helper';
 import {useMessageComposer} from '../context/messageEditor';
-import {openFile} from '../src/fileViewer';
+import {openFile} from '../fileViewer';
 import {useLoggedInUser} from '../context/user';
-import {verboseSize, verboseTime} from '../src/helper';
-import {getFilePath} from '../src/file';
+import {verboseSize, verboseTime} from '../helper';
+import {getFilePath} from '../file';
 import {Image} from './image';
-import {mimeTypeToExtension} from '../types/file';
 import {useChats} from '../context/chat';
+import { FileManagerHelper } from '../services/FileManagerHelper';
 
 export const ImagePreviewCard = ({source}: {source: FileType}) => {
   const openImage = async () => {
     if (source.uri.includes('http')) {
-      const ext = mimeTypeToExtension[source.type];
+      const ext = FileManagerHelper.ExtForMimetypes[source.type];
       const path = await getFilePath(source.uri, ext);
       path && openFile(path);
     } else openFile(source.uri);
@@ -54,7 +54,7 @@ export const VidPreviewCard = ({
 }) => {
   const openVid = async () => {
     if (source.uri.includes('http')) {
-      const ext = mimeTypeToExtension[source.type];
+      const ext = FileManagerHelper.ExtForMimetypes[source.type];
       const path = await getFilePath(source.uri, ext);
       path && openFile(path);
     } else openFile(source.uri);
@@ -84,7 +84,7 @@ export const FilePreviewCard = ({
 
   const openThisFile = async () => {
     if (file.uri.includes('http')) {
-      const ext = mimeTypeToExtension[file.type];
+      const ext = FileManagerHelper.ExtForMimetypes[file.type];
       const path = await getFilePath(file.uri, ext);
       path && openFile(path);
     } else openFile(file.uri);
