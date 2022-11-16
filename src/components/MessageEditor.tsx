@@ -21,6 +21,7 @@ import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 import { HorizontalView } from './HorizontalView';
+import { useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();
@@ -29,7 +30,6 @@ export const MessageEditorCard = () => {
   
   const {
     composing,
-    onStartRecord,
     discardMessage,
     showTextInput,
     showTextInputOn,
@@ -38,6 +38,7 @@ export const MessageEditorCard = () => {
     saveComposeMessage,
     setComposeOn,
   } = useMessageComposer();
+  const {startRecorder} = useAudioRecorderPlayer();
 
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
@@ -172,7 +173,7 @@ export const MessageEditorCard = () => {
 
         <HorizontalView>
           <IconButton icon="emoticon-excited-outline" onPress={() => {}} />
-          <IconButton icon="microphone" onPress={onStartRecord} />
+          <IconButton icon="microphone" onPress={startRecorder}/>
           <IconButton icon="attachment" onPress={onAddAttachments} />
           <IconButton icon="camera" onPress={() => openCamInMode('photo')} />
           <IconButton icon="video" onPress={() => openCamInMode('video')} />

@@ -20,6 +20,8 @@ import {Show} from './src/components/helper';
 import {Login} from './src/pages/login';
 import RNFetchBlob from 'rn-fetch-blob';
 import {AppStateProvider} from './src/providers/AppStateProvider';
+import { AudioRecorderPlayerProvider, useAudioRecorderPlayer } from './src/providers/AudioRecorderPlayer';
+import { FileManager } from './src/services/FileManager';
 // import {AppStateProvider} from './providers/AppStateProvider';
 
 const SetupFileStructure = async () => {
@@ -48,17 +50,28 @@ type Props = {
   children: React.ReactNode;
 };
 
+function RegisterPlayerRecorder(){
+  const {initAudioRecorderPlayer} = useAudioRecorderPlayer();
+  React.useEffect(()=>{
+    initAudioRecorderPlayer();
+  },[]);
+  return <></>
+}
+
 function SuperContextProvider({children}: Props) {
   return (
     <ThemeProvider>
       <LoggedInUserProvider>
-        <ChatsProvider>
-          <ImageViewProvider>
-            <NavigationContainer>
-              <Provider>{children}</Provider>
-            </NavigationContainer>
-          </ImageViewProvider>
-        </ChatsProvider>
+        <AudioRecorderPlayerProvider>
+          <RegisterPlayerRecorder/>
+          <ChatsProvider>
+            <ImageViewProvider>
+              <NavigationContainer>
+                <Provider>{children}</Provider>
+              </NavigationContainer>
+            </ImageViewProvider>
+          </ChatsProvider>
+        </AudioRecorderPlayerProvider>
       </LoggedInUserProvider>
     </ThemeProvider>
   );
@@ -66,9 +79,13 @@ function SuperContextProvider({children}: Props) {
 
 function PageLoginElseHome() {
   React.useEffect(() => {
-    SetupFileStructure().catch(e => {
-      if (e !== null) console.error('file structure setup error: ' + e);
-    });
+    FileManager.InitFilePaths()
+    .then(b=>{
+      if(!b) console.error('failed to create file structure');
+    }).catch(e=>console.error('failed to create file structure', e));
+    // SetupFileStructure().catch(e => {
+    //   if (e !== null) console.error('file structure setup error: ' + e);
+    // });
   }, []);
   const {user} = useLoggedInUser();
   return (

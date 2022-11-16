@@ -13,17 +13,18 @@ export class FileManager {
         FileManagerHelper.videosDir,
         FileManagerHelper.filesDir,
       ].map(dir => this.RootDir.concat('/').concat(dir));
-      for (let dir in directories) {
-        try {
-          await RNFetchBlob.fs.mkdir(dir);
-        } catch (e) {
-          if (!`${e}`.includes('already exists')) {
+      
+      const mkdirDirPromises = directories.map(dir=>RNFetchBlob.fs.mkdir(dir));
+      for(let ind in mkdirDirPromises){
+        try{
+          await mkdirDirPromises[ind];
+        }catch(e){
+          if(!`${e}`.includes('already exists'))
             throw e;
-          }
         }
       }
     } catch (e) {
-      console.error('failed to create directories: ', e);
+      console.error('failed to create directories:', e);
       return false;
     }
     return true;

@@ -1,5 +1,8 @@
 import React from 'react';
+import { PermissionsAndroid } from 'react-native';
 import RNAudioRecorderPlayer, {PlayBackType, RecordBackType} from 'react-native-audio-recorder-player';
+import { permissionsGranted, requestPermissions } from '../permissions';
+import { FileManager } from '../services/FileManager';
 import { FileManagerHelper } from '../services/FileManagerHelper';
 
 enum RecordPlayState {
@@ -10,8 +13,23 @@ enum RecordPlayState {
   PLAYING_PAUSED,
 }
 
+const recordingPerms = [
+  PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+  PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+  PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+];
+
 type AudioRecorderPlayerContextType = {
   recorderPlayerState: RecordPlayState,
+  recorderPlayerData: {
+    playerDuration: number;
+    playerPosition: number;
+    playingPath: string;
+    recordingPath: string;
+    muted: boolean;
+    volume: number;
+    recordingPosition: number;
+  };
   startRecorder: ()=>void;
   stopRecorder: ()=>void;
   pauseRecorder: ()=>void;
@@ -44,7 +62,9 @@ function AudioRecorderPlayerProvider({children}:Props){
     recordingPosition: 0,
   });
 
-  const rootDir = FileManagerHelper.audioDir;
+  const rootDir = FileManager.RootDir
+    .concat('/')
+    .concat(FileManagerHelper.audioDir);
 
   const onPlayerStart=(pbm: PlayBackType)=> {
     setState(state=>{
@@ -68,7 +88,13 @@ function AudioRecorderPlayerProvider({children}:Props){
     const arp = new RNAudioRecorderPlayer();
     setAudioRecorderPlayer(arp);
   };
-  const startRecorder=()=>{
+  const startRecorder=async()=>{
+    const permsGranted = await permissionsGranted(recordingPerms);
+    if( !permsGranted) {
+      await requestPermissions(recordingPerms);
+      return;
+    }
+
     const path = rootDir
     .concat('/')
     .concat(`${new Date().getTime()}`)
@@ -176,6 +202,7 @@ function AudioRecorderPlayerProvider({children}:Props){
     startRecorder: startRecorder,
     stopRecorder: stopRecorder,
     initAudioRecorderPlayer: initAudioRecorderPlayer,
+    recorderPlayerData: state,
   }
 
   return <AudioRecorderPlayerContext.Provider value={providerValue}>
@@ -192,4 +219,4 @@ const useAudioRecorderPlayer = (): AudioRecorderPlayerContextType => {
   return context;
 }
 
-export {useAudioRecorderPlayer, AudioRecorderPlayerProvider};
+export {useAudioRecorderPlayer, AudioRecorderPlayerProvider, RecordPlayState};

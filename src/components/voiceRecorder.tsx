@@ -6,47 +6,48 @@ import  RNFetchBlob from 'rn-fetch-blob';
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import { verboseDuration } from '../helper';
+import { RecordPlayState, useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
 import { OnlyShow} from './helper';
 import { HorizontalView } from './HorizontalView';
 
 export function VoiceRecorder() {
   const {
-    audioRecorderPlayer,
-    vrState,
-    onStopRecord,
-    recordSecs,
+    // audioRecorderPlayer,
+    // vrState,
+    // onStopRecord,
+    // recordSecs,
     message,
     saveComposeMessage,
     setComposeOn
   } = useMessageComposer();
-  const [recordingPaused, pauseRecording] = React.useState(false);
+  // const [recordingPaused, pauseRecording] = React.useState(false);
+  const {recorderPlayerState: recorderState, recorderPlayerData, stopRecorder, resumeRecorder, pauseRecorder} = useAudioRecorderPlayer();
   const {theme} = useTheme();
 
-  const onResumeRecording = async () => {
-    const msg = await audioRecorderPlayer.resumeRecorder();
-    console.log(msg);
-  }
+  // const onResumeRecording = async () => {
+  //   const msg = await audioRecorderPlayer.resumeRecorder();
+  //   console.log(msg);
+  // }
 
-  const onPauseRecording = async () => {
-    const msg = await audioRecorderPlayer.pauseRecorder();
-    console.log(msg);
-  }
+  // const onPauseRecording = async () => {
+  //   const msg = await audioRecorderPlayer.pauseRecorder();
+  //   console.log(msg);
+  // }
 
   const onDeleteRecording = () => {
-    onStopRecord();
-    const recordingUri = vrState.recordingUri ?? '';
+    stopRecorder();
+    const recordingUri = recorderPlayerData.recordingPath;
     if( recordingUri !== '')
       RNFetchBlob.fs.unlink(recordingUri);
   }
 
   const onPauseResumeReconding = () => {
-    recordingPaused ? onResumeRecording() : onPauseRecording();
-    pauseRecording(!recordingPaused);
+    paused ? resumeRecorder() : pauseRecorder();
   }
 
   const onDoneRecording = async () => {
-    onStopRecord();
-    const recordingUri = vrState.recordingUri ?? '';
+    stopRecorder();
+    const recordingUri = recorderPlayerData.recordingPath;
     if( recordingUri === '') {
       ToastAndroid.show('Ooops! Something went wrong.', 3000);
       console.error("recording error: uri of recording not found in VRState.");
@@ -58,14 +59,17 @@ export function VoiceRecorder() {
       voiceRecordings: message.voiceRecordings.concat({
         uri: recordingFileStat.path, 
         size: recordingFileStat.size, 
-        duration: recordSecs, 
+        duration: recorderPlayerData.recordingPosition,
         type: recordingFileStat.type,
       }),
     });
     setComposeOn(true);
   }
 
-  return <OnlyShow If={vrState.recording}>
+  const paused = recorderState === RecordPlayState.RECORDING_PAUSED;
+  const recording = recorderState === RecordPlayState.RECORDING;
+
+  return <OnlyShow If={ recording || paused}>
     <View
       style={
       [
@@ -84,7 +88,7 @@ export function VoiceRecorder() {
     >
       <View style={{ justifyContent: 'center'}}>
         <IconButton
-          color={recordingPaused ? 'white' : 'red'}
+          color={paused ? 'white' : 'red'}
           style={{ borderRadius: 0}}
           size={40}
           icon={'microphone'}
@@ -101,7 +105,7 @@ export function VoiceRecorder() {
         <IconButton
             style={{margin: 5, borderRadius: 0, backgroundColor: theme.color.secondary}}
             size={25}
-            icon={recordingPaused ? "play" : "pause"}
+            icon={paused ? "play" : "pause"}
             onPress={onPauseResumeReconding}
         />
         <IconButton
@@ -119,7 +123,7 @@ export function VoiceRecorder() {
               color: theme.color.textPrimary, 
               textShadowColor: theme.color.textSecondary
             }}
-            >{verboseDuration(recordSecs)}</Paragraph>
+            >{verboseDuration(recorderPlayerData.recordingPosition)}</Paragraph>
         </View>
       </View>
     </View>
