@@ -6,7 +6,8 @@ import  RNFetchBlob from 'rn-fetch-blob';
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import { verboseDuration } from '../helper';
-import { HorizontalView, OnlyShow} from './helper';
+import { OnlyShow} from './helper';
+import { HorizontalView } from './HorizontalView';
 
 export function VoiceRecorder() {
   const {
