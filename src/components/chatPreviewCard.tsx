@@ -3,7 +3,7 @@ import {View, TouchableOpacity, Pressable, Platform} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, Avatar, List} from 'react-native-paper';
 import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 
-import {HorizontalView, Lay, OverlayedView, OnlyShow, Show} from './helper';
+import { Lay, OverlayedView, OnlyShow, Show} from './helper';
 import { useChats } from '../context/chat';
 import { ListenWithMeContext, ListenWithMeContextType } from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
@@ -12,6 +12,7 @@ import { getFilePath } from '../file';
 import {Chat} from '../types/chat';
 import {Image} from './image';
 import { CardCover } from './CardCover';
+import { HorizontalView } from './HorizontalView';
 
 export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any}) {
     const {theme} = useTheme();

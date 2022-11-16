@@ -41,11 +41,3 @@ export function Lay({component, over}:{component:React.ReactNode, over:React.Rea
 export const vidIconOverlay= (iconSize: number, blur?:boolean) => <OverlayedView>
       <IconButton size={iconSize} icon="play-circle-outline"  style={{opacity: blur ? 0.4 : 1}}/>
     </OverlayedView>
-
-export function HorizontalView(props: ViewProps) {
-  const style: Object = props.style?.valueOf() ?? {};
-  const newProps: ViewProps = {...props, style: {...style, display: 'flex', flexDirection: 'row'}};
-  return <View {...newProps}>
-    {props.children}
-  </View>
-}

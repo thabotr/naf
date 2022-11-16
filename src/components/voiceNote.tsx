@@ -8,7 +8,8 @@ import { getFilePath } from '../file';
 import { verboseDuration, verboseSize } from '../helper';
 import { FileManagerHelper } from '../services/FileManagerHelper';
 import { VoiceNoteType } from '../types/message';
-import { HorizontalView, OnlyShow } from './helper';
+import {OnlyShow } from './helper';
+import { HorizontalView } from './HorizontalView';
 
 const enum PlayState {
     PAUSED,

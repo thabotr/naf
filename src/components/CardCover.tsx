@@ -1,6 +1,5 @@
 import React from 'react';
 import {ImageStyle} from 'react-native';
-import {ImageColorsResult} from 'react-native-image-colors/lib/typescript/types';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {FileManager} from '../services/FileManager';
 import {OnlyShow, OverlayedView} from './helper';

@@ -15,11 +15,12 @@ import {View, FlatList} from 'react-native';
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import {FilePreviewCard, VisualPreview} from './message';
-import {HorizontalView, OnlyShow} from './helper';
+import {OnlyShow} from './helper';
 import {VoiceNoteCard} from './voiceNote';
 import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
+import { HorizontalView } from './HorizontalView';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();

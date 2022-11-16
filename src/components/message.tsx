@@ -14,7 +14,6 @@ import {useTheme} from '../context/theme';
 import {Message, FileType} from '../types/message';
 import {VoiceNoteCard} from './voiceNote';
 import {
-  HorizontalView,
   OnlyShow,
   OverlayedView,
   Show,
@@ -28,6 +27,7 @@ import {getFilePath} from '../file';
 import {Image} from './image';
 import {useChats} from '../context/chat';
 import { FileManagerHelper } from '../services/FileManagerHelper';
+import { HorizontalView } from './HorizontalView';
 
 export const ImagePreviewCard = ({source}: {source: FileType}) => {
   const openImage = async () => {
