@@ -108,8 +108,11 @@ export const FloatingActions = () => {
     showTextInputOn(true);
   };
 
+  const recordingOrPaused = recorderPlayerState === RecordPlayState.RECORDING ||
+    recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
+
   return (
-    <OnlyShow If={!composing && recorderPlayerState === RecordPlayState.IDLE}>
+    <OnlyShow If={!composing && !recordingOrPaused}>
       <View
         style={{
           display: 'flex',

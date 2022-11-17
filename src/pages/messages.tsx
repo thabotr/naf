@@ -3,7 +3,7 @@ import {SafeAreaView, View, ScrollView} from 'react-native';
 
 import {useTheme} from '../context/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
-import {VoiceRecorder} from '../components/voiceRecorder';
+import {VoiceRecorderCard} from '../components/VoiceRecorderCard';
 import {MessageCard} from '../components/message';
 import {MessageEditorCard} from '../components/MessageEditor';
 import {FloatingActions} from '../components/actionButtons';
@@ -34,7 +34,7 @@ export function Messages() {
     <MessageComposerProvider>
       <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
         <Tiler />
-        <VoiceRecorder />
+        <VoiceRecorderCard/>
         <FloatingActions />
       </SafeAreaView>
     </MessageComposerProvider>

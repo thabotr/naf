@@ -5,6 +5,11 @@ export class FileManager {
   static RootDir = RNFetchBlob.fs.dirs.CacheDir;
   static fmHelper = new FileManagerHelper(this.RootDir);
 
+  static removeFile(uri: string): void {
+    RNFetchBlob.fs.unlink(uri)
+    .catch(e=>console.error('file removal failed:', e));
+  }
+
   static async InitFilePaths(): Promise<boolean> {
     try {
       const directories = [
@@ -38,7 +43,7 @@ export class FileManager {
       return source;
     }
 
-    const localFilePath = this.fmHelper.getFilePath(source, mimeType);
+    const localFilePath = this.fmHelper.getFilePath(this.b64URL(source), mimeType);
     try {
       const cached = await RNFetchBlob.fs.exists(localFilePath);
       if (cached) {

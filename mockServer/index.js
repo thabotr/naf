@@ -45,6 +45,7 @@ const chats = [{
       from: '->mikeyrich',
       to: ourUser.handle,
       id: 1667840200,
+      voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
       files: [{
         type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg', size: 2121,
       }],

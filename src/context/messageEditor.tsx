@@ -32,7 +32,7 @@ const recordingPerms = [
 export type MessageComposerContextType = {
   recordSecs: number;
   vrState: VRState;
-  audioRecorderPlayer: AudioRecorderPlayer;
+  audioRecorderPlayer: AudioRecorderPlayer | null;
   message: Message;
   composing: boolean;
   showTextInput: boolean;
@@ -59,7 +59,7 @@ const MessageComposerProvider = ({children}: Props) => {
   const [vrState, setVRState] = React.useState<VRState>({recordingPermitted: false});
   const [showTextInput, setShowTextInput] = React.useState(false);
   const [recordSecs, setRecordSecs] = React.useState(0);
-  const [audioRecorderPlayer] = React.useState<AudioRecorderPlayer>(new AudioRecorderPlayer());
+  const [audioRecorderPlayer] = React.useState<AudioRecorderPlayer | null>(null);
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
   const [recordingName, setRecordingName] = React.useState<string>((new Date()).getTime().toString());
   
@@ -130,8 +130,8 @@ const MessageComposerProvider = ({children}: Props) => {
       android: `${RNFetchBlob.fs.dirs.CacheDir}/${recordingName}.mp3`
     })
 
-    const uri = await audioRecorderPlayer.startRecorder(path);
-    audioRecorderPlayer.addRecordBackListener((e) => {
+    const uri = await audioRecorderPlayer?.startRecorder(path);
+    audioRecorderPlayer?.addRecordBackListener((e) => {
       setRecordSecs(e.currentPosition/1000);
     });
 
@@ -145,8 +145,8 @@ const MessageComposerProvider = ({children}: Props) => {
   
   const onStopRecord = async () => {
     setRecordingName((new Date()).getTime().toString());
-    await audioRecorderPlayer.stopRecorder();
-    audioRecorderPlayer.removeRecordBackListener();
+    await audioRecorderPlayer?.stopRecorder();
+    audioRecorderPlayer?.removeRecordBackListener();
     const oldVrState = {...vrState};
     setVRState({
       ...oldVrState,

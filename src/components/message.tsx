@@ -12,7 +12,7 @@ import {
 
 import {useTheme} from '../context/theme';
 import {Message, FileType} from '../types/message';
-import {VoiceNoteCard} from './voiceNote';
+import {VoiceNoteCard} from './VoiceNoteCard';
 import {
   OnlyShow,
   OverlayedView,
@@ -408,8 +408,8 @@ export const MessageCard = ({msg}: {msg: Message}) => {
             <OnlyShow If={!!msg.text}>
               <ExpandableParagraph text={msg.text ?? ''} />
             </OnlyShow>
-            {msg.voiceRecordings.map(t => (
-              <VoiceNoteCard key={t.uri} file={t} user={sender} />
+            {msg.voiceRecordings.map(vr => (
+              <VoiceNoteCard playId={`${msg.from}-${msg.to}-${msg.id}-${vr.uri}`} key={vr.uri} file={vr} user={sender} />
             ))}
             {renderVisualFiles()}
             {renderOtherFiles()}

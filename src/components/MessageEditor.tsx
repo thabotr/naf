@@ -16,7 +16,7 @@ import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import {FilePreviewCard, VisualPreview} from './message';
 import {OnlyShow} from './helper';
-import {VoiceNoteCard} from './voiceNote';
+import {VoiceNoteCard} from './VoiceNoteCard';
 import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
@@ -271,7 +271,7 @@ export const MessageEditorCard = () => {
           {editorTextInput()}
           {message.voiceRecordings.map(r => (
             <HorizontalView style={{alignItems: 'center'}} key={r.uri}>
-              <VoiceNoteCard style={{flex: 1}} file={r} user={true} />
+              <VoiceNoteCard playId={`${message.from}-${message.to}-${message.id}-${r.uri}`} style={{flex: 1}} file={r} user={true} />
               <IconButton
                 style={{
                   backgroundColor: theme.color.secondary,
