@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Pressable, Platform} from 'react-native';
+import {View, TouchableOpacity, Platform, Pressable} from 'react-native';
 import {Paragraph, Card, IconButton, ActivityIndicator, TouchableRipple, Badge, Avatar, List} from 'react-native-paper';
 import TrackPlayer, { State as PlayState} from 'react-native-track-player';
 
@@ -19,7 +19,6 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     const {listeningWith, currentTrack, playUserTrack, playState} = React.useContext(ListenWithMeContext) as ListenWithMeContextType;
     const {saveActiveChat} = useChats();
 
-    const [landscapeClicked, setLandscapeClicked] = React.useState(false);
     const [landscapeUri, setLandscapeUri] = React.useState('');
 
     const latestMessage = chat.messages.slice(-1).find(_=>true);
@@ -36,14 +35,19 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
     },[])
 
     return <Card style={{borderRadius: 5, margin: 2, padding: 4, backgroundColor: avatarSecondary}}>
-    {/* <CardCover
+    <CardCover
         source={landscapeUri}
-        style={{opacity: landscapeClicked ? 0.8 : 1, backgroundColor: avatarPrimary}}
-    /> */}
-    <CardCover source={'file:///data/user/0/com.naf/cache/files/aHR0cDovLzEwLjAuMi4yOjMwMDAvYXZhdGFyMS5qcGc='}/>
+        style={{backgroundColor: avatarPrimary}}
+    />
     <OverlayedView style={{justifyContent: 'flex-start', alignItems: 'flex-start', borderColor: avatarPrimary, borderWidth: 2}}>
         <HorizontalView>
-            <View style={{height: '100%', width: '25%'}}>
+            <Pressable
+                style={{height: '100%', width: '25%'}}
+                onPress={()=>{
+                    saveActiveChat(chat);
+                    navigation.navigate('ChatProfile');
+                }}
+            >
                 <View style={{height: '50%', width: '100%'}}>
                     <Lay
                         component={<Image
@@ -76,7 +80,7 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                         over={<View style={{height: '100%', width: '100%', backgroundColor: avatarSecondary, opacity: 1}}/>}
                     />
                 </View>
-            </View>
+            </Pressable>
             <View style={{height: '100%', width: '75%'}}>
                 <TouchableOpacity
                     style={{
@@ -112,10 +116,8 @@ export function ChatPreviewCard({chat, navigation}:{chat:Chat, navigation: any})
                         </OverlayedView>
                     </View>
                 </TouchableOpacity>
-                <Pressable
+                <View
                     style={{width: '100%', height: '50%'}}
-                    onPressIn={()=>setLandscapeClicked(true)}
-                    onPressOut={()=>setLandscapeClicked(false)}
                 />
                 <View style={{ width: '100%', height: '25%'}}>
                 <Lay

@@ -46,16 +46,15 @@ export function VoiceNoteCard({
   }, []);
 
   React.useEffect(() => {
-    if(playId === recorderPlayerData.playId) {
+    if (playId === recorderPlayerData.playId) {
       setPlayerValues(pvs => {
         return {
           ...pvs,
           positionSec: recorderPlayerData.playerPosition,
         };
       });
-    }else if( playState === PlayState.PLAYING)
-    {
-        setPlayState(PlayState.PAUSED);
+    } else if (playState === PlayState.PLAYING) {
+      setPlayState(PlayState.PAUSED);
     }
   }, [recorderPlayerData.playerPosition]);
 

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import {FileManagerHelper} from './FileManagerHelper';
 
@@ -47,7 +48,7 @@ export class FileManager {
     try {
       const cached = await RNFetchBlob.fs.exists(localFilePath);
       if (cached) {
-        return localFilePath;
+        return Platform.select({android: 'file://'.concat(localFilePath)}) ?? localFilePath;
       }
     } catch (e) {
       console.error(
@@ -64,7 +65,7 @@ export class FileManager {
         path: localFilePath,
       }).fetch('GET', source);
       if (remoteResult.info().status === 200) {
-        return localFilePath;
+        return Platform.select({android: 'file://'.concat(localFilePath)}) ?? localFilePath;
       }
       console.log(
         'got remote response status code ',

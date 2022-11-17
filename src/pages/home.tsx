@@ -1,13 +1,10 @@
 import React from 'react';
-import {ScrollView, View, Text, FlatList} from 'react-native';
+import {View, FlatList} from 'react-native';
 
 import {ChatPreviewCard} from '../components/chatPreviewCard';
 import {ListenWithMeCard} from '../components/listenWithCard';
 import {useChats} from '../context/chat';
-import {
-  ListenWithMeContextProvider,
-  ListenWithMeContextType,
-} from '../context/listenWithMe';
+import {ListenWithMeContextProvider} from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
 import {useAppState} from '../providers/AppStateProvider';
 import {remoteGetChats} from '../remote/chats';

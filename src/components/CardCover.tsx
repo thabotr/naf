@@ -19,7 +19,7 @@ function CardCover({source, style, onURI}: Props) {
 
   React.useEffect(() => {
     if (source) {
-      FileManager.getFileURI(source)
+      FileManager.getFileURI(source, 'image/jpg')
         .then(uri => {
           if(uri){
             setImgSource(uri);

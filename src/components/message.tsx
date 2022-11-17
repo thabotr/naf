@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, ToastAndroid, View} from 'react-native';
+import {FlatList, ToastAndroid, View, ViewStyle} from 'react-native';
 import {
   Card,
   Paragraph,
@@ -29,7 +29,7 @@ import {useChats} from '../context/chat';
 import { FileManagerHelper } from '../services/FileManagerHelper';
 import { HorizontalView } from './HorizontalView';
 
-export const ImagePreviewCard = ({source}: {source: FileType}) => {
+export const ImagePreviewCard = ({source, style}: {source: FileType, style?: ViewStyle}) => {
   const openImage = async () => {
     if (source.uri.includes('http')) {
       const ext = FileManagerHelper.ExtForMimetypes[source.type];
@@ -38,7 +38,7 @@ export const ImagePreviewCard = ({source}: {source: FileType}) => {
     } else openFile(source.uri);
   };
   return (
-    <Card onPress={openImage} style={{margin: 1, flexGrow: 1}}>
+    <Card onPress={openImage} style={{margin: 1, flexGrow: 1,...style}}>
       <Card.Cover source={source} />
     </Card>
   );

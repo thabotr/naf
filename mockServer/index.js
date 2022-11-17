@@ -11,7 +11,7 @@ const ourUser = {
   handle: '->unodosthreenfour',
   initials: 'UE',
   avatarURI: 'http://10.0.2.2:3000/avatar1.jpg',
-  landscapeURI: 'http://10.0.2.2:3000/image1.jpg',
+  landscapeURI: 'https://picsum.photos/1713',
   listenWithMeURI: 'http://10.0.2.2:3000/listen1.mp3',
 }
 
