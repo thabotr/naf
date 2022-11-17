@@ -1,18 +1,27 @@
 import React from 'react';
 import {ImageStyle} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
+import { openFile } from '../fileViewer';
 import {FileManager} from '../services/FileManager';
 import { OnlyShow } from './Helpers/OnlyShow';
 import { OverlayedView } from './Helpers/OverlayedView';
-import {IMState} from './image';
 
-export type Props = {
+enum IMState {
+  FETCHING,
+  LOADING,
+  ERROR,
+  SUCCESS,
+}
+
+type Props = {
   source?: string;
   style?: ImageStyle;
   onURI?: (uri: string)=>void;
+  viewable?:boolean;
+  onPress?:()=>void;
 };
 
-function CardCover({source, style, onURI}: Props) {
+function CardCover({source, style, onURI, viewable, onPress}: Props) {
   const [imgState, setImgState] = React.useState(IMState.FETCHING);
   const [imgSource, setImgSource] = React.useState<string | undefined>(
     undefined,
@@ -34,7 +43,13 @@ function CardCover({source, style, onURI}: Props) {
   }, []);
 
   return (
-    <>
+    <Card
+      style={style}
+      onPress={()=>{
+        viewable && imgSource && openFile(imgSource);
+        onPress?.();
+      }}
+    >
       <Card.Cover
         source={{uri: imgSource}}
         style={style}
@@ -48,7 +63,7 @@ function CardCover({source, style, onURI}: Props) {
           <ActivityIndicator animating />
         </OnlyShow>
       </OverlayedView>
-    </>
+    </Card>
   );
 }
 

@@ -24,12 +24,11 @@ function HomeHeader(props: NativeStackHeaderProps){
       subtitleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
       subtitle={`${user?.name} ${user?.surname}`}
     />
-      <Pressable
+      <View
         style={{height: '100%', width: 50, marginRight: 10}} 
-        onPress={()=>props.navigation.navigate('UserProfile')}
       >
-        <CardCover source={user?.avatarURI} style={{ height: '100%', borderRadius: 0, width: '100%'}}/>
-      </Pressable>
+        <CardCover onPress={()=>props.navigation.navigate('UserProfile')} source={user?.avatarURI} style={{ height: '100%', width: '100%'}}/>
+      </View>
   </Appbar.Header>
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {SafeAreaView, View, ScrollView, Pressable} from 'react-native';
+import {SafeAreaView, View, ScrollView} from 'react-native';
 
 import {useTheme} from '../context/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
@@ -51,12 +51,11 @@ function ChatHeader(props: NativeStackHeaderProps){
       subtitleStyle={{ color: theme.color.textPrimary, textShadowColor: theme.color.textSecondary}}
       subtitle={`${user?.name} ${user?.surname}`}
     />
-      <Pressable
+      <View
         style={{height: '100%', width: 50, marginRight: 10}} 
-        onPress={()=>props.navigation.navigate('ChatProfile')}
       >
-        <CardCover source={user?.avatarURI} style={{ height: '100%', borderRadius: 0, width: '100%'}}/>
-      </Pressable>
+        <CardCover onPress={()=>props.navigation.navigate('ChatProfile')} source={user?.avatarURI} style={{ height: '100%', width: '100%'}}/>
+      </View>
   </Appbar.Header>
 }
 
