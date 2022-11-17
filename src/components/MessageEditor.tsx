@@ -15,20 +15,20 @@ import {View, FlatList} from 'react-native';
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
 import {VoiceNoteCard} from './VoiceNoteCard';
-import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
-import { HorizontalView } from './HorizontalView';
-import { useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
-import { OnlyShow } from './Helpers/OnlyShow';
-import { VisualPreview } from './VisualPreview';
-import { FilePreviewCard } from './FilePreviewCard';
+import {HorizontalView} from './HorizontalView';
+import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
+import {OnlyShow} from './Helpers/OnlyShow';
+import {VisualPreview} from './VisualPreview';
+import {FilePreviewCard} from './FilePreviewCard';
+import {FileManager} from '../services/FileManager';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
   const {addChatMessages, activeChat} = useChats();
-  
+
   const {
     composing,
     discardMessage,
@@ -44,7 +44,7 @@ export const MessageEditorCard = () => {
   const [previewingFiles, setPreviewingFiles] = React.useState(false);
 
   const openCamInMode = (mode: 'video' | 'photo') => {
-    openCamera(mode)
+    FileManager.getCameraMedia(mode)
       .then(vidOrPic => {
         vidOrPic &&
           saveComposeMessage({
@@ -69,9 +69,9 @@ export const MessageEditorCard = () => {
             onPress={() =>
               setSelectedFiles(
                 selectedFiles
-                  .slice(0, fIndex)
-                  .concat([!selectedFiles[fIndex]])
-                  .concat(selectedFiles.slice(fIndex + 1)),
+                .slice(0, fIndex)
+                .concat([!selectedFiles[fIndex]])
+                .concat(selectedFiles.slice(fIndex + 1)),
               )
             }
           />
@@ -158,7 +158,7 @@ export const MessageEditorCard = () => {
                   from: user?.handle ?? '',
                   to: activeChat()?.user.handle ?? '',
                   draft: true,
-                  timestamp: timestamp/1_000,
+                  timestamp: timestamp / 1_000,
                 },
               ]);
               discardMessage();
@@ -174,7 +174,7 @@ export const MessageEditorCard = () => {
 
         <HorizontalView>
           <IconButton icon="emoticon-excited-outline" onPress={() => {}} />
-          <IconButton icon="microphone" onPress={startRecorder}/>
+          <IconButton icon="microphone" onPress={startRecorder} />
           <IconButton icon="attachment" onPress={onAddAttachments} />
           <IconButton icon="camera" onPress={() => openCamInMode('photo')} />
           <IconButton icon="video" onPress={() => openCamInMode('video')} />
@@ -272,7 +272,12 @@ export const MessageEditorCard = () => {
           {editorTextInput()}
           {message.voiceRecordings.map(r => (
             <HorizontalView style={{alignItems: 'center'}} key={r.uri}>
-              <VoiceNoteCard playId={`${message.from}-${message.to}-${message.id}-${r.uri}`} style={{flex: 1}} file={r} user={true} />
+              <VoiceNoteCard
+                playId={`${message.from}-${message.to}-${message.id}-${r.uri}`}
+                style={{flex: 1}}
+                file={r}
+                user={true}
+              />
               <IconButton
                 style={{
                   backgroundColor: theme.color.secondary,
