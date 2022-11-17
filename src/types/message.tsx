@@ -1,4 +1,4 @@
-import {DeliveryStatus} from '../components/message';
+import {DeliveryStatus} from '../components/MessageCard';
 
 export type Link = {id: string; nextIds: string[]; prevIds: string[]};
 

@@ -1,14 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Appbar, Button, Paragraph} from "react-native-paper";
+import {Button, Paragraph} from "react-native-paper";
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 
 import { CardCover } from '../components/CardCover';
-import { OnlyShow} from '../components/helper';
 import { HorizontalView } from '../components/HorizontalView';
 import { useChats } from '../context/chat';
 import { useTheme } from '../context/theme';
 import { User } from '../types/user';
+import { ProfileHeader } from '../components/ProfileHeader';
 
 const ProfilePreview=({user}:{user: User})=>{
   const {theme} = useTheme();
@@ -33,17 +33,12 @@ const ProfilePreview=({user}:{user: User})=>{
 
 function ChatProfileHeader(props:NativeStackHeaderProps){
   const {activeChat} = useChats();
-  const {theme} = useTheme();
 
-  return <Appbar.Header style={{backgroundColor: theme.color.primary}}>
-  <OnlyShow If={!!props.back}>
-    <Appbar.BackAction onPress={()=>{
-      props.navigation.goBack();
-    }}/>
-  </OnlyShow>
-  <Appbar.Content title={'Profile'}/>
-  <CardCover source={activeChat()?.user.avatarURI} style={{width: 50, height: '100%'}}/>
-</Appbar.Header>
+  const user = activeChat()?.user;
+  if(!user){
+    return <></>;
+  }
+  return <ProfileHeader user={user} props={props}/>;
 }
 
 function ChatProfile(){

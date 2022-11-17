@@ -5,8 +5,9 @@ import { IconButton, ActivityIndicator } from 'react-native-paper';
 import {ImageColorsResult, Config} from 'react-native-image-colors/lib/typescript/types';
 import ImageColors from 'react-native-image-colors';
 import RNFetchBlob from 'rn-fetch-blob';
-import { OnlyShow, OverlayedView } from './helper';
 import { getFilePath } from '../file';
+import { OverlayedView } from './Helpers/OverlayedView';
+import { OnlyShow } from './Helpers/OnlyShow';
 
 export enum IMState {
   FETCHING,

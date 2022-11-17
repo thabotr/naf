@@ -1,17 +1,13 @@
 import React from 'react';
-import {View, BackHandler} from 'react-native';
-import {FAB, IconButton} from 'react-native-paper';
+import { BackHandler } from 'react-native';
+import { IconButton } from 'react-native-paper';
+import { openCamera } from "../camera";
+import { useMessageComposer } from "../context/messageEditor";
+import { useAudioRecorderPlayer } from "../providers/AudioRecorderPlayer";
 
-import {useTheme} from '../context/theme';
-import {useMessageComposer} from '../context/messageEditor';
-import {OnlyShow, Show} from './helper';
-import {openCamera} from '../camera';
-import { RecordPlayState, useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
-
-export const ExtendedActionButtons = ({onBack}: {onBack: () => void}) => {
+const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
   const {
     setComposeOn,
-    // onStartRecord,
     showTextInputOn,
     onAddAttachments,
     saveComposeMessage,
@@ -96,52 +92,4 @@ export const ExtendedActionButtons = ({onBack}: {onBack: () => void}) => {
   );
 };
 
-export const FloatingActions = () => {
-  const {theme} = useTheme();
-  const [expanded, setExpanded] = React.useState(false);
-  const {composing, setComposeOn, showTextInputOn} =
-    useMessageComposer();
-  const {recorderPlayerState} = useAudioRecorderPlayer();
-
-  const pencilClicked = () => {
-    setComposeOn(true);
-    showTextInputOn(true);
-  };
-
-  const recordingOrPaused = recorderPlayerState === RecordPlayState.RECORDING ||
-    recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
-
-  return (
-    <OnlyShow If={!composing && !recordingOrPaused}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          padding: 0,
-          elevation: 2,
-          borderRadius: 3,
-          position: 'absolute',
-          right: 10,
-          bottom: 50,
-          backgroundColor: theme.color.userPrimary,
-        }}>
-        <Show
-          component={
-            <FAB
-              style={{
-                margin: 3,
-                borderRadius: 0,
-                backgroundColor: theme.color.userSecondary,
-              }}
-              icon="pencil"
-              onLongPress={() => setExpanded(true)}
-              onPress={pencilClicked}
-            />
-          }
-          If={!expanded}
-          ElseShow={<ExtendedActionButtons onBack={() => setExpanded(false)} />}
-        />
-      </View>
-    </OnlyShow>
-  );
-};
+export {ExtendedComposeFABs};

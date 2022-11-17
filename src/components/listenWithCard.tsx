@@ -14,7 +14,6 @@ import TrackPlayer, {
   Track,
 } from 'react-native-track-player';
 
-import {OnlyShow, OverlayedView} from './helper';
 import {useChats} from '../context/chat';
 import {
   ListenWithMeContext,
@@ -24,6 +23,8 @@ import {useTheme} from '../context/theme';
 import {getAudioMetadata} from '../audio';
 import {verboseDuration} from '../helper';
 import { HorizontalView } from './HorizontalView';
+import { OnlyShow } from './Helpers/OnlyShow';
+import { OverlayedView } from './Helpers/OverlayedView';
 
 function IconButton({
   If,

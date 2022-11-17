@@ -13,38 +13,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import {ImageViewProvider} from './src/context/images';
 import {ThemeProvider} from './src/context/theme';
 import {useLoggedInUser, LoggedInUserProvider} from './src/context/user';
-import {ToastySnackbarManager} from './src/components/snackbar';
-import {StackNavigator} from './src/components/stackNavigator';
+import {StackNavigator} from './src/components/StackNavigator';
 import {ChatsProvider} from './src/context/chat';
-import {Show} from './src/components/helper';
-import {Login} from './src/pages/login';
-import RNFetchBlob from 'rn-fetch-blob';
+import {Login} from './src/pages/Login';
 import {AppStateProvider} from './src/providers/AppStateProvider';
 import { AudioRecorderPlayerProvider, useAudioRecorderPlayer } from './src/providers/AudioRecorderPlayer';
 import { FileManager } from './src/services/FileManager';
-// import {AppStateProvider} from './providers/AppStateProvider';
-
-const SetupFileStructure = async () => {
-  try {
-    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/images`);
-  } catch (e) {
-    if (!`${e}`.includes('already exists')) return e;
-  }
-
-  try {
-    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/sounds`);
-  } catch (e) {
-    if (!`${e}`.includes('already exists')) return e;
-  }
-
-  try {
-    await RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.CacheDir}/files`);
-  } catch (e) {
-    if (!`${e}`.includes('already exists')) return e;
-  }
-
-  return null;
-};
+import { Show } from './src/components/Helpers/Show';
 
 type Props = {
   children: React.ReactNode;
@@ -83,9 +58,6 @@ function PageLoginElseHome() {
     .then(b=>{
       if(!b) console.error('failed to create file structure');
     }).catch(e=>console.error('failed to create file structure', e));
-    // SetupFileStructure().catch(e => {
-    //   if (e !== null) console.error('file structure setup error: ' + e);
-    // });
   }, []);
   const {user} = useLoggedInUser();
   return (
@@ -95,7 +67,6 @@ function PageLoginElseHome() {
       ElseShow={
         <>
           <StackNavigator />
-          <ToastySnackbarManager />
         </>
       }
     />

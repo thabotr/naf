@@ -14,14 +14,15 @@ import {View, FlatList} from 'react-native';
 
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
-import {FilePreviewCard, VisualPreview} from './message';
-import {OnlyShow} from './helper';
 import {VoiceNoteCard} from './VoiceNoteCard';
 import {openCamera} from '../camera';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 import { HorizontalView } from './HorizontalView';
 import { useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
+import { OnlyShow } from './Helpers/OnlyShow';
+import { VisualPreview } from './VisualPreview';
+import { FilePreviewCard } from './FilePreviewCard';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();

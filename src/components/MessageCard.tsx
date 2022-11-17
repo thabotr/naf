@@ -1,234 +1,34 @@
 import React from 'react';
-import {FlatList, ToastAndroid, View, ViewStyle} from 'react-native';
+import {ToastAndroid, View} from 'react-native';
 import {
   Card,
   Paragraph,
   IconButton,
-  List,
-  Portal,
-  Dialog,
   Chip,
 } from 'react-native-paper';
 
 import {useTheme} from '../context/theme';
 import {Message, FileType} from '../types/message';
 import {VoiceNoteCard} from './VoiceNoteCard';
-import {
-  OnlyShow,
-  OverlayedView,
-  Show,
-  vidIconOverlay,
-} from './helper';
 import {useMessageComposer} from '../context/messageEditor';
-import {openFile} from '../fileViewer';
 import {useLoggedInUser} from '../context/user';
-import {verboseSize, verboseTime} from '../helper';
-import {getFilePath} from '../file';
-import {Image} from './image';
+import {verboseTime} from '../helper';
 import {useChats} from '../context/chat';
-import { FileManagerHelper } from '../services/FileManagerHelper';
 import { HorizontalView } from './HorizontalView';
-
-export const ImagePreviewCard = ({source, style}: {source: FileType, style?: ViewStyle}) => {
-  const openImage = async () => {
-    if (source.uri.includes('http')) {
-      const ext = FileManagerHelper.ExtForMimetypes[source.type];
-      const path = await getFilePath(source.uri, ext);
-      path && openFile(path);
-    } else openFile(source.uri);
-  };
-  return (
-    <Card onPress={openImage} style={{margin: 1, flexGrow: 1,...style}}>
-      <Card.Cover source={source} />
-    </Card>
-  );
-};
-
-// TODO use dynamic value for iconSize
-export const VidPreviewCard = ({
-  iconSize = 64,
-  source,
-}: {
-  iconSize?: number;
-  source: FileType;
-}) => {
-  const openVid = async () => {
-    if (source.uri.includes('http')) {
-      const ext = FileManagerHelper.ExtForMimetypes[source.type];
-      const path = await getFilePath(source.uri, ext);
-      path && openFile(path);
-    } else openFile(source.uri);
-  };
-  return (
-    <Card onPress={openVid} style={{flexGrow: 1, margin: 1}}>
-      <Card.Cover style={{opacity: 0.9}} source={source} />
-      {vidIconOverlay(iconSize)}
-    </Card>
-  );
-};
-
-const fileType: {[key: string]: string} = {
-  'audio/mpeg': 'file-music',
-  'application/zip': 'folder-zip',
-  'application/pdf': 'file-pdf-box',
-};
-
-export const FilePreviewCard = ({
-  file,
-  user = true,
-}: {
-  file: FileType;
-  user?: boolean;
-}) => {
-  const {theme} = useTheme();
-
-  const openThisFile = async () => {
-    if (file.uri.includes('http')) {
-      const ext = FileManagerHelper.ExtForMimetypes[file.type];
-      const path = await getFilePath(file.uri, ext);
-      path && openFile(path);
-    } else openFile(file.uri);
-  };
-
-  return (
-    <Card
-      onPress={openThisFile}
-      style={{
-        flex: 1,
-        margin: 1,
-        backgroundColor: user
-          ? theme.color.userSecondary
-          : theme.color.friendSecondary,
-      }}>
-      <List.Item
-        style={{margin: 0, padding: 0}}
-        title={
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              textShadowColor: theme.color.textSecondary,
-            }}>{`${verboseSize(file.size)} [${
-            file.type.split('/')[file.type.split('/').length - 1]
-          }]`}</Paragraph>
-        }
-        description={
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              textShadowColor: theme.color.textSecondary,
-            }}
-            numberOfLines={1}>{`${file.name}`}</Paragraph>
-        }
-        left={props => (
-          <List.Icon {...props} icon={fileType[file.type] ?? 'file'} />
-        )}
-      />
-    </Card>
-  );
-};
-
-export const ExpandableParagraph = ({text}: {text: string}) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const {theme} = useTheme();
-  const toggleExpanded = () =>
-    expanded ? setExpanded(false) : setExpanded(true);
-
-  return (
-    <Show
-      component={
-        <>
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              textShadowColor: theme.color.textSecondary,
-            }}
-            onPress={toggleExpanded}
-            numberOfLines={!expanded ? 2 : 0}>
-            {text}
-          </Paragraph>
-          <IconButton
-            onPress={toggleExpanded}
-            style={{width: '100%', height: 10}}
-            size={15}
-            icon={expanded ? 'chevron-up' : 'chevron-down'}
-          />
-        </>
-      }
-      If={text.length > 150}
-      ElseShow={
-        <Paragraph
-          style={{
-            color: theme.color.textPrimary,
-            textShadowColor: theme.color.textSecondary,
-          }}>
-          {text}
-        </Paragraph>
-      }
-    />
-  );
-};
+import { ImagePreviewCard } from './ImagePreviewCard';
+import { VidPreviewCard } from './VidPreviewCard';
+import { ExpandableParagraph } from './ExpandableParagraph';
+import { FilePreviewCard } from './FilePreviewCard';
+import { MessageFilesPreview } from './MessageFilesPreview';
+import { Show } from './Helpers/Show';
+import { OverlayedView } from './Helpers/OverlayedView';
+import { OnlyShow } from './Helpers/OnlyShow';
 
 export enum DeliveryStatus {
   ERROR,
   UNSEEN,
   SEEN,
   NONE,
-}
-
-function MessageFilesPreview({
-  msg,
-  onDismiss,
-}: {
-  msg: Message;
-  onDismiss: () => void;
-}) {
-  const {user} = useLoggedInUser();
-  const {theme} = useTheme();
-  const fromUser = msg.from === user?.handle;
-  return (
-    <Portal>
-      <Dialog
-        style={{
-          backgroundColor: fromUser
-            ? theme.color.userPrimary
-            : theme.color.friendPrimary,
-        }}
-        visible={true}
-        onDismiss={onDismiss}>
-        <Dialog.Title>all attachments</Dialog.Title>
-        <Dialog.Content style={{maxHeight: 700}}>
-          <FlatList
-            data={msg.files.map((f, i) => {
-              return {
-                id: `${i}`,
-                title: f.uri,
-              };
-            })}
-            renderItem={({item}) => {
-              const f = msg.files[Number(item.id)] ?? {type: '', uri: ''};
-              switch (f.type.split('/')[0]) {
-                case 'image':
-                  return <ImagePreviewCard source={f} />;
-                case 'video':
-                  return <VidPreviewCard source={f} />;
-                default:
-                  return (
-                    <FilePreviewCard
-                      user={fromUser}
-                      file={{...f, size: f.size ?? 0, name: f.name ?? ''}}
-                    />
-                  );
-              }
-            }}
-            keyExtractor={(item: {id: string; title: string}) => item.title}
-          />
-        </Dialog.Content>
-        <Dialog.Actions>
-          <IconButton icon="close" onPress={onDismiss} />
-        </Dialog.Actions>
-      </Dialog>
-    </Portal>
-  );
 }
 
 export const MessageCard = ({msg}: {msg: Message}) => {
@@ -464,27 +264,5 @@ const LiveTimeStamp = ({
         {verboseTime(timestamp)}
       </Paragraph>
     </OnlyShow>
-  );
-};
-
-export const VisualPreview = ({mFile}: {mFile: FileType}) => {
-  return (
-    <Card
-      onPress={() => openFile(mFile.uri)}
-      elevation={0}
-      style={{borderRadius: 0, flex: 1, height: 80, margin: 1, flexGrow: 1}}>
-      <Show
-        component={
-          <Image style={{flex: 1, height: 80, margin: 1}} url={mFile.uri} />
-        }
-        If={mFile.type.split('/')[0] === 'image'}
-        ElseShow={
-          <>
-            <Image style={{height: '100%', opacity: 0.8}} url={mFile.uri} />
-            {vidIconOverlay(32)}
-          </>
-        }
-      />
-    </Card>
   );
 };

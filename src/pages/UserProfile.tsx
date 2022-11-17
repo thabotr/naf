@@ -1,9 +1,13 @@
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import React from 'react';
 import { Pressable, View, StyleSheet, ScrollView } from "react-native";
 import { Button, IconButton, List, Paragraph, TextInput} from "react-native-paper";
 import { CardCover } from "../components/CardCover";
-import { OnlyShow, OverlayedView, Show } from "../components/helper";
+import { OnlyShow } from '../components/Helpers/OnlyShow';
+import { OverlayedView } from '../components/Helpers/OverlayedView';
+import { Show } from '../components/Helpers/Show';
 import { HorizontalView } from "../components/HorizontalView";
+import { ProfileHeader } from '../components/ProfileHeader';
 import { useTheme } from "../context/theme";
 import { useLoggedInUser } from "../context/user";
 
@@ -154,10 +158,14 @@ const ProfilePreview=()=>{
   </>
 }
 
-function UserProfile(){
+function UserProfileHeader(props: NativeStackHeaderProps){
   const {user} = useLoggedInUser();
-  const {theme} = useTheme();
+  if(user)
+    return <ProfileHeader user={user} props={props}/>;
+  return <></>
+}
 
+function UserProfile(){
   return <View>
     <ProfilePreview/>
     <WaitingForYouList/>
@@ -178,4 +186,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export {UserProfile};
+export {UserProfile, UserProfileHeader};

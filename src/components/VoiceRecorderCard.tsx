@@ -11,7 +11,7 @@ import {
   useAudioRecorderPlayer,
 } from '../providers/AudioRecorderPlayer';
 import {FileManager} from '../services/FileManager';
-import {OnlyShow} from './helper';
+import { OnlyShow } from './Helpers/OnlyShow';
 import {HorizontalView} from './HorizontalView';
 
 export function VoiceRecorderCard() {

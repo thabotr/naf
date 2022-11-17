@@ -2,7 +2,8 @@ import React from 'react';
 import {ImageStyle} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {FileManager} from '../services/FileManager';
-import {OnlyShow, OverlayedView} from './helper';
+import { OnlyShow } from './Helpers/OnlyShow';
+import { OverlayedView } from './Helpers/OverlayedView';
 import {IMState} from './image';
 
 export type Props = {
