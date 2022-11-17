@@ -69,9 +69,9 @@ export const MessageEditorCard = () => {
             onPress={() =>
               setSelectedFiles(
                 selectedFiles
-                .slice(0, fIndex)
-                .concat([!selectedFiles[fIndex]])
-                .concat(selectedFiles.slice(fIndex + 1)),
+                  .slice(0, fIndex)
+                  .concat([!selectedFiles[fIndex]])
+                  .concat(selectedFiles.slice(fIndex + 1)),
               )
             }
           />

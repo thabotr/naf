@@ -1,9 +1,9 @@
-import { Card } from "react-native-paper";
-import { openFile } from "../fileViewer";
-import { FileType } from "../types/message";
-import { Show } from "./Helpers/Show";
-import { vidIconOverlay } from "./Helpers/VidIconOverlay";
-import { Image } from "./image";
+import {Card} from 'react-native-paper';
+import {openFile} from '../fileViewer';
+import {FileType} from '../types/message';
+import {Show} from './Helpers/Show';
+import {vidIconOverlay} from './Helpers/VidIconOverlay';
+import {Image} from './image';
 
 const VisualPreview = ({mFile}: {mFile: FileType}) => {
   return (

@@ -1,11 +1,6 @@
 import React from 'react';
 import {ToastAndroid, View} from 'react-native';
-import {
-  Card,
-  Paragraph,
-  IconButton,
-  Chip,
-} from 'react-native-paper';
+import {Card, Paragraph, IconButton, Chip} from 'react-native-paper';
 
 import {useTheme} from '../context/theme';
 import {Message, FileType} from '../types/message';
@@ -14,15 +9,15 @@ import {useMessageComposer} from '../context/messageEditor';
 import {useLoggedInUser} from '../context/user';
 import {verboseTime} from '../helper';
 import {useChats} from '../context/chat';
-import { HorizontalView } from './HorizontalView';
-import { ImagePreviewCard } from './ImagePreviewCard';
-import { VidPreviewCard } from './VidPreviewCard';
-import { ExpandableParagraph } from './ExpandableParagraph';
-import { FilePreviewCard } from './FilePreviewCard';
-import { MessageFilesPreview } from './MessageFilesPreview';
-import { Show } from './Helpers/Show';
-import { OverlayedView } from './Helpers/OverlayedView';
-import { OnlyShow } from './Helpers/OnlyShow';
+import {HorizontalView} from './HorizontalView';
+import {ImagePreviewCard} from './ImagePreviewCard';
+import {VidPreviewCard} from './VidPreviewCard';
+import {ExpandableParagraph} from './ExpandableParagraph';
+import {FilePreviewCard} from './FilePreviewCard';
+import {MessageFilesPreview} from './MessageFilesPreview';
+import {Show} from './Helpers/Show';
+import {OverlayedView} from './Helpers/OverlayedView';
+import {OnlyShow} from './Helpers/OnlyShow';
 
 export enum DeliveryStatus {
   ERROR,
@@ -209,7 +204,12 @@ export const MessageCard = ({msg}: {msg: Message}) => {
               <ExpandableParagraph text={msg.text ?? ''} />
             </OnlyShow>
             {msg.voiceRecordings.map(vr => (
-              <VoiceNoteCard playId={`${msg.from}-${msg.to}-${msg.id}-${vr.uri}`} key={vr.uri} file={vr} user={sender} />
+              <VoiceNoteCard
+                playId={`${msg.from}-${msg.to}-${msg.id}-${vr.uri}`}
+                key={vr.uri}
+                file={vr}
+                user={sender}
+              />
             ))}
             {renderVisualFiles()}
             {renderOtherFiles()}

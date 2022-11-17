@@ -17,20 +17,23 @@ import {StackNavigator} from './src/components/StackNavigator';
 import {ChatsProvider} from './src/context/chat';
 import {Login} from './src/pages/Login';
 import {AppStateProvider} from './src/providers/AppStateProvider';
-import { AudioRecorderPlayerProvider, useAudioRecorderPlayer } from './src/providers/AudioRecorderPlayer';
-import { FileManager } from './src/services/FileManager';
-import { Show } from './src/components/Helpers/Show';
+import {
+  AudioRecorderPlayerProvider,
+  useAudioRecorderPlayer,
+} from './src/providers/AudioRecorderPlayer';
+import {FileManager} from './src/services/FileManager';
+import {Show} from './src/components/Helpers/Show';
 
 type Props = {
   children: React.ReactNode;
 };
 
-function RegisterPlayerRecorder(){
+function RegisterPlayerRecorder() {
   const {initAudioRecorderPlayer} = useAudioRecorderPlayer();
-  React.useEffect(()=>{
+  React.useEffect(() => {
     initAudioRecorderPlayer();
-  },[]);
-  return <></>
+  }, []);
+  return <></>;
 }
 
 function SuperContextProvider({children}: Props) {
@@ -38,7 +41,7 @@ function SuperContextProvider({children}: Props) {
     <ThemeProvider>
       <LoggedInUserProvider>
         <AudioRecorderPlayerProvider>
-          <RegisterPlayerRecorder/>
+          <RegisterPlayerRecorder />
           <ChatsProvider>
             <ImageViewProvider>
               <NavigationContainer>
@@ -55,9 +58,10 @@ function SuperContextProvider({children}: Props) {
 function PageLoginElseHome() {
   React.useEffect(() => {
     FileManager.InitFilePaths()
-    .then(b=>{
-      if(!b) console.error('failed to create file structure');
-    }).catch(e=>console.error('failed to create file structure', e));
+      .then(b => {
+        if (!b) console.error('failed to create file structure');
+      })
+      .catch(e => console.error('failed to create file structure', e));
   }, []);
   const {user} = useLoggedInUser();
   return (

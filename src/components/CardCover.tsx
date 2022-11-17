@@ -1,10 +1,10 @@
 import React from 'react';
 import {ImageStyle} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
-import { openFile } from '../fileViewer';
+import {openFile} from '../fileViewer';
 import {FileManager} from '../services/FileManager';
-import { OnlyShow } from './Helpers/OnlyShow';
-import { OverlayedView } from './Helpers/OverlayedView';
+import {OnlyShow} from './Helpers/OnlyShow';
+import {OverlayedView} from './Helpers/OverlayedView';
 
 enum IMState {
   FETCHING,
@@ -16,9 +16,9 @@ enum IMState {
 type Props = {
   source?: string;
   style?: ImageStyle;
-  onURI?: (uri: string)=>void;
-  viewable?:boolean;
-  onPress?:()=>void;
+  onURI?: (uri: string) => void;
+  viewable?: boolean;
+  onPress?: () => void;
 };
 
 function CardCover({source, style, onURI, viewable, onPress}: Props) {
@@ -31,7 +31,7 @@ function CardCover({source, style, onURI, viewable, onPress}: Props) {
     if (source) {
       FileManager.getFileURI(source, 'image/jpg')
         .then(uri => {
-          if(uri){
+          if (uri) {
             setImgSource(uri);
             onURI?.(uri);
           }
@@ -45,11 +45,10 @@ function CardCover({source, style, onURI, viewable, onPress}: Props) {
   return (
     <Card
       style={style}
-      onPress={()=>{
+      onPress={() => {
         viewable && imgSource && openFile(imgSource);
         onPress?.();
-      }}
-    >
+      }}>
       <Card.Cover
         source={{uri: imgSource}}
         style={style}

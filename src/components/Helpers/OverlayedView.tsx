@@ -1,6 +1,6 @@
-import { View, ViewProps } from "react-native";
+import {View, ViewProps} from 'react-native';
 
-export function OverlayedView(props: ViewProps){
+export function OverlayedView(props: ViewProps) {
   const style: Object = props.style?.valueOf() ?? {};
   const newProps: ViewProps = {
     ...props,
@@ -13,9 +13,7 @@ export function OverlayedView(props: ViewProps){
       justifyContent: 'center',
       alignItems: 'center',
       ...style,
-    }
-  }; 
-  return <View {...newProps}>
-    {props.children}
-  </View>
+    },
+  };
+  return <View {...newProps}>{props.children}</View>;
 }

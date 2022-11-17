@@ -1,7 +1,7 @@
 import React from 'react';
-import { IconButton, Paragraph } from 'react-native-paper';
-import { useTheme } from '../context/theme';
-import { Show } from './Helpers/Show';
+import {IconButton, Paragraph} from 'react-native-paper';
+import {useTheme} from '../context/theme';
+import {Show} from './Helpers/Show';
 
 const ExpandableParagraph = ({text}: {text: string}) => {
   const [expanded, setExpanded] = React.useState(false);

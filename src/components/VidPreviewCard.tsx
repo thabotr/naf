@@ -1,9 +1,9 @@
-import { Card } from "react-native-paper";
-import { getFilePath } from "../file";
-import { openFile } from "../fileViewer";
-import { FileManagerHelper } from "../services/FileManagerHelper";
-import { FileType } from "../types/message";
-import { vidIconOverlay } from "./Helpers/VidIconOverlay";
+import {Card} from 'react-native-paper';
+import {getFilePath} from '../file';
+import {openFile} from '../fileViewer';
+import {FileManagerHelper} from '../services/FileManagerHelper';
+import {FileType} from '../types/message';
+import {vidIconOverlay} from './Helpers/VidIconOverlay';
 
 const VidPreviewCard = ({
   iconSize = 64,

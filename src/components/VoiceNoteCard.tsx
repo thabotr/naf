@@ -7,7 +7,7 @@ import {verboseDuration, verboseSize} from '../helper';
 import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {FileManager} from '../services/FileManager';
 import {VoiceNoteType} from '../types/message';
-import { OnlyShow } from './Helpers/OnlyShow';
+import {OnlyShow} from './Helpers/OnlyShow';
 import {HorizontalView} from './HorizontalView';
 
 const enum PlayState {

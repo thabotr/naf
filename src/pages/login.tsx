@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Paragraph, Surface} from 'react-native-paper';
-import { OnlyShow } from '../components/Helpers/OnlyShow';
+import {OnlyShow} from '../components/Helpers/OnlyShow';
 
 import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';

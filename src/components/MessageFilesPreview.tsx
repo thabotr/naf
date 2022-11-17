@@ -1,11 +1,11 @@
-import { FlatList } from "react-native";
-import { Dialog, IconButton, Portal } from "react-native-paper";
-import { useTheme } from "../context/theme";
-import { useLoggedInUser } from "../context/user";
-import { Message } from "../types/message";
-import { FilePreviewCard } from "./FilePreviewCard";
-import { ImagePreviewCard } from "./ImagePreviewCard";
-import { VidPreviewCard } from "./VidPreviewCard";
+import {FlatList} from 'react-native';
+import {Dialog, IconButton, Portal} from 'react-native-paper';
+import {useTheme} from '../context/theme';
+import {useLoggedInUser} from '../context/user';
+import {Message} from '../types/message';
+import {FilePreviewCard} from './FilePreviewCard';
+import {ImagePreviewCard} from './ImagePreviewCard';
+import {VidPreviewCard} from './VidPreviewCard';
 
 function MessageFilesPreview({
   msg,

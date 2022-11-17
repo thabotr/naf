@@ -4,9 +4,15 @@ import {Appbar} from 'react-native-paper';
 import {useTheme} from '../context/theme';
 import {User} from '../types/user';
 import {CardCover} from './CardCover';
-import { OnlyShow } from './Helpers/OnlyShow';
+import {OnlyShow} from './Helpers/OnlyShow';
 
-function ProfileHeader({user, props}:{user: User, props: NativeStackHeaderProps}) {
+function ProfileHeader({
+  user,
+  props,
+}: {
+  user: User;
+  props: NativeStackHeaderProps;
+}) {
   const {theme} = useTheme();
   return (
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>

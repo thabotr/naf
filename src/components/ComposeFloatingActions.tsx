@@ -2,18 +2,20 @@ import React from 'react';
 
 import {useTheme} from '../context/theme';
 import {useMessageComposer} from '../context/messageEditor';
-import { RecordPlayState, useAudioRecorderPlayer } from '../providers/AudioRecorderPlayer';
-import { ExtendedComposeFABs } from './ExtendedComposeFABs';
-import { ComposeFAB } from './ComposeFAB';
-import { HorizontalView } from './HorizontalView';
-import { OnlyShow } from './Helpers/OnlyShow';
-import { Show } from './Helpers/Show';
+import {
+  RecordPlayState,
+  useAudioRecorderPlayer,
+} from '../providers/AudioRecorderPlayer';
+import {ExtendedComposeFABs} from './ExtendedComposeFABs';
+import {ComposeFAB} from './ComposeFAB';
+import {HorizontalView} from './HorizontalView';
+import {OnlyShow} from './Helpers/OnlyShow';
+import {Show} from './Helpers/Show';
 
 const ComposeFloatingActions = () => {
   const {theme} = useTheme();
   const [expanded, setExpanded] = React.useState(false);
-  const {composing, setComposeOn, showTextInputOn} =
-    useMessageComposer();
+  const {composing, setComposeOn, showTextInputOn} = useMessageComposer();
   const {recorderPlayerState} = useAudioRecorderPlayer();
 
   const pencilClicked = () => {
@@ -21,7 +23,8 @@ const ComposeFloatingActions = () => {
     showTextInputOn(true);
   };
 
-  const recordingOrPaused = recorderPlayerState === RecordPlayState.RECORDING ||
+  const recordingOrPaused =
+    recorderPlayerState === RecordPlayState.RECORDING ||
     recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
 
   return (
@@ -38,7 +41,10 @@ const ComposeFloatingActions = () => {
         }}>
         <Show
           component={
-            <ComposeFAB onLongPress={() => setExpanded(true)} onPress={pencilClicked}/>
+            <ComposeFAB
+              onLongPress={() => setExpanded(true)}
+              onPress={pencilClicked}
+            />
           }
           If={!expanded}
           ElseShow={<ExtendedComposeFABs onBack={() => setExpanded(false)} />}

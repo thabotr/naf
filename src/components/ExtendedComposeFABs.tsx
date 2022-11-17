@@ -1,9 +1,9 @@
 import React from 'react';
-import { BackHandler } from 'react-native';
-import { IconButton } from 'react-native-paper';
-import { useMessageComposer } from "../context/messageEditor";
-import { useAudioRecorderPlayer } from "../providers/AudioRecorderPlayer";
-import { FileManager } from '../services/FileManager';
+import {BackHandler} from 'react-native';
+import {IconButton} from 'react-native-paper';
+import {useMessageComposer} from '../context/messageEditor';
+import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
+import {FileManager} from '../services/FileManager';
 
 const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
   const {
