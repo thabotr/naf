@@ -3,6 +3,7 @@ import {ImageStyle, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {openFile} from '../fileViewer';
 import {FileManager} from '../services/FileManager';
+import { FileType } from '../types/message';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {OverlayedView} from './Helpers/OverlayedView';
 
@@ -14,7 +15,7 @@ enum IMState {
 }
 
 type Props = {
-  source?: string;
+  source?: string | FileType;
   style?: ImageStyle;
   onURI?: (uri: string) => void;
   viewable?: boolean;
@@ -29,8 +30,10 @@ function CardCover({source, style, onURI, viewable, onPress, alt}: Props) {
   );
 
   React.useEffect(() => {
-    if (source) {
-      FileManager.getFileURI(source, 'image/jpg')
+    const link = typeof source === 'string' ? source : source?.uri
+    const mimeType = typeof source === 'string' ? 'image/jpeg' : source?.type
+    if (link) {
+      FileManager.getFileURI(link, mimeType ?? 'image/jpg')
         .then(uri => {
           if (uri) {
             setImgSource(uri);

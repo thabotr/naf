@@ -10,14 +10,12 @@ import {useLoggedInUser} from '../context/user';
 import {verboseTime} from '../helper';
 import {useChats} from '../context/chat';
 import {HorizontalView} from './Helpers/HorizontalView';
-import {ImagePreviewCard} from './ImagePreviewCard';
-import {VidPreviewCard} from './VidPreviewCard';
 import {ExpandableParagraph} from './ExpandableParagraph';
 import {FilePreviewCard} from './FilePreviewCard';
 import {MessageFilesPreview} from './MessageFilesPreview';
-import {Show} from './Helpers/Show';
 import {OverlayedView} from './Helpers/OverlayedView';
 import {OnlyShow} from './Helpers/OnlyShow';
+import { VisualPreview } from './VisualPreview';
 
 export enum DeliveryStatus {
   ERROR,
@@ -46,14 +44,9 @@ export const MessageCard = ({msg}: {msg: Message}) => {
   const renderVisualFiles = () => {
     return (
       <HorizontalView>
-        {visuals.slice(0, 4).map((vz: FileType, i: number) => (
-          <Show
-            key={vz.uri}
-            component={<ImagePreviewCard source={vz} />}
-            If={vz.type.split('/')[0] === 'image'}
-            ElseShow={<VidPreviewCard iconSize={64} source={vz} />}
-          />
-        ))}
+        {visuals.slice(0, 4).map((vz: FileType, i: number) => 
+          <VisualPreview key={vz.uri} mFile={vz}/>
+        )}
       </HorizontalView>
     );
   };

@@ -1,8 +1,9 @@
-import {Card} from 'react-native-paper';
+import {View} from 'react-native';
+import {Card, IconButton} from 'react-native-paper';
 import {FileType} from '../types/message';
-import { CardCover } from './CardCover';
+import {CardCover} from './CardCover';
+import {OverlayedView} from './Helpers/OverlayedView';
 import {Show} from './Helpers/Show';
-import {vidIconOverlay} from './Helpers/VidIconOverlay';
 
 const VisualPreview = ({mFile}: {mFile: FileType}) => {
   return (
@@ -10,22 +11,35 @@ const VisualPreview = ({mFile}: {mFile: FileType}) => {
       style={{
         borderRadius: 0,
         flex: 1,
-        height: 80, 
-        margin: 1, 
-        flexGrow: 1
-      }}
-    >
+        height: 120,
+        margin: 1,
+        flexGrow: 1,
+      }}>
       <Show
-      component={
-        <CardCover style={{flex: 1, height: 80, margin: 1}} source={mFile.uri} viewable/>
-      }
-      If={mFile.type.split('/')[0] === 'image'}
-      ElseShow={
-        <>
-          <CardCover style={{height: '100%', opacity: 0.8}} source={mFile.uri} viewable/>
-          {vidIconOverlay(32)}
-        </>
-      }
+        component={
+          <CardCover style={{flex: 1, margin: 1}} source={mFile.uri} viewable />
+        }
+        If={mFile.type.split('/')[0] === 'image'}
+        ElseShow={
+          <>
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+              }}>
+              <IconButton size={32} icon="play-circle-outline" />
+            </View>
+            <OverlayedView>
+              <CardCover
+                style={{height: '100%', width: '100%', opacity: 0.6}}
+                source={mFile}
+                viewable
+              />
+            </OverlayedView>
+          </>
+        }
       />
     </Card>
   );

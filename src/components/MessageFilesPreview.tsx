@@ -4,8 +4,7 @@ import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {Message} from '../types/message';
 import {FilePreviewCard} from './FilePreviewCard';
-import {ImagePreviewCard} from './ImagePreviewCard';
-import {VidPreviewCard} from './VidPreviewCard';
+import { VisualPreview } from './VisualPreview';
 
 function MessageFilesPreview({
   msg,
@@ -40,9 +39,8 @@ function MessageFilesPreview({
               const f = msg.files[Number(item.id)] ?? {type: '', uri: ''};
               switch (f.type.split('/')[0]) {
                 case 'image':
-                  return <ImagePreviewCard source={f} />;
                 case 'video':
-                  return <VidPreviewCard source={f} />;
+                  return <VisualPreview key={f.uri} mFile={f}/>
                 default:
                   return (
                     <FilePreviewCard
