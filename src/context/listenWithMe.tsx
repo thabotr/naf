@@ -1,5 +1,9 @@
 import React from 'react';
 import TrackPlayer, { Track , State as PlayState, useTrackPlayerEvents, Event as PlayerEvent} from 'react-native-track-player';
+import { Colors } from '../services/FileManager';
+import { useTheme } from './theme';
+
+type LWMColors = {primary: string, secondary: string};
 
 export type ListenWithMeContextType = {
   currentTrack?: Track,
@@ -8,6 +12,8 @@ export type ListenWithMeContextType = {
   playUserTrack: (handle: string, track: Track)=>void;
   stopPlayer: ()=>void;
   updateCurrentTrack: (t: Track)=>void;
+  colors: LWMColors;
+  saveColors: (cs: Colors)=>void;
 }
 
 export const ListenWithMeContext = React.createContext<ListenWithMeContextType|null>(null);
@@ -16,6 +22,12 @@ export function ListenWithMeContextProvider({children}: {children: React.ReactNo
   const [listeningWith, setUser] = React.useState('');
   const [currentTrack, setCurrentTrack] = React.useState<Track|undefined>();
   const [playState, setPlayState] = React.useState<PlayState>(PlayState.None);
+  const {theme} = useTheme();
+  const [colors, setColors] = React.useState<LWMColors>(()=>{
+    return {
+    primary: theme.color.primary,
+    secondary: theme.color.secondary,
+  }})
 
   useTrackPlayerEvents([PlayerEvent.PlaybackState, PlayerEvent.PlaybackTrackChanged], async (event) => {
     switch(event.type){
@@ -32,6 +44,22 @@ export function ListenWithMeContextProvider({children}: {children: React.ReactNo
         break;
     }
   });
+
+  const saveColors = (cs: Colors)=>{
+    if( theme.dark){
+      setColors(colors => {
+        return {
+        primary: cs.darkPrimary ?? colors.primary,
+        secondary: cs.darkSecondary ?? colors.secondary,
+      }});
+    }else {
+      setColors(colors => {
+        return {
+        primary: cs.lightPrimary ?? colors.primary,
+        secondary: cs.lightSecondary ?? colors.secondary,
+      }});
+    }
+  }
 
   const updateCurrentTrack = (t?: Track) => {
     setCurrentTrack(t);
@@ -67,9 +95,11 @@ export function ListenWithMeContextProvider({children}: {children: React.ReactNo
       listeningWith: listeningWith,
       currentTrack: currentTrack,
       playState: playState,
+      colors: colors,
       stopPlayer: stopPlayer,
       playUserTrack: playUserTrack,
       updateCurrentTrack: updateCurrentTrack,
+      saveColors: saveColors,
     }}>
     {children}
   </ListenWithMeContext.Provider>

@@ -28,6 +28,7 @@ import {OverlayedView} from './Helpers/OverlayedView';
 import {Lay} from './Helpers/Lay';
 import {Show} from './Helpers/Show';
 import {OnlyShow} from './Helpers/OnlyShow';
+import { FileManager } from '../services/FileManager';
 
 export function ChatPreviewCard({
   chat,
@@ -37,7 +38,7 @@ export function ChatPreviewCard({
   navigation: any;
 }) {
   const {theme} = useTheme();
-  const {listeningWith, currentTrack, playUserTrack, playState} =
+  const {listeningWith, currentTrack, playUserTrack, playState, saveColors} =
     React.useContext(ListenWithMeContext) as ListenWithMeContextType;
   const {saveActiveChat} = useChats();
 
@@ -51,15 +52,19 @@ export function ChatPreviewCard({
 
   React.useEffect(() => {
     if (chat.user.landscapeURI.includes('http'))
-      getFilePath(chat.user.landscapeURI)
+      FileManager.getFileURI(chat.user.landscapeURI, 'image/jpeg')
         .then(path => {
-          path &&
-            setLandscapeUri(
-              Platform.select({android: `file://${path}`}) ?? path,
-            );
+          path && setLandscapeUri(path);
         })
         .catch(e => console.error('failed to get landscape uri: ' + e));
   }, []);
+
+  React.useEffect(()=>{
+    landscapeUri && FileManager.getImageColors(landscapeUri)
+    .then( colors => {
+      colors && saveColors(colors);
+    })
+  }, [landscapeUri])
 
   return (
     <Card

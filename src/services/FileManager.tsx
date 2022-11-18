@@ -5,7 +5,7 @@ import {launchCamera} from 'react-native-image-picker';
 
 import {FileManagerHelper} from './FileManagerHelper';
 
-export class FileManager {
+class FileManager {
   static RootDir = RNFetchBlob.fs.dirs.CacheDir;
   static fmHelper = new FileManagerHelper(this.RootDir);
 
@@ -176,9 +176,11 @@ export class FileManager {
   }
 }
 
-type Colors = {
+export type Colors = {
   darkPrimary?: string;
   darkSecondary?: string;
   lightPrimary?: string;
   lightSecondary?: string;
 };
+
+export {FileManager};

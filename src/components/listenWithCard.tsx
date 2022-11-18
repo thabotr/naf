@@ -19,7 +19,6 @@ import {
   ListenWithMeContext,
   ListenWithMeContextType,
 } from '../context/listenWithMe';
-import {useTheme} from '../context/theme';
 import {getAudioMetadata} from '../audio';
 import {verboseDuration} from '../helper';
 import {HorizontalView} from './HorizontalView';
@@ -43,10 +42,9 @@ function IconButton({
 }
 
 export function ListenWithMeCard() {
-  const {theme} = useTheme();
   const [expanded, setExpanded] = React.useState(true);
   const [repeatMode, setRepeatMode] = React.useState(RepeatMode.Off);
-  const {listeningWith, currentTrack, playState, stopPlayer} = React.useContext(
+  const {listeningWith, currentTrack, playState, stopPlayer, colors} = React.useContext(
     ListenWithMeContext,
   ) as ListenWithMeContextType;
   const {chats} = useChats();
@@ -102,7 +100,7 @@ export function ListenWithMeCard() {
     <OnlyShow If={!!listeningWith}>
       <Card
         style={{
-          backgroundColor: theme.color.friendPrimary,
+          backgroundColor: colors.primary,
           marginHorizontal: 3,
           marginBottom: 3,
           paddingHorizontal: 5,
@@ -121,7 +119,7 @@ export function ListenWithMeCard() {
                   height: 150,
                   elevation: 3,
                   width: '40%',
-                  backgroundColor: theme.color.friendSecondary,
+                  backgroundColor: colors.secondary,
                 }}>
                 <ScrollView>
                   {tracks.map((t, i) => (
@@ -130,7 +128,7 @@ export function ListenWithMeCard() {
                         borderWidth: 1,
                         borderRadius: 3,
                         margin: 5,
-                        backgroundColor: theme.color.friendSecondary,
+                        backgroundColor: colors.secondary,
                       }}
                       onPress={() =>
                         TrackPlayer.skip(i)
@@ -154,7 +152,7 @@ export function ListenWithMeCard() {
                       padding: 5,
                       width: '100%',
                       height: '100%',
-                      backgroundColor: theme.color.friendSecondary,
+                      backgroundColor: colors.secondary,
                     }}>
                     <List.Item
                       title={
