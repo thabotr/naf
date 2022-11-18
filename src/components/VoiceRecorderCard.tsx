@@ -12,7 +12,7 @@ import {
 } from '../providers/AudioRecorderPlayer';
 import {FileManager} from '../services/FileManager';
 import {OnlyShow} from './Helpers/OnlyShow';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 
 export function VoiceRecorderCard() {
   const {message, saveComposeMessage, setComposeOn} = useMessageComposer();

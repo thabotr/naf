@@ -8,7 +8,7 @@ import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {FileManager} from '../services/FileManager';
 import {VoiceNoteType} from '../types/message';
 import {OnlyShow} from './Helpers/OnlyShow';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 
 const enum PlayState {
   PAUSED,

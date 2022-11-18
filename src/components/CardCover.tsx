@@ -1,5 +1,5 @@
 import React from 'react';
-import {ImageStyle} from 'react-native';
+import {ImageStyle, Pressable} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {openFile} from '../fileViewer';
 import {FileManager} from '../services/FileManager';
@@ -19,9 +19,10 @@ type Props = {
   onURI?: (uri: string) => void;
   viewable?: boolean;
   onPress?: () => void;
+  alt?: React.ReactNode;
 };
 
-function CardCover({source, style, onURI, viewable, onPress}: Props) {
+function CardCover({source, style, onURI, viewable, onPress, alt}: Props) {
   const [imgState, setImgState] = React.useState(IMState.FETCHING);
   const [imgSource, setImgSource] = React.useState<string | undefined>(
     undefined,
@@ -42,8 +43,12 @@ function CardCover({source, style, onURI, viewable, onPress}: Props) {
     }
   }, []);
 
+  if(imgState === IMState.ERROR && alt){
+    return <>{alt}</>
+  }
+
   return (
-    <Card
+    <Pressable
       style={style}
       onPress={() => {
         viewable && imgSource && openFile(imgSource);
@@ -62,7 +67,7 @@ function CardCover({source, style, onURI, viewable, onPress}: Props) {
           <ActivityIndicator animating />
         </OnlyShow>
       </OverlayedView>
-    </Card>
+    </Pressable>
   );
 }
 

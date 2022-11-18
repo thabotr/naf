@@ -4,7 +4,7 @@ import {Button, Paragraph} from 'react-native-paper';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 
 import {CardCover} from '../components/CardCover';
-import {HorizontalView} from '../components/HorizontalView';
+import {HorizontalView} from '../components/Helpers/HorizontalView';
 import {useChats} from '../context/chat';
 import {useTheme} from '../context/theme';
 import {User} from '../types/user';

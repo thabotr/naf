@@ -17,7 +17,7 @@ import {useTheme} from '../context/theme';
 import {VoiceNoteCard} from './VoiceNoteCard';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {VisualPreview} from './VisualPreview';

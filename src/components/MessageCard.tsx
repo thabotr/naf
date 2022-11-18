@@ -9,7 +9,7 @@ import {useMessageComposer} from '../context/messageEditor';
 import {useLoggedInUser} from '../context/user';
 import {verboseTime} from '../helper';
 import {useChats} from '../context/chat';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 import {ImagePreviewCard} from './ImagePreviewCard';
 import {VidPreviewCard} from './VidPreviewCard';
 import {ExpandableParagraph} from './ExpandableParagraph';

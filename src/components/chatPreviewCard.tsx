@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Platform, Pressable} from 'react-native';
+import {View, TouchableOpacity, Pressable} from 'react-native';
 import {
   Paragraph,
   Card,
@@ -19,11 +19,9 @@ import {
 } from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
 import {getAudioMetadata} from '../audio';
-import {getFilePath} from '../file';
 import {Chat} from '../types/chat';
-import {Image} from './image';
 import {CardCover} from './CardCover';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 import {OverlayedView} from './Helpers/OverlayedView';
 import {Lay} from './Helpers/Lay';
 import {Show} from './Helpers/Show';
@@ -43,12 +41,13 @@ export function ChatPreviewCard({
   const {saveActiveChat} = useChats();
 
   const [landscapeUri, setLandscapeUri] = React.useState('');
+  const [avatarURI, setAvatarURI] = React.useState('');
 
   const latestMessage = chat.messages.slice(-1).find(_ => true);
   const unreadMessageCount = chat.messages.filter(m => !!m.unread).length;
 
-  const [avatarPrimary, setAP] = React.useState(theme.color.primary);
-  const [avatarSecondary, setAS] = React.useState(theme.color.secondary);
+  const [avatarPrimary, setAP] = React.useState(()=>theme.color.primary);
+  const [avatarSecondary, setAS] = React.useState(()=>theme.color.secondary);
 
   React.useEffect(() => {
     if (chat.user.landscapeURI.includes('http'))
@@ -64,7 +63,17 @@ export function ChatPreviewCard({
     .then( colors => {
       colors && saveColors(colors);
     })
-  }, [landscapeUri])
+  }, [landscapeUri, theme])
+
+  React.useEffect(()=>{
+    avatarURI && FileManager.getImageColors(avatarURI)
+    .then( colors => {
+      if(colors){
+        setAP(c=>(theme.dark ? colors.darkPrimary : colors.lightPrimary) ?? c);
+        setAS(c=>(theme.dark ? colors.darkSecondary : colors.lightSecondary) ?? c);
+      }
+    })
+  }, [avatarURI, theme])
 
   return (
     <Card
@@ -95,26 +104,10 @@ export function ChatPreviewCard({
             <View style={{height: '50%', width: '100%'}}>
               <Lay
                 component={
-                  <Image
+                  <CardCover
                     style={{width: '100%', height: '100%'}}
-                    url={chat.user.avatarURI}
-                    imageColorsConfig={{cache: true, pixelSpacing: 10}}
-                    onImageColors={imgColors => {
-                      switch (imgColors.platform) {
-                        case 'android':
-                          setAP(
-                            (theme.dark
-                              ? imgColors.darkVibrant
-                              : imgColors.average) ?? theme.color.primary,
-                          );
-                          setAS(
-                            (theme.dark
-                              ? imgColors.darkMuted
-                              : imgColors.dominant) ?? theme.color.secondary,
-                          );
-                          return;
-                      }
-                    }}
+                    source={chat.user.avatarURI}
+                    onURI={(uri)=>setAvatarURI(uri)}
                     alt={
                       <Avatar.Text
                         style={{

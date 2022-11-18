@@ -8,7 +8,7 @@ import {
 } from '../providers/AudioRecorderPlayer';
 import {ExtendedComposeFABs} from './ExtendedComposeFABs';
 import {ComposeFAB} from './ComposeFAB';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {Show} from './Helpers/Show';
 

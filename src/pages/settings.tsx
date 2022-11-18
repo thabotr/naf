@@ -1,7 +1,7 @@
 import React from 'react';
 import {View} from 'react-native';
 import {IconButton, List} from 'react-native-paper';
-import {HorizontalView} from '../components/HorizontalView';
+import {HorizontalView} from '../components/Helpers/HorizontalView';
 
 import {useTheme} from '../context/theme';
 import {ThemeSetting} from '../types/settings';

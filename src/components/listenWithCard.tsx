@@ -21,7 +21,7 @@ import {
 } from '../context/listenWithMe';
 import {getAudioMetadata} from '../audio';
 import {verboseDuration} from '../helper';
-import {HorizontalView} from './HorizontalView';
+import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {OverlayedView} from './Helpers/OverlayedView';
 

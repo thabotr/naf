@@ -10,7 +10,6 @@ import React from 'react';
 import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {ImageViewProvider} from './src/context/images';
 import {ThemeProvider} from './src/context/theme';
 import {useLoggedInUser, LoggedInUserProvider} from './src/context/user';
 import {StackNavigator} from './src/components/StackNavigator';
@@ -43,11 +42,9 @@ function SuperContextProvider({children}: Props) {
         <AudioRecorderPlayerProvider>
           <RegisterPlayerRecorder />
           <ChatsProvider>
-            <ImageViewProvider>
               <NavigationContainer>
                 <Provider>{children}</Provider>
               </NavigationContainer>
-            </ImageViewProvider>
           </ChatsProvider>
         </AudioRecorderPlayerProvider>
       </LoggedInUserProvider>

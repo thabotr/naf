@@ -12,7 +12,7 @@ import {CardCover} from '../components/CardCover';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
 import {Show} from '../components/Helpers/Show';
-import {HorizontalView} from '../components/HorizontalView';
+import {HorizontalView} from '../components/Helpers/HorizontalView';
 import {ProfileHeader} from '../components/ProfileHeader';
 import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
