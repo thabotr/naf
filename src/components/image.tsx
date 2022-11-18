@@ -1,128 +1,89 @@
 import React from 'react';
-
-import {View, ImageProps, Image as RNImage, Platform} from 'react-native';
-import {IconButton, ActivityIndicator} from 'react-native-paper';
-import {
-  ImageColorsResult,
-  Config,
-} from 'react-native-image-colors/lib/typescript/types';
-import ImageColors from 'react-native-image-colors';
-import RNFetchBlob from 'rn-fetch-blob';
-import {getFilePath} from '../file';
-import {OverlayedView} from './Helpers/OverlayedView';
+import {ImageStyle, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, Card} from 'react-native-paper';
+import {openFile} from '../fileViewer';
+import {FileManager} from '../services/FileManager';
+import { FileType } from '../types/message';
 import {OnlyShow} from './Helpers/OnlyShow';
+import {OverlayedView} from './Helpers/OverlayedView';
 
-export enum IMState {
+enum IMState {
   FETCHING,
   LOADING,
   ERROR,
   SUCCESS,
 }
 
-export function Image(
-  props: ImageProps & {
-    url: string;
-    headers?: {[key: string]: string};
-    alt?: React.ReactNode;
-    indicatorColor?: string;
-    indicatorSize?: number;
-    onImageColors?: (icr: ImageColorsResult) => void;
-    imageColorsConfig?: Config;
-  },
-) {
-  const [state, setState] = React.useState<IMState>(IMState.FETCHING);
-  const [uri, setURI] = React.useState('');
-  const intermediateCompont = () => {
-    switch (state) {
-      case IMState.FETCHING:
-      case IMState.LOADING:
-        return (
-          <>
-            <IconButton icon="image" size={props.indicatorSize ?? 35} />
-            <OverlayedView>
-              <ActivityIndicator
-                color={props.indicatorColor ?? 'gray'}
-                size={(props.indicatorSize ?? 35) + 3}
-                animating
-              />
-            </OverlayedView>
-          </>
-        );
-      case IMState.ERROR:
-        return !props.alt ? (
-          <IconButton icon="alert-circle" size={props.indicatorSize ?? 35} />
-        ) : (
-          props.alt
-        );
-      case IMState.SUCCESS:
-        return null;
-    }
-  };
+type Props = {
+  source?: string | FileType;
+  style?: ImageStyle;
+  onURI?: (uri: string) => void;
+  viewable?: boolean;
+  onPress?: () => void;
+  alt?: React.ReactNode;
+};
+
+function Image({source, style, onURI, viewable, onPress, alt}: Props) {
+  const [imgState, setImgState] = React.useState(IMState.FETCHING);
+  const [imgSource, setImgSource] = React.useState<string | undefined>(
+    undefined,
+  );
 
   React.useEffect(() => {
-    if (props.url.includes('http')) {
-      getFilePath(props.url, undefined, props.headers)
-        .then(path => {
-          (path && setURI(path)) || setState(IMState.ERROR);
+    const link = typeof source === 'string' ? source : source?.uri
+    const mimeType = typeof source === 'string' ? 'image/jpeg' : source?.type
+    if (link) {
+      FileManager.getFileURI(link, mimeType ?? 'image/jpg')
+        .then(uri => {
+          if (uri) {
+            setImgSource(uri);
+            onURI?.(uri);
+          }
         })
-        .catch(e => {
-          console.error('encountered image error', e);
-          setState(IMState.ERROR);
-        });
-    } else setURI(props.url);
+        .catch(_ => setImgState(IMState.ERROR));
+    } else {
+      setImgState(IMState.SUCCESS);
+    }
   }, []);
 
-  return (
-    <View
-      style={[{justifyContent: 'center', alignContent: 'center'}, props.style]}>
-      <OnlyShow If={!!uri}>
-        <RNImage
-          {...props}
-          source={{uri: Platform.select({android: `file://${uri}`}) ?? uri}}
-          onError={e => {
-            setState(IMState.ERROR);
-            props.onError?.(e);
-          }}
-          onLoad={e => {
-            setState(IMState.SUCCESS);
-            if (!!props.onImageColors) {
-              const b64key = RNFetchBlob.base64.encode(
-                `${e.nativeEvent.source.uri}:${JSON.stringify(
-                  props.imageColorsConfig,
-                )}`,
-              );
-              const cachedColors = ImageColors.cache.getItem(b64key);
-              if (!!cachedColors) {
-                props.onImageColors(cachedColors);
-              } else {
-                ImageColors.getColors(
-                  e.nativeEvent.source.uri,
-                  props.imageColorsConfig,
-                )
-                  .then(icr => {
-                    ImageColors.cache.setItem(b64key, icr);
-                    props.onImageColors?.(icr);
-                  })
-                  .catch(e =>
-                    console.log(
-                      'found error whilst setting contextual colors',
-                      e,
-                    ),
-                  );
-              }
-            }
+  if(imgState === IMState.ERROR && alt){
+    return <>{alt}</>
+  }
 
-            props.onLoad?.(e);
-          }}
-          onLoadStart={() => {
-            setState(IMState.LOADING);
-            props.onLoadStart?.();
-          }}
-        />
-      </OnlyShow>
-      <OnlyShow If={state !== IMState.SUCCESS}>
-        <OverlayedView>{intermediateCompont()}</OverlayedView>
-      </OnlyShow>
+  const content = ()=> <>
+    <Card.Cover
+        source={{uri: imgSource}}
+        style={style}
+        onError={_ => setImgState(IMState.ERROR)}
+        onLoad={_ => setImgState(IMState.SUCCESS)}
+        onLoadStart={() => setImgState(IMState.LOADING)}
+      />
+      <OverlayedView>
+        <OnlyShow
+          If={imgState === IMState.LOADING || imgState === IMState.FETCHING}>
+          <ActivityIndicator animating />
+        </OnlyShow>
+      </OverlayedView>
+  </>
+
+  if(viewable || onPress){
+    return <TouchableOpacity
+      activeOpacity={0.8}
+      style={style}
+      onPress={() => {
+        viewable && imgSource && openFile(imgSource);
+        onPress?.();
+      }}
+    >
+      {content()}
+    </TouchableOpacity>
+  }
+
+  return (
+    <View style={style}>
+      {content()}
     </View>
   );
 }
+
+export {Image};

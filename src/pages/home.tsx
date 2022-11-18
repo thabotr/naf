@@ -2,7 +2,7 @@ import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import React from 'react';
 import {View, FlatList} from 'react-native';
 import {Appbar, IconButton} from 'react-native-paper';
-import {CardCover} from '../components/CardCover';
+import {Image} from '../components/Image';
 
 import {ChatPreviewCard} from '../components/ChatPreviewCard';
 import {ListenWithMeCard} from '../components/listenWithCard';
@@ -35,7 +35,7 @@ function HomeHeader(props: NativeStackHeaderProps) {
         subtitle={`${user?.name} ${user?.surname}`}
       />
       <View style={{height: '100%', width: 50, marginRight: 10}}>
-        <CardCover
+        <Image
           onPress={() => props.navigation.navigate('UserProfile')}
           source={user?.avatarURI}
           style={{height: '100%', width: '100%'}}

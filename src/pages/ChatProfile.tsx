@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {Button, Paragraph} from 'react-native-paper';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 
-import {CardCover} from '../components/CardCover';
+import {Image} from '../components/Image';
 import {HorizontalView} from '../components/Helpers/HorizontalView';
 import {useChats} from '../context/chat';
 import {useTheme} from '../context/theme';
@@ -14,7 +14,7 @@ const ProfilePreview = ({user}: {user: User}) => {
   const {theme} = useTheme();
   return (
     <>
-      <CardCover viewable source={user?.landscapeURI} style={{width: '100%'}} />
+      <Image viewable source={user?.landscapeURI} style={{width: '100%'}} />
       <HorizontalView
         style={{
           width: '100%',
@@ -22,7 +22,7 @@ const ProfilePreview = ({user}: {user: User}) => {
           padding: 10,
           backgroundColor: theme.color.secondary,
         }}>
-        <CardCover
+        <Image
           viewable
           source={user?.avatarURI}
           style={{width: 120, height: 120}}

@@ -10,7 +10,7 @@ import {ComposeFloatingActions} from '../components/ComposeFloatingActions';
 import {useChats} from '../context/chat';
 import {Appbar} from 'react-native-paper';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {CardCover} from '../components/CardCover';
+import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
 export function Tiler() {
@@ -61,7 +61,7 @@ function ChatHeader(props: NativeStackHeaderProps) {
         subtitle={`${user?.name} ${user?.surname}`}
       />
       <View style={{height: '100%', width: 50, marginRight: 10}}>
-        <CardCover
+        <Image
           onPress={() => props.navigation.navigate('ChatProfile')}
           source={user?.avatarURI}
           style={{height: '100%', width: '100%'}}

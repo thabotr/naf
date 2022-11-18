@@ -8,7 +8,7 @@ import {
 } from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
 import {Chat} from '../types/chat';
-import {CardCover} from './CardCover';
+import {Image} from './Image';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {OverlayedView} from './Helpers/OverlayedView';
 import {FileManager} from '../services/FileManager';
@@ -76,7 +76,7 @@ export function ChatPreviewCard({
         padding: 4,
         backgroundColor: avatarSecondary,
       }}>
-      <CardCover
+      <Image
         source={landscapeUri}
         style={{backgroundColor: avatarPrimary}}
       />

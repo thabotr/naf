@@ -3,7 +3,7 @@ import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Appbar} from 'react-native-paper';
 import {useTheme} from '../context/theme';
 import {User} from '../types/user';
-import {CardCover} from './CardCover';
+import {Image} from './Image';
 import {OnlyShow} from './Helpers/OnlyShow';
 
 function ProfileHeader({
@@ -24,7 +24,7 @@ function ProfileHeader({
         />
       </OnlyShow>
       <Appbar.Content title={'Profile'} />
-      <CardCover source={user.avatarURI} style={{width: 50, height: '100%'}} />
+      <Image source={user.avatarURI} style={{width: 50, height: '100%'}} />
     </Appbar.Header>
   );
 }

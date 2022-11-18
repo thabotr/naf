@@ -8,7 +8,7 @@ import {
   Paragraph,
   TextInput,
 } from 'react-native-paper';
-import {CardCover} from '../components/CardCover';
+import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
 import {Show} from '../components/Helpers/Show';
@@ -33,7 +33,7 @@ const WaitingForYouList = () => {
             title={'Paris | Johannesburg | Doha'}>
             <List.Item
               left={_ => (
-                <CardCover
+                <Image
                   source={user?.avatarURI}
                   style={{width: 50, height: 50}}
                 />
@@ -196,7 +196,7 @@ const ProfilePreview = () => {
   return (
     <>
       <View>
-        <CardCover
+        <Image
           source={user?.landscapeURI}
           style={{width: '100%', opacity: editing ? 0.6 : 1}}
         />
@@ -234,7 +234,7 @@ const ProfilePreview = () => {
           backgroundColor: theme.color.secondary,
         }}>
         <View>
-          <CardCover
+          <Image
             source={user?.avatarURI}
             style={{width: 120, height: 120, opacity: editing ? 0.6 : 1}}
           />

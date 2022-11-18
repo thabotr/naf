@@ -3,7 +3,7 @@ import {Avatar, Paragraph} from 'react-native-paper';
 import {useChats} from '../../context/chat';
 import {useTheme} from '../../context/theme';
 import {Chat} from '../../types/chat';
-import {CardCover} from '../CardCover';
+import {Image} from '../Image';
 import {Lay} from '../Helpers/Lay';
 
 function AvatarAndDetailsSection({
@@ -31,7 +31,7 @@ function AvatarAndDetailsSection({
       <View style={{height: '50%', width: '100%'}}>
         <Lay
           component={
-            <CardCover
+            <Image
               style={{width: '100%', height: '100%'}}
               source={chat.user.avatarURI}
               onURI={uri => setAvatarURI(uri)}
