@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ToastAndroid} from 'react-native';
+import {View, ToastAndroid, StyleSheet} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -14,7 +14,7 @@ import {FileManager} from '../services/FileManager';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {HorizontalView} from './Helpers/HorizontalView';
 
-export function VoiceRecorderCard() {
+function VoiceRecorderCard() {
   const {message, saveComposeMessage, setComposeOn} = useMessageComposer();
   const {
     recorderPlayerState: recorderState,
@@ -59,71 +59,67 @@ export function VoiceRecorderCard() {
   const paused = recorderState === RecordPlayState.RECORDING_PAUSED;
   const recording = recorderState === RecordPlayState.RECORDING;
 
+  const styles = StyleSheet.create({
+    controlButton: {
+      margin: 5,
+      borderRadius: 0,
+      backgroundColor: theme.color.secondary,
+    },
+    floatingRecorderContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      padding: 0,
+      elevation: 2,
+      borderRadius: 3,
+      position: 'absolute',
+      right: 10,
+      bottom: 65,
+      backgroundColor: theme.color.primary,
+    },
+    recordingIndicator: {borderRadius: 0},
+    rIndicatorContainer: {justifyContent: 'center'},
+    recordingDuration: {
+      fontSize: 20,
+      textAlign: 'center',
+      color: theme.color.textPrimary,
+      textShadowColor: theme.color.textSecondary,
+    },
+    rDurationContainer: {justifyContent: 'center', margin: 5},
+  });
+
+  const Button = ({icon, onPress}: {icon: string; onPress: () => void})=> {
+    return (
+      <IconButton
+        style={styles.controlButton}
+        size={25}
+        icon={icon}
+        onPress={onPress}
+      />
+    );
+  }
+
   return (
     <OnlyShow If={recording || paused}>
-      <View
-        style={[
-          {
-            display: 'flex',
-            flexDirection: 'row',
-            padding: 0,
-            elevation: 2,
-            borderRadius: 3,
-            position: 'absolute',
-            right: 10,
-            bottom: 65,
-            backgroundColor: theme.color.primary, // TODO get from theme,
-          },
-        ]}>
-        <View style={{justifyContent: 'center'}}>
+      <View style={styles.floatingRecorderContainer}>
+        <View style={styles.rIndicatorContainer}>
           <IconButton
             color={paused ? 'white' : 'red'}
-            style={{borderRadius: 0}}
+            style={styles.recordingIndicator}
             size={40}
             icon={'microphone'}
           />
         </View>
         <View>
           <HorizontalView>
-            <IconButton
-              style={{
-                margin: 5,
-                borderRadius: 0,
-                backgroundColor: theme.color.secondary,
-              }}
-              size={25}
-              icon={'delete'}
-              onPress={onDeleteRecording}
-            />
-            <IconButton
-              style={{
-                margin: 5,
-                borderRadius: 0,
-                backgroundColor: theme.color.secondary,
-              }}
-              size={25}
+            <Button icon={'delete'} onPress={onDeleteRecording} />
+            <Button
               icon={paused ? 'play' : 'pause'}
               onPress={onPauseResumeReconding}
             />
-            <IconButton
-              style={{
-                margin: 5,
-                borderRadius: 0,
-                backgroundColor: theme.color.secondary,
-              }}
-              size={25}
-              icon={'stop'}
-              onPress={onDoneRecording}
-            />
+            <Button icon={'stop'} onPress={onDoneRecording} />
           </HorizontalView>
-          <View style={{justifyContent: 'center', margin: 5}}>
-            <Paragraph
-              style={{
-                fontSize: 20,
-                textAlign: 'center',
-                color: theme.color.textPrimary,
-                textShadowColor: theme.color.textSecondary,
-              }}>
+          <View style={styles.rDurationContainer}>
+            <Paragraph style={styles.recordingDuration}>
               {verboseDuration(recorderPlayerData.recordingPosition)}
             </Paragraph>
           </View>
@@ -132,3 +128,5 @@ export function VoiceRecorderCard() {
     </OnlyShow>
   );
 }
+
+export {VoiceRecorderCard};

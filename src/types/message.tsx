@@ -1,4 +1,9 @@
-import {DeliveryStatus} from '../components/MessageCard';
+export enum DeliveryStatusType {
+  ERROR,
+  UNSEEN,
+  SEEN,
+  NONE,
+}
 
 export type Link = {id: string; nextIds: string[]; prevIds: string[]};
 
@@ -16,7 +21,7 @@ export type Message = {
   voiceRecordings: VoiceNoteType[];
   files: FileType[];
   timestamp?: number;
-  status?: DeliveryStatus;
+  status?: DeliveryStatusType;
   unread?: boolean;
   draft?: boolean;
 };

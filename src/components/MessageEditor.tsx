@@ -1,28 +1,16 @@
 import React from 'react';
-import {
-  Card,
-  Chip,
-  IconButton,
-  List,
-  Dialog,
-  Paragraph,
-  TextInput,
-  Portal,
-  Checkbox,
-} from 'react-native-paper';
-import {View, FlatList} from 'react-native';
+import {Card, IconButton, TextInput} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
 
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
-import {VoiceNoteCard} from './VoiceNoteCard';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {OnlyShow} from './Helpers/OnlyShow';
-import {VisualPreview} from './VisualPreview';
-import {FilePreviewCard} from './FilePreviewCard';
 import {FileManager} from '../services/FileManager';
+import {AttachmentsPreview} from './MessageCard/AttachmentsPreview';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();
@@ -41,8 +29,6 @@ export const MessageEditorCard = () => {
   } = useMessageComposer();
   const {startRecorder} = useAudioRecorderPlayer();
 
-  const [previewingFiles, setPreviewingFiles] = React.useState(false);
-
   const openCamInMode = (mode: 'video' | 'photo') => {
     FileManager.getCameraMedia(mode)
       .then(vidOrPic => {
@@ -56,93 +42,7 @@ export const MessageEditorCard = () => {
       .catch(e => console.warn('camera error', e));
   };
 
-  function FilesPreviewDialog() {
-    const [selectedFiles, setSelectedFiles] = React.useState<boolean[]>(
-      message.files.map(_ => false),
-    );
-    const withCheckbox = (fIndex: number, card: React.ReactNode) => {
-      return (
-        <HorizontalView style={{alignItems: 'center'}}>
-          {card}
-          <Checkbox
-            status={selectedFiles[fIndex] ? 'checked' : 'unchecked'}
-            onPress={() =>
-              setSelectedFiles(
-                selectedFiles
-                  .slice(0, fIndex)
-                  .concat([!selectedFiles[fIndex]])
-                  .concat(selectedFiles.slice(fIndex + 1)),
-              )
-            }
-          />
-        </HorizontalView>
-      );
-    };
-
-    return (
-      <OnlyShow If={previewingFiles}>
-        <Portal>
-          <Dialog
-            onDismiss={() => setPreviewingFiles(false)}
-            visible={previewingFiles}>
-            <Dialog.Title>all attachments</Dialog.Title>
-            <Dialog.Content style={{maxHeight: 700}}>
-              <FlatList
-                data={message.files.map((f, i) => {
-                  return {
-                    id: `${i}`,
-                    title: f.uri,
-                  };
-                })}
-                renderItem={({item}) => {
-                  const f = message.files[Number(item.id)] ?? {
-                    type: '',
-                    uri: '',
-                  };
-                  switch (f.type.split('/')[0]) {
-                    case 'image':
-                    case 'video':
-                      return withCheckbox(
-                        Number(item.id),
-                        <VisualPreview mFile={f} />,
-                      );
-                    default:
-                      return withCheckbox(
-                        Number(item.id),
-                        <FilePreviewCard
-                          user
-                          file={{...f, size: f.size ?? 0, name: f.name ?? ''}}
-                        />,
-                      );
-                  }
-                }}
-                keyExtractor={(item: {id: string; title: string}) => item.title}
-              />
-            </Dialog.Content>
-            <Dialog.Actions
-              style={{display: 'flex', justifyContent: 'space-between'}}>
-              <IconButton
-                icon="close"
-                onPress={() => setPreviewingFiles(false)}
-              />
-              <IconButton
-                icon="delete"
-                disabled={!selectedFiles.find(e => e)}
-                onPress={() =>
-                  saveComposeMessage({
-                    ...message,
-                    files: message.files.filter((f, i) => !selectedFiles[i]),
-                  })
-                }
-              />
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </OnlyShow>
-    );
-  }
-
-  const editorActions = () => {
+  const EditorActions = () => {
     return (
       <HorizontalView style={{justifyContent: 'space-between'}}>
         <HorizontalView>
@@ -197,7 +97,7 @@ export const MessageEditorCard = () => {
     );
   };
 
-  const editorTextInput = () => {
+  const EditorTextInput = () => {
     return (
       <OnlyShow If={composing && showTextInput}>
         <TextInput
@@ -208,7 +108,6 @@ export const MessageEditorCard = () => {
               text: e.nativeEvent.text,
             });
           }}
-          autoFocus
           multiline
           numberOfLines={6}
           style={{width: '100%'}}
@@ -218,91 +117,22 @@ export const MessageEditorCard = () => {
     );
   };
 
-  const visuals = message.files.filter(
-    f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video',
-  );
-  const others = message.files.filter(
-    f =>
-      !(f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video'),
-  );
-
-  const nonvisualAttachments = () => {
-    return (
-      <OnlyShow If={others.length > 0}>
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <List.Section style={{width: '100%', padding: 0, margin: 0}}>
-            <List.Subheader>Other attachments</List.Subheader>
-            <HorizontalView
-              style={{flexWrap: 'wrap', justifyContent: 'space-between'}}>
-              {others.slice(0, 2).map(f => (
-                <FilePreviewCard key={f.uri} file={f} />
-              ))}
-            </HorizontalView>
-            <OnlyShow If={!!message.files.length}>
-              <Chip
-                onPress={() => setPreviewingFiles(true)}
-                style={{
-                  borderRadius: 0,
-                  margin: 2,
-                  backgroundColor: theme.color.userSecondary,
-                }}
-                icon="file-multiple">
-                <Paragraph>
-                  Preview/edit all {message.files.length} attachaments
-                </Paragraph>
-              </Chip>
-            </OnlyShow>
-          </List.Section>
-        </View>
-      </OnlyShow>
-    );
-  };
+  const styles = StyleSheet.create({
+    editorContainer: {
+      backgroundColor: theme.color.userPrimary,
+      margin: 2,
+      paddingBottom: 5,
+    },
+    editorBody: {padding: 10},
+  });
 
   return (
     <OnlyShow If={composing}>
-      <FilesPreviewDialog />
-      <Card
-        style={{
-          backgroundColor: theme.color.userPrimary,
-          margin: 2,
-          paddingBottom: 5,
-        }}>
-        <View style={{padding: 10}}>
-          {editorActions()}
-          {editorTextInput()}
-          {message.voiceRecordings.map(r => (
-            <HorizontalView style={{alignItems: 'center'}} key={r.uri}>
-              <VoiceNoteCard
-                playId={`${message.from}-${message.to}-${message.id}-${r.uri}`}
-                style={{flex: 1}}
-                file={r}
-                user={true}
-              />
-              <IconButton
-                style={{
-                  backgroundColor: theme.color.secondary,
-                  borderRadius: 0,
-                }}
-                icon="delete"
-                onPress={() =>
-                  saveComposeMessage({
-                    ...message,
-                    voiceRecordings: message.voiceRecordings.filter(
-                      v => v.uri !== r.uri,
-                    ),
-                  })
-                }
-              />
-            </HorizontalView>
-          ))}
-
-          <HorizontalView>
-            {visuals.slice(0, 4).map(f => (
-              <VisualPreview key={f.uri} mFile={f} />
-            ))}
-          </HorizontalView>
-
-          {nonvisualAttachments()}
+      <Card style={styles.editorContainer}>
+        <View style={styles.editorBody}>
+          <EditorActions />
+          <EditorTextInput />
+          <AttachmentsPreview msg={message} composing />
         </View>
       </Card>
     </OnlyShow>

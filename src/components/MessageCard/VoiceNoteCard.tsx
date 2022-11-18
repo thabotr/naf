@@ -1,14 +1,19 @@
 import React from 'react';
-import {View} from 'react-native';
-import {ProgressBar, IconButton, Paragraph, Card} from 'react-native-paper';
+import {StyleSheet, View} from 'react-native';
+import {
+  ProgressBar,
+  IconButton,
+  Paragraph as RNPParagraph,
+  Card,
+} from 'react-native-paper';
 
-import {useTheme} from '../context/theme';
-import {verboseDuration, verboseSize} from '../helper';
-import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
-import {FileManager} from '../services/FileManager';
-import {VoiceNoteType} from '../types/message';
-import {OnlyShow} from './Helpers/OnlyShow';
-import {HorizontalView} from './Helpers/HorizontalView';
+import {useTheme} from '../../context/theme';
+import {verboseDuration, verboseSize} from '../../helper';
+import {useAudioRecorderPlayer} from '../../providers/AudioRecorderPlayer';
+import {FileManager} from '../../services/FileManager';
+import {VoiceNoteType} from '../../types/message';
+import {OnlyShow} from '../Helpers/OnlyShow';
+import {HorizontalView} from '../Helpers/HorizontalView';
 
 const enum PlayState {
   PAUSED,
@@ -19,12 +24,12 @@ const enum PlayState {
 export function VoiceNoteCard({
   playId,
   file,
-  user,
+  fromYou,
   style,
 }: {
   playId: string;
   file: VoiceNoteType;
-  user?: boolean;
+  fromYou?: boolean;
   style?: {[key: string]: any};
 }) {
   const [playState, setPlayState] = React.useState<PlayState>(
@@ -94,47 +99,39 @@ export function VoiceNoteCard({
       ? 0
       : playerValues.positionSec / playerValues.durationSec;
 
+  const styles = StyleSheet.create({
+    container: {
+      ...style,
+      margin: 3,
+      padding: 5,
+      backgroundColor: fromYou
+        ? theme.color.userSecondary
+        : theme.color.friendSecondary,
+    },
+    paragraph: {
+      color: theme.color.textPrimary,
+      textShadowColor: theme.color.textSecondary,
+    },
+    matadataHeader: {
+      justifyContent: 'space-between',
+    },
+    progressBarContainer: {flex: 1, justifyContent: 'center'},
+  });
+
+  const Paragraph = ({children}: {children: React.ReactNode}) => {
+    return <RNPParagraph style={styles.paragraph}>{children}</RNPParagraph>;
+  };
+
   return (
-    <Card
-      style={{
-        ...style,
-        margin: 3,
-        padding: 5,
-        backgroundColor: user
-          ? theme.color.userSecondary
-          : theme.color.friendSecondary,
-      }}>
+    <Card style={styles.container}>
       <HorizontalView>
         <View style={{flex: 1}}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Paragraph
-              style={{
-                color: theme.color.textPrimary,
-                textShadowColor: theme.color.textSecondary,
-              }}>
-              {verboseDuration(playerValues.positionSec)}
-            </Paragraph>
-            <Paragraph
-              style={{
-                color: theme.color.textPrimary,
-                textShadowColor: theme.color.textSecondary,
-              }}>
-              {verboseSize(file.size)}
-            </Paragraph>
-            <Paragraph
-              style={{
-                color: theme.color.textPrimary,
-                textShadowColor: theme.color.textSecondary,
-              }}>
-              {verboseDuration(playerValues.durationSec)}
-            </Paragraph>
-          </View>
-          <View style={{flex: 1, justifyContent: 'center'}}>
+          <HorizontalView style={styles.matadataHeader}>
+            <Paragraph>{verboseDuration(playerValues.positionSec)}</Paragraph>
+            <Paragraph>{verboseSize(file.size)}</Paragraph>
+            <Paragraph>{verboseDuration(playerValues.durationSec)}</Paragraph>
+          </HorizontalView>
+          <View style={styles.progressBarContainer}>
             <ProgressBar color={theme.color.primary} progress={progress} />
           </View>
         </View>

@@ -6,8 +6,8 @@ import {
   RecordPlayState,
   useAudioRecorderPlayer,
 } from '../providers/AudioRecorderPlayer';
-import {ExtendedComposeFABs} from './ExtendedComposeFABs';
-import {ComposeFAB} from './ComposeFAB';
+import {ExtendedComposeFABs} from './ComposeFloatingActions/ExtendedComposeFABs';
+import {ComposeFAB} from './ComposeFloatingActions/ComposeFAB';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {Show} from './Helpers/Show';
