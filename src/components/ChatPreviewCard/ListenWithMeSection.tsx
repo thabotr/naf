@@ -1,18 +1,22 @@
 import {useContext} from 'react';
-import { TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { IconButton, Paragraph } from 'react-native-paper';
+import {TouchableOpacity, View, ActivityIndicator} from 'react-native';
+import {IconButton, Paragraph} from 'react-native-paper';
 import TrackPlayer, {State as PlayState} from 'react-native-track-player';
-import { getAudioMetadata } from '../../audio';
+import {getAudioMetadata} from '../../audio';
 
-import { ListenWithMeContext, ListenWithMeContextType } from "../../context/listenWithMe";
-import { useTheme } from "../../context/theme";
-import { Chat } from "../../types/chat";
-import { OverlayedView } from '../Helpers/OverlayedView';
+import {
+  ListenWithMeContext,
+  ListenWithMeContextType,
+} from '../../context/listenWithMe';
+import {useTheme} from '../../context/theme';
+import {Chat} from '../../types/chat';
+import {OverlayedView} from '../Helpers/OverlayedView';
 
-function ListenWithMeSection({chat}:{chat: Chat}) {
+function ListenWithMeSection({chat}: {chat: Chat}) {
   const {theme} = useTheme();
-  const {listeningWith, currentTrack, playUserTrack, playState} =
-  useContext(ListenWithMeContext) as ListenWithMeContextType;
+  const {listeningWith, currentTrack, playUserTrack, playState} = useContext(
+    ListenWithMeContext,
+  ) as ListenWithMeContextType;
   return (
     <TouchableOpacity
       style={{
@@ -42,14 +46,17 @@ function ListenWithMeSection({chat}:{chat: Chat}) {
             .catch(e => console.log(e));
       }}>
       <IconButton icon="account-music" />
-      <Paragraph>
+      <Paragraph
+        style={{
+          color: theme.color.textPrimary,
+          shadowColor: theme.color.textSecondary,
+        }}>
         {listeningWith === chat.user.handle ? currentTrack?.title ?? '' : ''}
       </Paragraph>
       <View>
         <IconButton
           icon={
-            listeningWith === chat.user.handle &&
-            playState == PlayState.Playing
+            listeningWith === chat.user.handle && playState == PlayState.Playing
               ? 'pause'
               : 'play'
           }

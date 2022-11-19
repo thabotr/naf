@@ -1,9 +1,14 @@
 import {View} from 'react-native';
-import { Button, IconButton, Paragraph, TouchableRipple } from 'react-native-paper';
-import { useTheme } from "../context/theme";
-import { User } from "../types/user";
-import { HorizontalView } from "./Helpers/HorizontalView";
-import { Image } from "./Image";
+import {
+  Button,
+  IconButton,
+  Paragraph,
+  TouchableRipple,
+} from 'react-native-paper';
+import {useTheme} from '../context/theme';
+import {User} from '../types/user';
+import {HorizontalView} from './Helpers/HorizontalView';
+import {Image} from './Image';
 
 const ProfilePreview = ({user}: {user: User}) => {
   const {theme} = useTheme();
@@ -28,16 +33,34 @@ const ProfilePreview = ({user}: {user: User}) => {
             width: 340,
             padding: 10,
           }}>
-          <Paragraph style={{fontWeight: 'bold'}}>{user?.handle}</Paragraph>
-          <Paragraph>
+          <Paragraph
+            style={{
+              fontWeight: 'bold',
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
+            {user?.handle}
+          </Paragraph>
+          <Paragraph
+            style={{
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
             {user?.name} {user?.surname} [{user?.initials}]
           </Paragraph>
         </View>
       </HorizontalView>
-      <TouchableRipple onPress={()=>{}}>
-        <HorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-          <IconButton icon='account-remove'/>
-          <Paragraph>Disconnect from {user.handle}</Paragraph>
+      <TouchableRipple onPress={() => {}}>
+        <HorizontalView
+          style={{alignItems: 'center', justifyContent: 'center'}}>
+          <IconButton icon="account-remove" />
+          <Paragraph
+            style={{
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
+            Disconnect from {user.handle}
+          </Paragraph>
         </HorizontalView>
       </TouchableRipple>
     </>

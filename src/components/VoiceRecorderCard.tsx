@@ -13,8 +13,8 @@ import {
 import {FileManager} from '../services/FileManager';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {HorizontalView} from './Helpers/HorizontalView';
-import { useLoggedInUser } from '../context/user';
-import { useChats } from '../context/chat';
+import {useLoggedInUser} from '../context/user';
+import {useChats} from '../context/chat';
 
 function VoiceRecorderCard() {
   const {saveComposeMsg} = useMessageComposer();
@@ -29,7 +29,7 @@ function VoiceRecorderCard() {
   const {user} = useLoggedInUser();
   const chatUser = useChats().activeChat()?.user;
 
-  if(!user || !chatUser){
+  if (!user || !chatUser) {
     return <></>;
   }
 
@@ -58,25 +58,25 @@ function VoiceRecorderCard() {
       size: recordingFileStat.size,
       uri: recordingFileStat.path,
       type: recordingFileStat.type,
-    }
-    saveComposeMsg(msg=>{
-      if(msg){
+    };
+    saveComposeMsg(msg => {
+      if (msg) {
         return {
           ...msg,
           voiceRecordings: msg.voiceRecordings.concat(file),
-        }
-      }else {
+        };
+      } else {
         const timestamp = new Date().getTime();
         return {
           voiceRecordings: [file],
           files: [],
-          timestamp: timestamp/1000,
+          timestamp: timestamp / 1000,
           from: user.handle,
           to: chatUser.handle,
           id: timestamp.toString(),
-        }
+        };
       }
-    })
+    });
   };
 
   const paused = recorderState === RecordPlayState.RECORDING_PAUSED;
@@ -110,7 +110,7 @@ function VoiceRecorderCard() {
     rDurationContainer: {justifyContent: 'center', margin: 5},
   });
 
-  const Button = ({icon, onPress}: {icon: string; onPress: () => void})=> {
+  const Button = ({icon, onPress}: {icon: string; onPress: () => void}) => {
     return (
       <IconButton
         style={styles.controlButton}
@@ -119,7 +119,7 @@ function VoiceRecorderCard() {
         onPress={onPress}
       />
     );
-  }
+  };
 
   return (
     <OnlyShow If={recording || paused}>
@@ -142,7 +142,14 @@ function VoiceRecorderCard() {
             <Button icon={'stop'} onPress={onDoneRecording} />
           </HorizontalView>
           <View style={styles.rDurationContainer}>
-            <Paragraph style={styles.recordingDuration}>
+            <Paragraph
+              style={[
+                styles.recordingDuration,
+                {
+                  color: theme.color.textPrimary,
+                  shadowColor: theme.color.textSecondary,
+                },
+              ]}>
               {verboseDuration(recorderPlayerData.recordingPosition)}
             </Paragraph>
           </View>

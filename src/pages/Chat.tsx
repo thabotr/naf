@@ -64,6 +64,7 @@ function ChatHeader(props: NativeStackHeaderProps) {
     <Appbar.Header style={{backgroundColor: colors.primary}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
+          color={theme.color.textPrimary}
           style={{borderRadius: 0}}
           onPress={() => {
             props.navigation.goBack();

@@ -23,6 +23,7 @@ function HomeHeader(props: NativeStackHeaderProps) {
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <IconButton
         icon="menu"
+        color={theme.color.textPrimary}
         style={{borderRadius: 0}}
         onPress={() => props.navigation.navigate('Settings')}
       />

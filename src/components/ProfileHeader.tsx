@@ -33,6 +33,7 @@ function ProfileHeader({
     <Appbar.Header style={{backgroundColor: appHeaderColor}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
+          color={theme.color.textPrimary}
           style={{borderRadius: 0}}
           onPress={() => {
             props.navigation.goBack();

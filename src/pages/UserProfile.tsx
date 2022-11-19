@@ -22,7 +22,9 @@ const WaitingForYouList = () => {
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
   return (
-    <List.Accordion style={{backgroundColor: theme.color.secondary}} title="Waiting for you @">
+    <List.Accordion
+      style={{backgroundColor: theme.color.secondary}}
+      title="Waiting for you @">
       <View>
         <HorizontalView>
           <IconButton
@@ -31,7 +33,11 @@ const WaitingForYouList = () => {
             onPress={() => {}}
           />
           <List.Accordion
-            style={{width: 400, padding: 0, backgroundColor: theme.color.secondary}}
+            style={{
+              width: 400,
+              padding: 0,
+              backgroundColor: theme.color.secondary,
+            }}
             title={'Paris | Johannesburg | Doha'}>
             <List.Item
               left={_ => (
@@ -42,17 +48,23 @@ const WaitingForYouList = () => {
                 />
               )}
               style={{width: '100%'}}
+              titleStyle={{
+                color: theme.color.textPrimary,
+                shadowColor: theme.color.textSecondary,
+              }}
               title={user?.handle}
               description={`${user?.name} ${user?.surname} [${user?.initials}]`}
               right={_ => (
                 <>
                   <IconButton
                     icon="cancel"
+                    color={theme.color.textPrimary}
                     style={styles.squareButton}
                     onPress={() => {}}
                   />
                   <IconButton
                     icon="account-plus"
+                    color={theme.color.textPrimary}
                     style={styles.squareButton}
                     onPress={() => {}}
                   />
@@ -72,7 +84,13 @@ const WaitingForYouList = () => {
               component={
                 <>
                   <IconButton icon="plus" style={{margin: 0, padding: 0}} />
-                  <Paragraph>find me @</Paragraph>
+                  <Paragraph
+                    style={{
+                      color: theme.color.textPrimary,
+                      shadowColor: theme.color.textSecondary,
+                    }}>
+                    find me @
+                  </Paragraph>
                 </>
               }
               If={!true}
@@ -119,9 +137,16 @@ const WaitingForThemList = () => {
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
   return (
-    <List.Accordion style={{backgroundColor: theme.color.secondary}} title="Waiting for them @">
+    <List.Accordion
+      style={{backgroundColor: theme.color.secondary}}
+      title="Waiting for them @">
       <List.Item
-        style={{ margin: 0, padding: 0, backgroundColor: theme.color.secondary, marginHorizontal: '5%'}}
+        style={{
+          margin: 0,
+          padding: 0,
+          backgroundColor: theme.color.secondary,
+          marginHorizontal: '5%',
+        }}
         title={user?.handle}
         description={'@ Paris | Johannesburg | Doha'}
         left={_ => (
@@ -141,13 +166,19 @@ const WaitingForThemList = () => {
           alignItems: 'center',
           justifyContent: 'center',
           paddingHorizontal: 5,
-          backgroundColor: theme.color.secondary
+          backgroundColor: theme.color.secondary,
         }}>
         <Show
           component={
             <>
               <IconButton icon="plus" style={styles.minimalButton} />
-              <Paragraph>Wait for someone</Paragraph>
+              <Paragraph
+                style={{
+                  color: theme.color.textPrimary,
+                  shadowColor: theme.color.textSecondary,
+                }}>
+                Wait for someone
+              </Paragraph>
             </>
           }
           If={true}
@@ -160,7 +191,14 @@ const WaitingForThemList = () => {
               />
               <HorizontalView style={{width: '83%', paddingVertical: 2}}>
                 <TextInput label={'wait for...'} style={{width: 150}} />
-                <Paragraph style={{alignSelf: 'center'}}>@</Paragraph>
+                <Paragraph
+                  style={{
+                    alignSelf: 'center',
+                    color: theme.color.textPrimary,
+                    shadowColor: theme.color.textSecondary,
+                  }}>
+                  @
+                </Paragraph>
                 <ScrollView horizontal>
                   <TextInput
                     label={'first place'}
@@ -275,17 +313,35 @@ const ProfilePreview = () => {
             width: 340,
             padding: 10,
           }}>
-          <Paragraph style={{fontWeight: 'bold'}}>{user?.handle}</Paragraph>
-          <Paragraph>
+          <Paragraph
+            style={{
+              fontWeight: 'bold',
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
+            {user?.handle}
+          </Paragraph>
+          <Paragraph
+            style={{
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
             {user?.name} {user?.surname} [{user?.initials}]
           </Paragraph>
         </View>
       </HorizontalView>
-      <TouchableRipple onPress={()=>setEditing(editing => !editing)}>
-      <HorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-        <IconButton icon={editing ? 'content-save' : 'pen'} />
-        <Paragraph>{editing ? 'Save profile' : 'Edit profile'}</Paragraph>
-      </HorizontalView>
+      <TouchableRipple onPress={() => setEditing(editing => !editing)}>
+        <HorizontalView
+          style={{alignItems: 'center', justifyContent: 'center'}}>
+          <IconButton icon={editing ? 'content-save' : 'pen'} />
+          <Paragraph
+            style={{
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}>
+            {editing ? 'Save profile' : 'Edit profile'}
+          </Paragraph>
+        </HorizontalView>
       </TouchableRipple>
     </>
   );
@@ -300,7 +356,8 @@ function UserProfileHeader(props: NativeStackHeaderProps) {
 function UserProfile() {
   const {theme} = useTheme();
   return (
-    <ScrollView style={{backgroundColor: theme.color.secondary, height: '100%'}}>
+    <ScrollView
+      style={{backgroundColor: theme.color.secondary, height: '100%'}}>
       <ProfilePreview />
       <WaitingForYouList />
       <WaitingForThemList />

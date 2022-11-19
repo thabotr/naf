@@ -1,29 +1,35 @@
-import { TouchableOpacity, View } from "react-native";
-import { List, Paragraph } from "react-native-paper";
-import { useChats } from "../../context/chat";
-import { useTheme } from "../../context/theme";
-import { Chat } from "../../types/chat";
-import { Lay } from "../Helpers/Lay";
-import { Show } from "../Helpers/Show";
+import {TouchableOpacity, View} from 'react-native';
+import {List, Paragraph} from 'react-native-paper';
+import {useChats} from '../../context/chat';
+import {useTheme} from '../../context/theme';
+import {Chat} from '../../types/chat';
+import {Lay} from '../Helpers/Lay';
+import {Show} from '../Helpers/Show';
 
-function MessagePreviewSection({chat, navigation}:{navigation:any, chat: Chat}){
+function MessagePreviewSection({
+  chat,
+  navigation,
+}: {
+  navigation: any;
+  chat: Chat;
+}) {
   const {theme} = useTheme();
   const {saveActiveChat} = useChats();
   const latestMessage = chat.messages.slice(-1).find(_ => true);
 
-  return <TouchableOpacity
-    style={{
-      width: '100%',
-      height: '100%',
-    }}
-    onPress={() => {
-      saveActiveChat(chat);
-      navigation.push('Chat');
-    }}
-    activeOpacity={0.8}
-  >
-    <Lay
-      component={
+  return (
+    <TouchableOpacity
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
+      onPress={() => {
+        saveActiveChat(chat);
+        navigation.push('Chat');
+      }}
+      activeOpacity={0.8}>
+      <Lay
+        component={
           <Show
             component={
               <Paragraph
@@ -39,10 +45,12 @@ function MessagePreviewSection({chat, navigation}:{navigation:any, chat: Chat}){
             ElseShow={
               <List.Item
                 style={{width: '100%'}}
+                titleStyle={{
+                  color: theme.color.textPrimary,
+                  shadowColor: theme.color.textSecondary,
+                }}
                 title={
-                  !latestMessage?.text
-                  ? '<sent a file>'
-                  : latestMessage.text
+                  !latestMessage?.text ? '<sent a file>' : latestMessage.text
                 }
                 left={_ => (
                   <List.Icon
@@ -53,24 +61,26 @@ function MessagePreviewSection({chat, navigation}:{navigation:any, chat: Chat}){
                         ? 'message-text'
                         : 'attachment'
                     }
+                    color={theme.color.textPrimary}
                   />
                 )}
               />
             }
           />
-      }
-      over={
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundColor: theme.color.secondary,
-            opacity: 0.5,
-          }}
-        />
-      }
-    />
-  </TouchableOpacity>
+        }
+        over={
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: theme.color.secondary,
+              opacity: 0.5,
+            }}
+          />
+        }
+      />
+    </TouchableOpacity>
+  );
 }
 
 export {MessagePreviewSection};

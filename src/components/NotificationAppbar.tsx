@@ -1,19 +1,30 @@
 import {View} from 'react-native';
 import {List, Paragraph} from 'react-native-paper';
+import {useTheme} from '../context/theme';
 import {Lay} from './Helpers/Lay';
 import {OverlayedView} from './Helpers/OverlayedView';
 import {Image} from './Image';
 
 function NotificationAppbar() {
+  const {theme} = useTheme();
   return (
     <OverlayedView>
       <Lay
         component={
           <List.Item
+            titleStyle={{
+              color: theme.color.textPrimary,
+              shadowColor: theme.color.textSecondary,
+            }}
             title="w/userHandle"
             descriptionStyle={{marginLeft: 10}}
             description={
-              <Paragraph numberOfLines={1}>
+              <Paragraph
+                numberOfLines={1}
+                style={{
+                  color: theme.color.textPrimary,
+                  textShadowColor: theme.color.textSecondary,
+                }}>
                 sjnkdkdkjsk djsndjhskjdkbs jdjksdkskdkskdks sdjhd ...
               </Paragraph>
             }

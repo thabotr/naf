@@ -24,6 +24,7 @@ import {verboseDuration} from '../helper';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {OverlayedView} from './Helpers/OverlayedView';
+import {useTheme} from '../context/theme';
 
 function IconButton({
   If,
@@ -36,17 +37,25 @@ function IconButton({
   If?: boolean;
   style?: ViewStyle;
 }) {
+  const {theme} = useTheme();
   if (If === undefined || If)
-    return <RNPIconButton icon={icon} onPress={onPress} style={style} />;
+    return (
+      <RNPIconButton
+        icon={icon}
+        onPress={onPress}
+        style={style}
+        color={theme.color.textPrimary}
+      />
+    );
   return null;
 }
 
 export function ListenWithMeCard() {
+  const {theme} = useTheme();
   const [expanded, setExpanded] = useState(true);
   const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
-  const {listeningWith, currentTrack, playState, stopPlayer, colors} = useContext(
-    ListenWithMeContext,
-  ) as ListenWithMeContextType;
+  const {listeningWith, currentTrack, playState, stopPlayer, colors} =
+    useContext(ListenWithMeContext) as ListenWithMeContextType;
   const {chats} = useChats();
   const [currentTrackInd, setCurrentTrackInd] = useState(0);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -107,7 +116,13 @@ export function ListenWithMeCard() {
           borderBottomEndRadius: 3,
           borderBottomLeftRadius: 3,
         }}>
-        <Paragraph style={{textAlign: 'center', opacity: 0.5}}>
+        <Paragraph
+          style={{
+            textAlign: 'center',
+            opacity: 0.5,
+            textShadowColor: theme.color.textSecondary,
+            color: theme.color.textPrimary,
+          }}>
           Enjoying the bangers {listeningWith}
         </Paragraph>
         <OnlyShow If={expanded}>
@@ -124,11 +139,18 @@ export function ListenWithMeCard() {
                 <ScrollView>
                   {tracks.map((t, i) => (
                     <List.Item
+                      titleStyle={{
+                        textShadowColor: theme.color.textSecondary,
+                        color: theme.color.textPrimary,
+                      }}
                       style={{
                         borderWidth: 1,
                         borderRadius: 3,
                         margin: 5,
                         backgroundColor: colors.secondary,
+                      }}
+                      descriptionStyle={{
+                        color: theme.color.textSecondary,
                       }}
                       onPress={() =>
                         TrackPlayer.skip(i)
@@ -155,6 +177,13 @@ export function ListenWithMeCard() {
                       backgroundColor: colors.secondary,
                     }}>
                     <List.Item
+                      titleStyle={{
+                        textShadowColor: theme.color.textSecondary,
+                        color: theme.color.textPrimary,
+                      }}
+                      descriptionStyle={{
+                        color: theme.color.textSecondary,
+                      }}
                       title={
                         currentTrack?.title ?? `track ${currentTrackInd + 1}`
                       }
@@ -164,10 +193,21 @@ export function ListenWithMeCard() {
                     />
                     <View style={{flex: 1}}></View>
                     <HorizontalView>
-                      <Paragraph style={{flex: 1}}>
+                      <Paragraph
+                        style={{
+                          flex: 1,
+                          textShadowColor: theme.color.textSecondary,
+                          color: theme.color.textPrimary,
+                        }}>
                         {verboseDuration(position)}
                       </Paragraph>
-                      <Paragraph style={{flex: 1, textAlign: 'right'}}>
+                      <Paragraph
+                        style={{
+                          flex: 1,
+                          textAlign: 'right',
+                          textShadowColor: theme.color.textSecondary,
+                          color: theme.color.textPrimary,
+                        }}>
                         {verboseDuration(duration)}
                       </Paragraph>
                     </HorizontalView>
@@ -188,14 +228,28 @@ export function ListenWithMeCard() {
               }}>
               <View>
                 <OnlyShow If={!!currentTrack?.artist}>
-                  <Paragraph>{currentTrack?.artist}</Paragraph>
+                  <Paragraph
+                    style={{
+                      textShadowColor: theme.color.textSecondary,
+                      color: theme.color.textPrimary,
+                    }}>
+                    {currentTrack?.artist}
+                  </Paragraph>
                 </OnlyShow>
-                <Paragraph>
+                <Paragraph
+                  style={{
+                    textShadowColor: theme.color.textSecondary,
+                    color: theme.color.textPrimary,
+                  }}>
                   {currentTrack?.title ?? `track ${currentTrackInd + 1}`}-
                   {currentTrack?.album}
                 </Paragraph>
               </View>
-              <Paragraph>
+              <Paragraph
+                style={{
+                  textShadowColor: theme.color.textSecondary,
+                  color: theme.color.textPrimary,
+                }}>
                 {verboseDuration(position)}/{verboseDuration(duration)}
               </Paragraph>
             </HorizontalView>
