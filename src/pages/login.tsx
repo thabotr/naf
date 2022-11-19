@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {Button, Paragraph, Surface} from 'react-native-paper';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
@@ -9,11 +9,11 @@ import {remoteSignIn} from '../remote/login';
 
 export function Login() {
   const {theme} = useTheme();
-  const [loginError, setLoginError] = React.useState(false);
+  const [loginError, setLoginError] = useState(false);
   const {loggedInUser, saveAppLoggedInUser} = useAppState();
   const {loginAs} = useLoggedInUser();
 
-  React.useEffect(() => {
+  useEffect(() => {
     loggedInUser && loginAs(loggedInUser);
   }, [loggedInUser]);
 

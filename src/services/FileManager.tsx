@@ -2,8 +2,13 @@ import {Platform} from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import ImageColors from 'react-native-image-colors';
 import {launchCamera} from 'react-native-image-picker';
+import DocumentPicker, {
+  DocumentPickerResponse,
+  isInProgress,
+} from 'react-native-document-picker';
 
 import {FileManagerHelper} from './FileManagerHelper';
+import { FileType } from '../types/message';
 
 class FileManager {
   static RootDir = RNFetchBlob.fs.dirs.CacheDir;
@@ -137,6 +142,7 @@ class FileManager {
   }
 
   static async getCameraMedia(mode: 'video' | 'photo') {
+    try{
     const cameraRes = await launchCamera({
       mediaType: mode,
       quality: 1,
@@ -173,6 +179,41 @@ class FileManager {
       type: resultAsset.type ?? '',
       size: resultAsset.fileSize ?? 0,
     };
+    }catch(e){
+      console.error('camera error', e)
+    }
+  }
+
+  static #handleError = (err: unknown) => {
+    if (DocumentPicker.isCancel(err)) {
+      // User cancelled the picker, exit any dialogs or menus and move on
+    } else if (isInProgress(err)) {
+      console.warn(
+        'multiple pickers were opened, only the last will be considered',
+      );
+    } else {
+      throw err;
+    }
+  };
+
+  static async pickFiles():Promise<FileType[]|undefined>{
+    try{
+      const dprs: Array<DocumentPickerResponse> | null | undefined = await DocumentPicker.pick({allowMultiSelection: true, copyTo: 'cachesDirectory'});
+      if (dprs) {
+        return dprs.map(
+          (dpr: DocumentPickerResponse): FileType => {
+            return {
+              name: dpr.name ?? undefined,
+              size: dpr.size ?? 0,
+              type: dpr.type ?? '',
+              uri: dpr.fileCopyUri ?? dpr.uri,
+            };
+          },
+        );
+      }
+    }catch(e){
+      this.#handleError(e);
+    }
   }
 }
 

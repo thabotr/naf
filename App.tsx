@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import {useEffect} from 'react';
 import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -29,7 +29,7 @@ type Props = {
 
 function RegisterPlayerRecorder() {
   const {initAudioRecorderPlayer} = useAudioRecorderPlayer();
-  React.useEffect(() => {
+  useEffect(() => {
     initAudioRecorderPlayer();
   }, []);
   return <></>;
@@ -53,7 +53,7 @@ function SuperContextProvider({children}: Props) {
 }
 
 function PageLoginElseHome() {
-  React.useEffect(() => {
+  useEffect(() => {
     FileManager.InitFilePaths()
       .then(b => {
         if (!b) console.error('failed to create file structure');

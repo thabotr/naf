@@ -1,4 +1,4 @@
-import React from 'react';
+import {useContext} from 'react';
 import { TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { IconButton, Paragraph } from 'react-native-paper';
 import TrackPlayer, {State as PlayState} from 'react-native-track-player';
@@ -12,7 +12,7 @@ import { OverlayedView } from '../Helpers/OverlayedView';
 function ListenWithMeSection({chat}:{chat: Chat}) {
   const {theme} = useTheme();
   const {listeningWith, currentTrack, playUserTrack, playState} =
-  React.useContext(ListenWithMeContext) as ListenWithMeContextType;
+  useContext(ListenWithMeContext) as ListenWithMeContextType;
   return (
     <TouchableOpacity
       style={{

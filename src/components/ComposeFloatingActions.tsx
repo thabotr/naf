@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 
 import {useTheme} from '../context/theme';
 import {useMessageComposer} from '../context/messageEditor';
@@ -11,16 +11,36 @@ import {ComposeFAB} from './ComposeFloatingActions/ComposeFAB';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {Show} from './Helpers/Show';
+import { useLoggedInUser } from '../context/user';
+import { useChats } from '../context/chat';
 
 const ComposeFloatingActions = () => {
   const {theme} = useTheme();
-  const [expanded, setExpanded] = React.useState(false);
-  const {composing, setComposeOn, showTextInputOn} = useMessageComposer();
+  const {user} = useLoggedInUser();
+  const interlocutor = useChats().activeChat()?.user;
+  const [expanded, setExpanded] = useState(false);
+  const {saveComposeMsg, composeMsg} = useMessageComposer();
   const {recorderPlayerState} = useAudioRecorderPlayer();
 
+  if(!user || !interlocutor){
+    return <></>;
+  }
+
   const pencilClicked = () => {
-    setComposeOn(true);
-    showTextInputOn(true);
+    saveComposeMsg(msg=>{
+      if(!msg){
+        return {
+          from: user.handle,
+          to: interlocutor.handle,
+          id: `${new Date().getTime()}`,
+          files: [],
+          voiceRecordings: [],
+          timestamp: new Date().getTime()/1_000,
+        }
+      }else{
+        return msg;
+      }
+    })
   };
 
   const recordingOrPaused =
@@ -28,7 +48,7 @@ const ComposeFloatingActions = () => {
     recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
 
   return (
-    <OnlyShow If={!composing && !recordingOrPaused}>
+    <OnlyShow If={!composeMsg && !recordingOrPaused}>
       <HorizontalView
         style={{
           padding: 0,

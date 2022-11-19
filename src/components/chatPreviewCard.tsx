@@ -1,7 +1,6 @@
-import React from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {View} from 'react-native';
 import {Card} from 'react-native-paper';
-
 import {
   ListenWithMeContext,
   ListenWithMeContextType,
@@ -25,19 +24,19 @@ export function ChatPreviewCard({
   navigation: any;
 }) {
   const {theme} = useTheme();
-  const {saveColors} = React.useContext(
+  const {saveColors} = useContext(
     ListenWithMeContext,
   ) as ListenWithMeContextType;
 
-  const [landscapeUri, setLandscapeUri] = React.useState('');
-  const [avatarURI, setAvatarURI] = React.useState('');
+  const [landscapeUri, setLandscapeUri] = useState('');
+  const [avatarURI, setAvatarURI] = useState('');
 
   const unreadMessageCount = chat.messages.filter(m => !!m.unread).length;
 
-  const [avatarPrimary, setAP] = React.useState(() => theme.color.primary);
-  const [avatarSecondary, setAS] = React.useState(() => theme.color.secondary);
+  const [avatarPrimary, setAP] = useState(() => theme.color.primary);
+  const [avatarSecondary, setAS] = useState(() => theme.color.secondary);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (chat.user.landscapeURI.includes('http'))
       FileManager.getFileURI(chat.user.landscapeURI, 'image/jpeg')
         .then(path => {
@@ -46,14 +45,14 @@ export function ChatPreviewCard({
         .catch(e => console.error('failed to get landscape uri: ' + e));
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     landscapeUri &&
       FileManager.getImageColors(landscapeUri).then(colors => {
         colors && saveColors(colors);
       });
   }, [landscapeUri, theme]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     avatarURI &&
       FileManager.getImageColors(avatarURI).then(colors => {
         if (colors) {

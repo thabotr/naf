@@ -13,9 +13,11 @@ import {
 import {FileManager} from '../services/FileManager';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {HorizontalView} from './Helpers/HorizontalView';
+import { useLoggedInUser } from '../context/user';
+import { useChats } from '../context/chat';
 
 function VoiceRecorderCard() {
-  const {message, saveComposeMessage, setComposeOn} = useMessageComposer();
+  const {saveComposeMsg} = useMessageComposer();
   const {
     recorderPlayerState: recorderState,
     recorderPlayerData,
@@ -24,6 +26,12 @@ function VoiceRecorderCard() {
     pauseRecorder,
   } = useAudioRecorderPlayer();
   const {theme} = useTheme();
+  const {user} = useLoggedInUser();
+  const chatUser = useChats().activeChat()?.user;
+
+  if(!user || !chatUser){
+    return <></>;
+  }
 
   const onDeleteRecording = () => {
     stopRecorder();
@@ -44,16 +52,31 @@ function VoiceRecorderCard() {
       return;
     }
     const recordingFileStat = await RNFetchBlob.fs.stat(recordingUri);
-    saveComposeMessage({
-      ...message,
-      voiceRecordings: message.voiceRecordings.concat({
-        uri: recordingFileStat.path,
-        size: recordingFileStat.size,
-        duration: recorderPlayerData.recordingPosition,
-        type: recordingFileStat.type,
-      }),
-    });
-    setComposeOn(true);
+    const file = {
+      duration: recorderPlayerData.recordingPosition,
+      name: recordingFileStat.filename,
+      size: recordingFileStat.size,
+      uri: recordingFileStat.path,
+      type: recordingFileStat.type,
+    }
+    saveComposeMsg(msg=>{
+      if(msg){
+        return {
+          ...msg,
+          voiceRecordings: msg.voiceRecordings.concat(file),
+        }
+      }else {
+        const timestamp = new Date().getTime();
+        return {
+          voiceRecordings: [file],
+          files: [],
+          timestamp: timestamp/1000,
+          from: user.handle,
+          to: chatUser.handle,
+          id: timestamp.toString(),
+        }
+      }
+    })
   };
 
   const paused = recorderState === RecordPlayState.RECORDING_PAUSED;

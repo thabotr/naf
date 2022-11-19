@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {ImageStyle, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {openFile} from '../fileViewer';
@@ -24,12 +24,12 @@ type Props = {
 };
 
 function Image({source, style, onURI, viewable, onPress, alt}: Props) {
-  const [imgState, setImgState] = React.useState(IMState.FETCHING);
-  const [imgSource, setImgSource] = React.useState<string | undefined>(
+  const [imgState, setImgState] = useState(IMState.FETCHING);
+  const [imgSource, setImgSource] = useState<string | undefined>(
     undefined,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const link = typeof source === 'string' ? source : source?.uri
     const mimeType = typeof source === 'string' ? 'image/jpeg' : source?.type
     if (link) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -6,7 +6,7 @@ import {OnlyShow} from '../Helpers/OnlyShow';
 import {Show} from '../Helpers/Show';
 
 const ExpandableParagraph = ({text}: {text?: string}) => {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   const {theme} = useTheme();
   const toggleExpanded = () =>
     expanded ? setExpanded(false) : setExpanded(true);

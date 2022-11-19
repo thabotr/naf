@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {Dialog, IconButton, Portal} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -24,9 +24,9 @@ function ViewAllFilesDialog({
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
   const fromUser = msg.from === user?.handle;
-  const [files, setFiles] = React.useState(() => msg.files);
+  const [files, setFiles] = useState(() => msg.files);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setFiles(msg.files);
   }, [visible]);
 

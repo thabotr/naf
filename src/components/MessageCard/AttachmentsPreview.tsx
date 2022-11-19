@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Chip, Paragraph} from 'react-native-paper';
 import {useMessageComposer} from '../../context/messageEditor';
@@ -22,8 +22,8 @@ function AttachmentsPreview({
 }) {
   const {theme} = useTheme();
   const {user} = useLoggedInUser();
-  const {saveComposeMessage, message: composedMsg} = useMessageComposer();
-  const [expandedPreview, setExpandedPreview] = React.useState(false);
+  const {composeMsg, saveComposeMsg} = useMessageComposer();
+  const [expandedPreview, setExpandedPreview] = useState(false);
   const sender = user?.handle === msg.from;
   const {truthy: visuals, falsey: nonVisuals} = LRFilter(
     msg.files,
@@ -50,20 +50,26 @@ function AttachmentsPreview({
 
   const onExpandedViewDismiss = (files: FileType[]) => {
     if (composing) {
-      saveComposeMessage({
-        ...composedMsg,
-        files: files,
+      saveComposeMsg(msg=>{
+        if(msg){
+          return {
+            ...msg,
+            files: files,
+          }
+        }
       });
     }
     setExpandedPreview(false);
   };
 
   const onDeleteRecording = (vr: VoiceNoteType) => {
-    saveComposeMessage({
-      ...composedMsg,
-      voiceRecordings: composedMsg.voiceRecordings.filter(
-        mvc => mvc.uri !== vr.uri,
-      ),
+    saveComposeMsg(msg=>{
+      if(msg){
+        return {
+          ...msg,
+          voiceRecordings: msg.voiceRecordings.filter(v=> v.uri !== vr.uri),
+        }
+      }
     });
   };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import {createContext, useState, ReactNode, useEffect, useContext} from 'react';
 import {useColorScheme} from 'react-native';
 import {useAppState} from '../providers/AppStateProvider';
 import {ThemeSetting} from '../types/settings';
@@ -56,13 +56,13 @@ const lightTheme: ThemeType = {
   },
 };
 
-const ThemeContext = React.createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType | null>(null);
 
-function ThemeProvider({children}: {children: React.ReactNode}) {
+function ThemeProvider({children}: {children: ReactNode}) {
   const {settings, saveAppSettings} = useAppState();
-  const [themeSetting, setThemeSetting] = React.useState<ThemeSetting>('dark');
+  const [themeSetting, setThemeSetting] = useState<ThemeSetting>('dark');
   const isSystemDark = useColorScheme() === 'dark';
-  const [theme, setTheme] = React.useState<ThemeType>(darkTheme);
+  const [theme, setTheme] = useState<ThemeType>(darkTheme);
 
   const themeFromSetting = (ts: ThemeSetting) => {
     switch (ts) {
@@ -75,7 +75,7 @@ function ThemeProvider({children}: {children: React.ReactNode}) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTheme(themeFromSetting(settings.theme));
     setThemeSetting(settings.theme);
   }, [settings, isSystemDark]);
@@ -100,7 +100,7 @@ function ThemeProvider({children}: {children: React.ReactNode}) {
 }
 
 const useTheme = (): ThemeContextType => {
-  const context = React.useContext(ThemeContext);
+  const context = useContext(ThemeContext);
   if (!context) {
     throw new Error('Encapsulate useTheme in ThemeProvider');
   }

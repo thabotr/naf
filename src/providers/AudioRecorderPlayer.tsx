@@ -1,12 +1,12 @@
-import React from 'react';
+import {useState, createContext, useContext, ReactNode} from 'react';
 import {PermissionsAndroid} from 'react-native';
 import RNAudioRecorderPlayer, {
   PlayBackType,
   RecordBackType,
 } from 'react-native-audio-recorder-player';
-import {permissionsGranted, requestPermissions} from '../permissions';
 import {FileManager} from '../services/FileManager';
 import {FileManagerHelper} from '../services/FileManagerHelper';
+import { PermissionsManager } from '../services/PermissionsManager';
 
 enum RecordPlayState {
   RECORDING,
@@ -46,19 +46,19 @@ type AudioRecorderPlayerContextType = {
 };
 
 type Props = {
-  children?: React.ReactNode;
+  children?: ReactNode;
 };
 
 const AudioRecorderPlayerContext =
-  React.createContext<AudioRecorderPlayerContextType | null>(null);
+  createContext<AudioRecorderPlayerContextType | null>(null);
 
 function AudioRecorderPlayerProvider({children}: Props) {
   const [audioRecorderPlayer, setAudioRecorderPlayer] =
-    React.useState<RNAudioRecorderPlayer | null>(null);
-  const [recorderPlayerState, setRecorderPlayerState] = React.useState(
+    useState<RNAudioRecorderPlayer | null>(null);
+  const [recorderPlayerState, setRecorderPlayerState] = useState(
     RecordPlayState.IDLE,
   );
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     playerDuration: 0,
     playerPosition: 0,
     playingPath: '',
@@ -96,9 +96,9 @@ function AudioRecorderPlayerProvider({children}: Props) {
     setAudioRecorderPlayer(arp);
   };
   const startRecorder = async () => {
-    const permsGranted = await permissionsGranted(recordingPerms);
-    if (!permsGranted) {
-      await requestPermissions(recordingPerms);
+    const permsGranted = await PermissionsManager.assertPermissionsGranted(recordingPerms);
+    if(!permsGranted){
+      PermissionsManager.requestPermissions(recordingPerms);
       return;
     }
 
@@ -224,7 +224,7 @@ function AudioRecorderPlayerProvider({children}: Props) {
 }
 
 const useAudioRecorderPlayer = (): AudioRecorderPlayerContextType => {
-  const context = React.useContext(AudioRecorderPlayerContext);
+  const context = useContext(AudioRecorderPlayerContext);
   if (!context) {
     throw new Error(
       'Encapsulate useAudioRecorderPlayer with AudioRecorderPlayerProvider',

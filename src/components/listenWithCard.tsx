@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect, useState, useContext} from 'react';
 import {ScrollView, View, ViewStyle} from 'react-native';
 import {
   Card,
@@ -42,14 +42,14 @@ function IconButton({
 }
 
 export function ListenWithMeCard() {
-  const [expanded, setExpanded] = React.useState(true);
-  const [repeatMode, setRepeatMode] = React.useState(RepeatMode.Off);
-  const {listeningWith, currentTrack, playState, stopPlayer, colors} = React.useContext(
+  const [expanded, setExpanded] = useState(true);
+  const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
+  const {listeningWith, currentTrack, playState, stopPlayer, colors} = useContext(
     ListenWithMeContext,
   ) as ListenWithMeContextType;
   const {chats} = useChats();
-  const [currentTrackInd, setCurrentTrackInd] = React.useState(0);
-  const [tracks, setTracks] = React.useState<Track[]>([]);
+  const [currentTrackInd, setCurrentTrackInd] = useState(0);
+  const [tracks, setTracks] = useState<Track[]>([]);
 
   const toggleRepeatMode = () =>
     setRepeatMode((repeatMode + 1) % (Object.keys(RepeatMode).length / 2));
@@ -66,7 +66,7 @@ export function ListenWithMeCard() {
       .then(ts => setTracks(ts))
       .catch(e => console.log('failed to update tracks', e));
 
-  React.useEffect(() => {
+  useEffect(() => {
     TrackPlayer.setRepeatMode(repeatMode);
     updateCurrentTrack();
     updateTracks();
@@ -74,7 +74,7 @@ export function ListenWithMeCard() {
 
   const {position, duration} = useProgress(1000);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!!listeningWith) {
       const chat = chats.find(c => listeningWith === c.user.handle);
       chat &&

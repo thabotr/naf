@@ -11,35 +11,78 @@ import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {FileManager} from '../services/FileManager';
 import {AttachmentsPreview} from './MessageCard/AttachmentsPreview';
+import {deduplicatedConcat} from '../utils/deduplicatedConcat';
 
 export const MessageEditorCard = () => {
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
   const {addChatMessages, activeChat} = useChats();
 
-  const {
-    composing,
-    discardMessage,
-    showTextInput,
-    showTextInputOn,
-    onAddAttachments,
-    message,
-    saveComposeMessage,
-    setComposeOn,
-  } = useMessageComposer();
+  const {composeMsg, saveComposeMsg, saveComposeState, composeState} =
+    useMessageComposer();
   const {startRecorder} = useAudioRecorderPlayer();
+
+  const interlocutor = activeChat()?.user;
+
+  if (!user || !interlocutor) {
+    return <></>;
+  }
 
   const openCamInMode = (mode: 'video' | 'photo') => {
     FileManager.getCameraMedia(mode)
       .then(vidOrPic => {
         vidOrPic &&
-          saveComposeMessage({
-            ...message,
-            files: [...message.files, vidOrPic],
+          saveComposeMsg(msg => {
+            if (msg) {
+              return {
+                ...msg,
+                files: [...msg.files, vidOrPic],
+              };
+            } else {
+              return {
+                from: user.handle,
+                to: interlocutor.handle,
+                id: `${new Date().getTime()}`,
+                files: [vidOrPic],
+                voiceRecordings: [],
+                timestamp: new Date().getTime() / 1000,
+              };
+            }
           });
-        setComposeOn(true);
       })
       .catch(e => console.warn('camera error', e));
+  };
+
+  const saveMessageTxt = (text: string) => {
+    saveComposeMsg(msg => {
+      if (msg) {
+        return {
+          ...msg,
+          text: text,
+        };
+      }
+    });
+  };
+
+  const addAttachments = () => {
+    FileManager.pickFiles().then(files => {
+      if (!files) return;
+      saveComposeMsg(msg => {
+        if (msg) {
+          return {
+            ...msg,
+            files: deduplicatedConcat(
+              msg.files,
+              files,
+              (f1, f2) =>
+                f1.name === f2.name &&
+                f1.size === f2.size &&
+                f1.type === f2.type,
+            ),
+          };
+        }
+      });
+    });
   };
 
   const EditorActions = () => {
@@ -48,46 +91,54 @@ export const MessageEditorCard = () => {
         <HorizontalView>
           <IconButton
             icon="content-save-edit"
-            disabled={!message.text && !message.files.length}
+            disabled={!composeMsg?.text && !composeMsg?.files.length}
             onPress={() => {
               const timestamp = new Date().getTime();
-              addChatMessages([
-                {
-                  ...message,
-                  id: timestamp.toString(),
-                  from: user?.handle ?? '',
-                  to: activeChat()?.user.handle ?? '',
-                  draft: true,
-                  timestamp: timestamp / 1_000,
-                },
-              ]);
-              discardMessage();
+              composeMsg &&
+                addChatMessages([
+                  {
+                    ...composeMsg,
+                    id: timestamp.toString(),
+                    from: user?.handle ?? '',
+                    to: activeChat()?.user.handle ?? '',
+                    draft: true,
+                    timestamp: timestamp / 1_000,
+                  },
+                ]);
+              saveComposeMsg(_ => undefined);
             }}
           />
           <IconButton
             icon="delete"
-            onPress={() => {
-              discardMessage();
-            }}
+            onPress={() => saveComposeMsg(_ => undefined)}
           />
         </HorizontalView>
 
         <HorizontalView>
           <IconButton icon="emoticon-excited-outline" onPress={() => {}} />
           <IconButton icon="microphone" onPress={startRecorder} />
-          <IconButton icon="attachment" onPress={onAddAttachments} />
+          <IconButton icon="attachment" onPress={addAttachments} />
           <IconButton icon="camera" onPress={() => openCamInMode('photo')} />
           <IconButton icon="video" onPress={() => openCamInMode('video')} />
           <IconButton
-            icon={showTextInput ? 'pencil-minus' : 'pencil-plus'}
+            icon={
+              composeState.inputTextEnabled ? 'pencil-minus' : 'pencil-plus'
+            }
             onPress={() => {
-              if (showTextInput) {
-                saveComposeMessage({
-                  ...message,
-                  text: undefined,
-                });
-              }
-              showTextInputOn(!showTextInput);
+              saveComposeMsg(msg => {
+                if (msg) {
+                  return {
+                    ...msg,
+                    text: undefined,
+                  };
+                }
+              });
+              saveComposeState(cs => {
+                return {
+                  ...cs,
+                  inputTextEnabled: !cs.inputTextEnabled,
+                };
+              });
             }}
           />
         </HorizontalView>
@@ -99,15 +150,10 @@ export const MessageEditorCard = () => {
 
   const EditorTextInput = () => {
     return (
-      <OnlyShow If={composing && showTextInput}>
+      <OnlyShow If={!!composeMsg && composeState.inputTextEnabled}>
         <TextInput
-          defaultValue={message.text}
-          onEndEditing={e => {
-            saveComposeMessage({
-              ...message,
-              text: e.nativeEvent.text,
-            });
-          }}
+          defaultValue={composeMsg?.text}
+          onEndEditing={e => saveMessageTxt(e.nativeEvent.text)}
           multiline
           numberOfLines={6}
           style={{width: '100%'}}
@@ -127,12 +173,12 @@ export const MessageEditorCard = () => {
   });
 
   return (
-    <OnlyShow If={composing}>
+    <OnlyShow If={!!composeMsg}>
       <Card style={styles.editorContainer}>
         <View style={styles.editorBody}>
           <EditorActions />
           <EditorTextInput />
-          <AttachmentsPreview msg={message} composing />
+          {composeMsg && <AttachmentsPreview msg={composeMsg} composing />}
         </View>
       </Card>
     </OnlyShow>

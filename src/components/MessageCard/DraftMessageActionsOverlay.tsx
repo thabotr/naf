@@ -10,7 +10,7 @@ import {OverlayedView} from '../Helpers/OverlayedView';
 function DraftMessageActionsOverlay({msg}: {msg: Message}) {
   const {theme} = useTheme();
   const {deleteChatMessages, addChatMessages} = useChats();
-  const {saveComposeMessage, setComposeOn, showTextInputOn} =
+  const {saveComposeMsg} =
     useMessageComposer();
 
   const deleteDraft = () => {
@@ -18,10 +18,8 @@ function DraftMessageActionsOverlay({msg}: {msg: Message}) {
   };
 
   const editDraft = () => {
-    saveComposeMessage(msg);
+    saveComposeMsg(_=>msg);
     deleteDraft();
-    setComposeOn(true);
-    showTextInputOn(true);
   };
 
   const sendDraft = () => {

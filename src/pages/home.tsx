@@ -1,5 +1,5 @@
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {View, FlatList} from 'react-native';
 import {Appbar, IconButton} from 'react-native-paper';
 import {Image} from '../components/Image';
@@ -46,7 +46,7 @@ function HomeHeader(props: NativeStackHeaderProps) {
 }
 
 function Home({navigation}: {navigation: any}) {
-  const [fetchingChats, setFetchingChats] = React.useState(false);
+  const [fetchingChats, setFetchingChats] = useState(false);
   const {theme} = useTheme();
   const {saveChats, chats} = useChats();
   const {saveAppChats, chats: savedChats} = useAppState();
@@ -63,7 +63,7 @@ function Home({navigation}: {navigation: any}) {
       .finally(() => setFetchingChats(false));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (savedChats.length) {
       saveChats(savedChats);
     } else {

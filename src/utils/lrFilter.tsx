@@ -6,11 +6,11 @@ type LRResult<T> = {
 function LRFilter<T>(array: T[], predicate: (element: T)=>boolean):LRResult<T> {
   const left = [];
   const right = [];
-  for( let i in array){
-    if(predicate(array[i])){
-      left.push(array[i]);
+  for( const e of array){
+    if(predicate(e)){
+      left.push(e);
     }else {
-      right.push(array[i])
+      right.push(e)
     }
   }
   return {truthy: left, falsey: right};

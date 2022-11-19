@@ -1,4 +1,4 @@
-import React from 'react';
+import {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {
   ProgressBar,
@@ -32,25 +32,25 @@ export function VoiceNoteCard({
   fromYou?: boolean;
   style?: {[key: string]: any};
 }) {
-  const [playState, setPlayState] = React.useState<PlayState>(
+  const [playState, setPlayState] = useState<PlayState>(
     PlayState.STOPPED,
   );
   const {theme} = useTheme();
   const {recorderPlayerData, playerSeekTo, startPlayer, stopPlayer} =
     useAudioRecorderPlayer();
-  const [playerValues, setPlayerValues] = React.useState({
+  const [playerValues, setPlayerValues] = useState({
     positionSec: 0,
     durationSec: file.duration,
   });
-  const [uri, setURI] = React.useState('');
+  const [uri, setURI] = useState('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     FileManager.getFileURI(file.uri, file.type).then(uri => uri && setURI(uri));
     setURI(file.uri);
     return onPausePlay;
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (playId === recorderPlayerData.playId) {
       setPlayerValues(pvs => {
         return {

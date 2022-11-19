@@ -1,4 +1,4 @@
-import React from 'react';
+import {createContext, useState, ReactNode} from 'react';
 import TrackPlayer, { Track , State as PlayState, useTrackPlayerEvents, Event as PlayerEvent} from 'react-native-track-player';
 import { Colors } from '../services/FileManager';
 import { useTheme } from './theme';
@@ -16,14 +16,14 @@ export type ListenWithMeContextType = {
   saveColors: (cs: Colors)=>void;
 }
 
-export const ListenWithMeContext = React.createContext<ListenWithMeContextType|null>(null);
+export const ListenWithMeContext = createContext<ListenWithMeContextType|null>(null);
 
-export function ListenWithMeContextProvider({children}: {children: React.ReactNode}){
-  const [listeningWith, setUser] = React.useState('');
-  const [currentTrack, setCurrentTrack] = React.useState<Track|undefined>();
-  const [playState, setPlayState] = React.useState<PlayState>(PlayState.None);
+export function ListenWithMeContextProvider({children}: {children: ReactNode}){
+  const [listeningWith, setUser] = useState('');
+  const [currentTrack, setCurrentTrack] = useState<Track|undefined>();
+  const [playState, setPlayState] = useState<PlayState>(PlayState.None);
   const {theme} = useTheme();
-  const [colors, setColors] = React.useState<LWMColors>(()=>{
+  const [colors, setColors] = useState<LWMColors>(()=>{
     return {
     primary: theme.color.primary,
     secondary: theme.color.secondary,

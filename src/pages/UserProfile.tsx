@@ -1,5 +1,5 @@
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import React from 'react';
+import {useState} from 'react';
 import {Pressable, View, StyleSheet, ScrollView} from 'react-native';
 import {
   Button,
@@ -192,7 +192,7 @@ const WaitingForThemList = () => {
 const ProfilePreview = () => {
   const {user} = useLoggedInUser();
   const {theme} = useTheme();
-  const [editing, setEditing] = React.useState(false);
+  const [editing, setEditing] = useState(false);
   return (
     <>
       <View>

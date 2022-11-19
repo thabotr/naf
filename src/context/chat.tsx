@@ -1,11 +1,11 @@
-import React from 'react';
+import {useContext, createContext, useState} from 'react';
 import {Chat} from '../types/chat';
 import {Message, MessagePK} from '../types/message';
 
 export type ChatsContextType = {
   chats: Chat[];
   saveChats: (chats: Chat[]) => void;
-  activeChat: ()=>Chat | undefined;
+  activeChat: ()=>Chat;
   saveActiveChat: (chat: Chat) => void;
   updateChatMessages: (messages: Message[]) => void;
   addChatMessages: (messages: Message[]) => void;
@@ -16,14 +16,18 @@ type Props = {
   children: React.ReactNode;
 }
 
-const ChatsContext = React.createContext<ChatsContextType | null>(null);
+const ChatsContext = createContext<ChatsContextType | null>(null);
 
 const ChatsProvider = ({children}: Props) => {
-  const [chats, setChats] = React.useState<Chat[]>([]);
-  const [activeChatHandle, setActiveChatHandle] = React.useState<string | undefined>();
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [activeChatHandle, setActiveChatHandle] = useState<string | undefined>();
 
-  const activeChat = (): Chat | undefined => {
-    return chats.find(c => c.user.handle === activeChatHandle);
+  const activeChat = (): Chat => {
+    const chat = chats.find(c => c.user.handle === activeChatHandle);
+    if(!chat){
+      throw new Error('no active chat');
+    }
+    return chat;
   }
   const saveChats = (cs: Chat[]): void => {
     setChats(cs);
@@ -123,7 +127,7 @@ const ChatsProvider = ({children}: Props) => {
 }
 
 const useChats = (): ChatsContextType => {
-  const context = React.useContext(ChatsContext);
+  const context = useContext(ChatsContext);
   if(!context){
     throw Error('Use useChats in ChatsProvider');
   }

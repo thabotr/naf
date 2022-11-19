@@ -1,11 +1,11 @@
-import React from 'react';
+import {useState, createContext, useEffect, useContext, ReactNode} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/user';
 import {Chat} from '../types/chat';
 import {ThemeSetting} from '../types/settings';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 export type SettingsType = {
@@ -29,14 +29,14 @@ export type AppStateContextType = {
 const logError = (ac: AppStateConstants, e: any) =>
   console.log('failed to save', ac, e);
 
-const AppStateContext = React.createContext<AppStateContextType | null>(null);
+const AppStateContext = createContext<AppStateContextType | null>(null);
 
 const AppStateProvider = ({children}: Props) => {
-  const [loggedInUser, setLoggedInUser] = React.useState<User | undefined>();
-  const [settings, setSettings] = React.useState<SettingsType>({
+  const [loggedInUser, setLoggedInUser] = useState<User | undefined>();
+  const [settings, setSettings] = useState<SettingsType>({
     theme: 'system_default',
   });
-  const [chats, setChats] = React.useState<Chat[]>([]);
+  const [chats, setChats] = useState<Chat[]>([]);
 
   const saveAppLoggedInUser = (u: User) => {
     const ascUser = AppStateConstants.USER;
@@ -59,7 +59,7 @@ const AppStateProvider = ({children}: Props) => {
     );
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     AsyncStorage.multiGet(['loggedInUser', 'settings', 'chats'])
       .then(res => {
         res.forEach(keyValuePair => {
@@ -99,7 +99,7 @@ const AppStateProvider = ({children}: Props) => {
 };
 
 const useAppState = (): AppStateContextType => {
-  const context = React.useContext(AppStateContext);
+  const context = useContext(AppStateContext);
   if (!context)
     throw new Error('Encapsulate useAppState with AppStateProvider');
   return context;
