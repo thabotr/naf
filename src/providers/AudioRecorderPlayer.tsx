@@ -6,7 +6,7 @@ import RNAudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import {FileManager} from '../services/FileManager';
 import {FileManagerHelper} from '../services/FileManagerHelper';
-import { PermissionsManager } from '../services/PermissionsManager';
+import {PermissionsManager} from '../services/PermissionsManager';
 
 enum RecordPlayState {
   RECORDING,
@@ -82,6 +82,10 @@ function AudioRecorderPlayerProvider({children}: Props) {
         muted: pbm.isMuted ?? false,
       };
     });
+    if (pbm.duration - pbm.currentPosition < 10) {
+      // set player to IDLE within the last 10 milliseconds of the playback
+      setRecorderPlayerState(RecordPlayState.IDLE);
+    }
   };
   const onStartRecorder = (rbm: RecordBackType) => {
     setState(state => {
@@ -96,8 +100,10 @@ function AudioRecorderPlayerProvider({children}: Props) {
     setAudioRecorderPlayer(arp);
   };
   const startRecorder = async () => {
-    const permsGranted = await PermissionsManager.assertPermissionsGranted(recordingPerms);
-    if(!permsGranted){
+    const permsGranted = await PermissionsManager.assertPermissionsGranted(
+      recordingPerms,
+    );
+    if (!permsGranted) {
       PermissionsManager.requestPermissions(recordingPerms);
       return;
     }
