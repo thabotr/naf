@@ -1,4 +1,4 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import {SafeAreaView, View, ScrollView} from 'react-native';
 
 import {useTheme} from '../context/theme';
@@ -12,6 +12,7 @@ import {Appbar} from 'react-native-paper';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
+import {FileManager} from '../services/FileManager';
 
 export function Tiler() {
   const {theme} = useTheme();
@@ -36,11 +37,34 @@ function ChatHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
   const {activeChat} = useChats();
   const user = activeChat()?.user;
+  const [colors, setColors] = useState({
+    primary: theme.color.primary,
+    secondary: theme.color.secondary,
+  });
   if (!user) {
     return <></>;
   }
+
+  useEffect(() => {
+    FileManager.getFileURI(user.landscapeURI, 'image/jpeg').then(uri => {
+      uri &&
+        FileManager.getImageColors(uri, true).then(
+          colors =>
+            colors &&
+            setColors({
+              primary:
+                (theme.dark ? colors.darkPrimary : colors.lightPrimary) ??
+                theme.color.primary,
+              secondary:
+                (theme.dark ? colors.darkSecondary : colors.lightSecondary) ??
+                theme.color.secondary,
+            }),
+        );
+    });
+  }, []);
+
   return (
-    <Appbar.Header style={{backgroundColor: theme.color.primary}}>
+    <Appbar.Header style={{backgroundColor: colors.primary}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
           onPress={() => {
