@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, ToastAndroid} from 'react-native';
 import {
   ProgressBar,
   IconButton,
@@ -9,7 +9,10 @@ import {
 
 import {useTheme} from '../../context/theme';
 import {verboseDuration, verboseSize} from '../../helper';
-import {useAudioRecorderPlayer} from '../../providers/AudioRecorderPlayer';
+import {
+  RecordPlayState,
+  useAudioRecorderPlayer,
+} from '../../providers/AudioRecorderPlayer';
 import {FileManager} from '../../services/FileManager';
 import {VoiceNoteType} from '../../types/message';
 import {OnlyShow} from '../Helpers/OnlyShow';
@@ -32,15 +35,27 @@ export function VoiceNoteCard({
   fromYou?: boolean;
   style?: {[key: string]: any};
 }) {
-  const [playState, setPlayState] = useState<PlayState>(
-    PlayState.STOPPED,
-  );
   const {theme} = useTheme();
-  const {recorderPlayerData, playerSeekTo, startPlayer, stopPlayer} =
-    useAudioRecorderPlayer();
+  const {
+    recorderPlayerData,
+    playerSeekTo,
+    startPlayer,
+    stopPlayer,
+    recorderPlayerState,
+  } = useAudioRecorderPlayer();
   const [playerValues, setPlayerValues] = useState({
     positionSec: 0,
     durationSec: file.duration,
+  });
+  const [playState, setPlayState] = useState<PlayState>(() => {
+    if (recorderPlayerData.playId === playId) {
+      if (recorderPlayerState === RecordPlayState.PLAYING)
+        return PlayState.PLAYING;
+      else {
+        return PlayState.PAUSED;
+      }
+    }
+    return PlayState.STOPPED;
   });
   const [uri, setURI] = useState('');
 
@@ -58,6 +73,12 @@ export function VoiceNoteCard({
           positionSec: recorderPlayerData.playerPosition,
         };
       });
+      if (
+        recorderPlayerData.playerDuration &&
+        recorderPlayerData.playerDuration <= recorderPlayerData.playerPosition
+      ) {
+        setPlayState(PlayState.STOPPED);
+      }
     } else if (playState === PlayState.PLAYING) {
       setPlayState(PlayState.PAUSED);
     }
@@ -81,17 +102,18 @@ export function VoiceNoteCard({
     }
   };
 
-  const onStopPlay = () => {
+  const stopPlay = () => {
+    console.log('called');
     if (playId === recorderPlayerData.playId) {
       stopPlayer();
-      setPlayState(PlayState.STOPPED);
-      setPlayerValues(playerValues => {
-        return {
-          ...playerValues,
-          positionSec: 0,
-        };
-      });
     }
+    setPlayState(PlayState.STOPPED);
+    setPlayerValues(playerValues => {
+      return {
+        ...playerValues,
+        positionSec: 0,
+      };
+    });
   };
 
   const progress =
@@ -103,7 +125,7 @@ export function VoiceNoteCard({
     container: {
       ...style,
       margin: 3,
-      padding: 5,
+      paddingHorizontal: 5,
       backgroundColor: fromYou
         ? theme.color.userSecondary
         : theme.color.friendSecondary,
@@ -116,10 +138,25 @@ export function VoiceNoteCard({
       justifyContent: 'space-between',
     },
     progressBarContainer: {flex: 1, justifyContent: 'center'},
+    squareButton: {borderRadius: 0},
   });
 
   const Paragraph = ({children}: {children: React.ReactNode}) => {
     return <RNPParagraph style={styles.paragraph}>{children}</RNPParagraph>;
+  };
+
+  const Button = ({icon, onPress}: {icon: string; onPress: () => void}) => {
+    const recordingInProgress =
+      recorderPlayerState === RecordPlayState.RECORDING ||
+      recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
+    return (
+      <IconButton
+        icon={icon}
+        onPress={onPress}
+        disabled={recordingInProgress}
+        style={styles.squareButton}
+      />
+    );
   };
 
   return (
@@ -136,7 +173,8 @@ export function VoiceNoteCard({
           </View>
         </View>
         <OnlyShow If={!!uri}>
-          <IconButton
+          <Button
+            icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
             onPress={() => {
               switch (playState) {
                 case PlayState.PLAYING:
@@ -149,11 +187,10 @@ export function VoiceNoteCard({
                   onStartPlay();
               }
             }}
-            icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
           />
         </OnlyShow>
         <OnlyShow If={playState !== PlayState.STOPPED}>
-          <IconButton onPress={onStopPlay} icon="stop" />
+          <Button icon="stop" onPress={stopPlay} />
         </OnlyShow>
       </HorizontalView>
     </Card>

@@ -5,7 +5,7 @@ import {useTheme} from '../context/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
 import {VoiceRecorderCard} from '../components/VoiceRecorderCard';
 import {MessageCard} from '../components/MessageCard';
-import {MessageEditorCard} from '../components/MessageEditor';
+import {MessageEditorCard} from '../components/MessageComposer';
 import {ComposeFloatingActions} from '../components/ComposeFloatingActions';
 import {useChats} from '../context/chat';
 import {Appbar} from 'react-native-paper';

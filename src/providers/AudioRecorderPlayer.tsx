@@ -58,7 +58,7 @@ function AudioRecorderPlayerProvider({children}: Props) {
   const [recorderPlayerState, setRecorderPlayerState] = useState(
     RecordPlayState.IDLE,
   );
-  const [state, setState] = useState({
+  const defaultState = {
     playerDuration: 0,
     playerPosition: 0,
     playingPath: '',
@@ -67,7 +67,8 @@ function AudioRecorderPlayerProvider({children}: Props) {
     volume: 1.0,
     recordingPosition: 0,
     playId: '',
-  });
+  };
+  const [state, setState] = useState(defaultState);
 
   const rootDir = FileManager.RootDir.concat('/').concat(
     FileManagerHelper.audioDir,
@@ -174,6 +175,7 @@ function AudioRecorderPlayerProvider({children}: Props) {
       .then(_ => {
         audioRecorderPlayer.removePlayBackListener();
         setRecorderPlayerState(RecordPlayState.IDLE);
+        setState(defaultState);
       })
       .catch(e => console.error('error stopping player:', e));
   };
@@ -197,7 +199,7 @@ function AudioRecorderPlayerProvider({children}: Props) {
       .catch(e => console.error('error changing volume:', e));
   };
   const playerSeekTo = (seconds: number) => {
-    if (seconds < 0 || seconds > state.playerDuration) {
+    if (seconds < 0) {
       console.error(
         `cannot seek to [${seconds}s]. expected value in range 0-${state.playerDuration}s`,
       );
