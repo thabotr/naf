@@ -20,8 +20,9 @@ import {useLoggedInUser} from '../context/user';
 
 const WaitingForYouList = () => {
   const {user} = useLoggedInUser();
+  const {theme} = useTheme();
   return (
-    <List.Accordion title="Waiting for you @">
+    <List.Accordion style={{backgroundColor: theme.color.secondary}} title="Waiting for you @">
       <View>
         <HorizontalView>
           <IconButton
@@ -30,7 +31,7 @@ const WaitingForYouList = () => {
             onPress={() => {}}
           />
           <List.Accordion
-            style={{width: 430, borderWidth: 1, padding: 0}}
+            style={{width: 400, padding: 0, backgroundColor: theme.color.secondary}}
             title={'Paris | Johannesburg | Doha'}>
             <List.Item
               left={_ => (
@@ -65,7 +66,6 @@ const WaitingForYouList = () => {
             style={{
               alignItems: 'center',
               justifyContent: 'center',
-              borderWidth: 1,
               paddingHorizontal: 5,
             }}>
             <Show
@@ -75,7 +75,7 @@ const WaitingForYouList = () => {
                   <Paragraph>find me @</Paragraph>
                 </>
               }
-              If={true}
+              If={!true}
               ElseShow={
                 <>
                   <IconButton
@@ -117,10 +117,11 @@ const WaitingForYouList = () => {
 
 const WaitingForThemList = () => {
   const {user} = useLoggedInUser();
+  const {theme} = useTheme();
   return (
-    <List.Accordion title="Waiting for them @">
+    <List.Accordion style={{backgroundColor: theme.color.secondary}} title="Waiting for them @">
       <List.Item
-        style={{borderWidth: 1, margin: 0, padding: 0}}
+        style={{ margin: 0, padding: 0, backgroundColor: theme.color.secondary, marginHorizontal: '5%'}}
         title={user?.handle}
         description={'@ Paris | Johannesburg | Doha'}
         left={_ => (
@@ -139,8 +140,8 @@ const WaitingForThemList = () => {
         style={{
           alignItems: 'center',
           justifyContent: 'center',
-          borderWidth: 1,
           paddingHorizontal: 5,
+          backgroundColor: theme.color.secondary
         }}>
         <Show
           component={
@@ -297,12 +298,13 @@ function UserProfileHeader(props: NativeStackHeaderProps) {
 }
 
 function UserProfile() {
+  const {theme} = useTheme();
   return (
-    <View>
+    <ScrollView style={{backgroundColor: theme.color.secondary, height: '100%'}}>
       <ProfilePreview />
       <WaitingForYouList />
       <WaitingForThemList />
-    </View>
+    </ScrollView>
   );
 }
 

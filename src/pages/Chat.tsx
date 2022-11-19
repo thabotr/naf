@@ -13,6 +13,7 @@ import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {FileManager} from '../services/FileManager';
+import { useColorsForUsers } from '../providers/UserTheme';
 
 export function Tiler() {
   const {theme} = useTheme();
@@ -37,36 +38,33 @@ function ChatHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
   const {activeChat} = useChats();
   const user = activeChat()?.user;
-  const [colors, setColors] = useState({
+  const {colorsForUsers} = useColorsForUsers();
+  const [colors, setColors] = useState(()=>{
+    return {
     primary: theme.color.primary,
     secondary: theme.color.secondary,
-  });
+  }});
   if (!user) {
     return <></>;
   }
 
-  useEffect(() => {
-    FileManager.getFileURI(user.landscapeURI, 'image/jpeg').then(uri => {
-      uri &&
-        FileManager.getImageColors(uri, true).then(
-          colors =>
-            colors &&
-            setColors({
-              primary:
-                (theme.dark ? colors.darkPrimary : colors.lightPrimary) ??
-                theme.color.primary,
-              secondary:
-                (theme.dark ? colors.darkSecondary : colors.lightSecondary) ??
-                theme.color.secondary,
-            }),
-        );
-    });
-  }, []);
+  useEffect(()=>{
+    const userColors = colorsForUsers.get(user.handle);
+    userColors && setColors({
+      primary:
+        (theme.dark ? userColors.landscape.darkPrimary : userColors.landscape.lightPrimary) ??
+        theme.color.primary,
+      secondary:
+        (theme.dark ? userColors.landscape.darkSecondary : userColors.landscape.lightSecondary) ??
+        theme.color.secondary,
+    })
+  },[theme, colorsForUsers]);
 
   return (
     <Appbar.Header style={{backgroundColor: colors.primary}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
+          style={{borderRadius: 0}}
           onPress={() => {
             props.navigation.goBack();
           }}
@@ -99,7 +97,7 @@ function Chat() {
   const {theme} = useTheme();
   return (
     <MessageComposerProvider>
-      <SafeAreaView style={{backgroundColor: theme.color.secondary}}>
+      <SafeAreaView style={{backgroundColor: theme.color.secondary, height: '100%'}}>
         <Tiler />
         <VoiceRecorderCard />
         <ComposeFloatingActions />

@@ -15,6 +15,7 @@ function GenericHeader({
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
+          style={{borderRadius: 0}}
           onPress={() => {
             props.navigation.goBack();
           }}

@@ -12,6 +12,9 @@ import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {useAppState} from '../providers/AppStateProvider';
 import {remoteGetChats} from '../remote/chats';
+import {getColorsForUser} from '../utils/getUserColors';
+import {useColorsForUsers} from '../providers/UserTheme';
+import { Chat } from '../types/chat';
 
 function HomeHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
@@ -20,6 +23,7 @@ function HomeHeader(props: NativeStackHeaderProps) {
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <IconButton
         icon="menu"
+        style={{borderRadius: 0}}
         onPress={() => props.navigation.navigate('Settings')}
       />
       <Appbar.Content
@@ -50,6 +54,19 @@ function Home({navigation}: {navigation: any}) {
   const {theme} = useTheme();
   const {saveChats, chats} = useChats();
   const {saveAppChats, chats: savedChats} = useAppState();
+  const {saveUserColors} = useColorsForUsers();
+  const {user} = useLoggedInUser();
+
+  const updateChatAndUserColors=(chats: Chat[])=>{
+    chats.forEach(c => {
+      getColorsForUser(c.user).then(
+        colors => colors && saveUserColors(c.user.handle, colors),
+      );
+    });
+    getColorsForUser(user).then(
+      colors => colors && saveUserColors(user.handle, colors),
+    );
+  }
 
   const fetchChats = () => {
     setFetchingChats(true);
@@ -58,6 +75,7 @@ function Home({navigation}: {navigation: any}) {
         if (chats) {
           saveChats(chats);
           saveAppChats(chats);
+          updateChatAndUserColors(chats);
         }
       })
       .finally(() => setFetchingChats(false));
@@ -66,6 +84,7 @@ function Home({navigation}: {navigation: any}) {
   useEffect(() => {
     if (savedChats.length) {
       saveChats(savedChats);
+      updateChatAndUserColors(savedChats);
     } else {
       fetchChats();
     }

@@ -22,6 +22,7 @@ import {
 } from './src/providers/AudioRecorderPlayer';
 import {FileManager} from './src/services/FileManager';
 import {Show} from './src/components/Helpers/Show';
+import { UserThemeContextProvider } from './src/providers/UserTheme';
 
 type Props = {
   children: React.ReactNode;
@@ -76,11 +77,13 @@ function PageLoginElseHome() {
 
 function App() {
   return (
+    <UserThemeContextProvider>
     <AppStateProvider>
       <SuperContextProvider>
         <PageLoginElseHome />
       </SuperContextProvider>
     </AppStateProvider>
+    </UserThemeContextProvider>
   );
 }
 
