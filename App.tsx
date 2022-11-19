@@ -64,7 +64,7 @@ function PageLoginElseHome() {
   return (
     <Show
       component={<Login />}
-      If={!user}
+      If={!user.handle}
       ElseShow={
         <>
           <StackNavigator />

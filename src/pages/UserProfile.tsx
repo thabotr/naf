@@ -7,6 +7,7 @@ import {
   List,
   Paragraph,
   TextInput,
+  TouchableRipple,
 } from 'react-native-paper';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
@@ -36,6 +37,7 @@ const WaitingForYouList = () => {
                 <Image
                   source={user?.avatarURI}
                   style={{width: 50, height: 50}}
+                  viewable
                 />
               )}
               style={{width: '100%'}}
@@ -199,6 +201,7 @@ const ProfilePreview = () => {
         <Image
           source={user?.landscapeURI}
           style={{width: '100%', opacity: editing ? 0.6 : 1}}
+          viewable={!editing}
         />
         <OnlyShow If={editing}>
           <OverlayedView>
@@ -237,6 +240,7 @@ const ProfilePreview = () => {
           <Image
             source={user?.avatarURI}
             style={{width: 120, height: 120, opacity: editing ? 0.6 : 1}}
+            viewable={!editing}
           />
           <OnlyShow If={editing}>
             <OverlayedView>
@@ -276,17 +280,12 @@ const ProfilePreview = () => {
           </Paragraph>
         </View>
       </HorizontalView>
+      <TouchableRipple onPress={()=>setEditing(editing => !editing)}>
       <HorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
         <IconButton icon={editing ? 'content-save' : 'pen'} />
         <Paragraph>{editing ? 'Save profile' : 'Edit profile'}</Paragraph>
-        <OverlayedView>
-          <Button
-            style={{width: '100%'}}
-            onPress={() => setEditing(editing => !editing)}>
-            {' '}
-          </Button>
-        </OverlayedView>
       </HorizontalView>
+      </TouchableRipple>
     </>
   );
 };

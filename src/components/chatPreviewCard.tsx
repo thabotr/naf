@@ -37,15 +37,6 @@ export function ChatPreviewCard({
   const [avatarSecondary, setAS] = useState(() => theme.color.secondary);
 
   useEffect(() => {
-    if (chat.user.landscapeURI.includes('http'))
-      FileManager.getFileURI(chat.user.landscapeURI, 'image/jpeg')
-        .then(path => {
-          path && setLandscapeUri(path);
-        })
-        .catch(e => console.error('failed to get landscape uri: ' + e));
-  }, []);
-
-  useEffect(() => {
     landscapeUri &&
       FileManager.getImageColors(landscapeUri).then(colors => {
         colors && saveColors(colors);
@@ -76,8 +67,9 @@ export function ChatPreviewCard({
         backgroundColor: avatarSecondary,
       }}>
       <Image
-        source={landscapeUri}
+        source={chat.user.landscapeURI}
         style={{backgroundColor: avatarPrimary}}
+        onURI={uri => setLandscapeUri(uri)}
       />
       <OverlayedView
         style={{
