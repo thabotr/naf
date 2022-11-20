@@ -44,7 +44,7 @@ function Image({source, style, onURI, viewable, onPress, alt}: Props) {
     } else {
       setImgState(IMState.SUCCESS);
     }
-  }, []);
+  }, [source]);
 
   if(imgState === IMState.ERROR && alt){
     return <>{alt}</>

@@ -1,7 +1,13 @@
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, ToastAndroid} from 'react-native';
-import {IconButton, Paragraph, TouchableRipple} from 'react-native-paper';
+import {
+  Button,
+  IconButton,
+  Paragraph,
+  TextInput,
+  TouchableRipple,
+} from 'react-native-paper';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
@@ -11,35 +17,148 @@ import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {WaitingForYouList} from '../components/UserProfile/WaitingForYouList';
 import {WaitingForThemList} from '../components/UserProfile/WaitingForThemList';
+import {FileManager} from '../services/FileManager';
+import {Show} from '../components/Helpers/Show';
 
-const ProfilePreview = () => {
-  const {user, logOut} = useLoggedInUser();
+const EditableProfilePreview = () => {
+  const {user: loggedInUser, logOut, loginAs} = useLoggedInUser();
   const {theme} = useTheme();
   const [editing, setEditing] = useState(false);
+  const [user, setUser] = useState(() => loggedInUser);
+
+  const restoreProfile = (
+    field: 'avatar' | 'landscape' | 'name' | 'surname' | undefined,
+  ) => {
+    setUser(u => {
+      switch (field) {
+        case 'avatar':
+          return {
+            ...u,
+            avatarURI: loggedInUser.avatarURI,
+          };
+        case 'landscape':
+          return {
+            ...u,
+            landscapeURI: loggedInUser.landscapeURI,
+          };
+        case 'name':
+          return {
+            ...u,
+            name: loggedInUser.name,
+          };
+        case 'surname':
+          return {
+            ...u,
+            surname: loggedInUser.surname,
+          };
+        default:
+          setEditing(false);
+          return loggedInUser;
+      }
+    });
+  };
+
+  const saveProfile = () => {
+    // send profile update to remote
+    loginAs(user);
+    setEditing(false);
+  };
+
+  const pickImage = (field: 'avatar' | 'landscape') => {
+    FileManager.getCameraMedia('photo').then(file => {
+      file &&
+        setUser(u => {
+          switch (field) {
+            case 'avatar':
+              return {
+                ...u,
+                avatarURI: file.uri,
+              };
+            case 'landscape':
+              return {
+                ...u,
+                landscapeURI: file.uri,
+              };
+          }
+        });
+    });
+  };
+
+  function RestoreButton({
+    field,
+  }: {
+    field: 'avatar' | 'landscape' | 'name' | 'surname';
+  }) {
+    const loggedInUserValue = (() => {
+      switch (field) {
+        case 'landscape':
+          return loggedInUser.landscapeURI;
+        case 'avatar':
+          return loggedInUser.avatarURI;
+        case 'name':
+          return loggedInUser.name;
+        case 'surname':
+          return loggedInUser.surname;
+      }
+    })();
+    const userValue = (() => {
+      switch (field) {
+        case 'landscape':
+          return user.landscapeURI;
+        case 'avatar':
+          return user.avatarURI;
+        case 'name':
+          return user.name;
+        case 'surname':
+          return user.surname;
+      }
+    })();
+    return (
+      <IconButton
+        icon="restore"
+        disabled={userValue === loggedInUserValue}
+        onPress={() => restoreProfile(field)}
+        style={[
+          {backgroundColor: theme.color.primary, alignSelf: 'center'},
+          styles.squareButton,
+          styles.minimalButton,
+        ]}
+      />
+    );
+  }
+
+  const updateProfileNames = (field: 'name' | 'surname', value: string) => {
+    setUser(u => {
+      switch (field) {
+        case 'name':
+          return {
+            ...u,
+            name: value,
+          };
+        case 'surname':
+          return {
+            ...u,
+            surname: value,
+          };
+      }
+    });
+  };
+
   return (
     <>
       <View>
         <Image
-          source={user?.landscapeURI}
+          source={user.landscapeURI}
           style={{width: '100%', opacity: editing ? 0.6 : 1}}
           viewable={!editing}
         />
         <OnlyShow If={editing}>
           <OverlayedView>
             <HorizontalView>
-              <IconButton
-                icon="restore"
-                disabled //TODO enable if updated
-                onPress={() => {}}
-                style={[
-                  {backgroundColor: theme.color.primary},
-                  styles.squareButton,
-                  styles.minimalButton,
-                ]}
-              />
+              <RestoreButton field="landscape" />
               <IconButton
                 icon="camera"
-                onPress={() => {}}
+                onPress={() => pickImage('landscape')}
                 style={[
                   {backgroundColor: theme.color.primary},
                   styles.squareButton,
@@ -59,26 +178,17 @@ const ProfilePreview = () => {
         }}>
         <View>
           <Image
-            source={user?.avatarURI}
+            source={user.avatarURI}
             style={{width: 120, height: 120, opacity: editing ? 0.6 : 1}}
             viewable={!editing}
           />
           <OnlyShow If={editing}>
             <OverlayedView>
               <HorizontalView>
-                <IconButton
-                  icon="restore"
-                  disabled //TODO enable if updated
-                  onPress={() => {}}
-                  style={[
-                    {backgroundColor: theme.color.primary},
-                    styles.squareButton,
-                    styles.minimalButton,
-                  ]}
-                />
+                <RestoreButton field="avatar" />
                 <IconButton
                   icon="camera"
-                  onPress={() => {}}
+                  onPress={() => pickImage('avatar')}
                   style={[
                     {backgroundColor: theme.color.primary},
                     styles.squareButton,
@@ -92,24 +202,59 @@ const ProfilePreview = () => {
         <View
           style={{
             flex: 1,
+            flexDirection: editing ? 'row' : 'column',
             backgroundColor: theme.color.secondary,
             padding: 10,
           }}>
-          <Paragraph
-            style={{
-              fontWeight: 'bold',
-              color: theme.color.textPrimary,
-              shadowColor: theme.color.textSecondary,
-            }}>
-            {user?.handle}
-          </Paragraph>
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              shadowColor: theme.color.textSecondary,
-            }}>
-            {user?.name} {user?.surname} [{user?.initials}]
-          </Paragraph>
+          <Show
+            component={
+              <Paragraph
+                style={{
+                  color: theme.color.textPrimary,
+                  shadowColor: theme.color.textSecondary,
+                }}>
+                {user.name} {user.surname} [{user.initials}]
+              </Paragraph>
+            }
+            If={!editing}
+            ElseShow={
+              <View style={{flex: 1}}>
+                <RestoreButton field="name" />
+                <TextInput
+                  label="new name"
+                  defaultValue={user.name}
+                  onEndEditing={e =>
+                    updateProfileNames('name', e.nativeEvent.text)
+                  }
+                />
+              </View>
+            }
+          />
+          <Show
+            component={
+              <Paragraph
+                style={{
+                  fontWeight: 'bold',
+                  color: theme.color.textPrimary,
+                  shadowColor: theme.color.textSecondary,
+                }}>
+                {user.handle}
+              </Paragraph>
+            }
+            If={!editing}
+            ElseShow={
+              <View style={{flex: 1}}>
+                <RestoreButton field="surname" />
+                <TextInput
+                  label="new surname"
+                  defaultValue={user.surname}
+                  onEndEditing={e =>
+                    updateProfileNames('surname', e.nativeEvent.text)
+                  }
+                />
+              </View>
+            }
+          />
         </View>
         <IconButton
           icon="logout"
@@ -122,19 +267,24 @@ const ProfilePreview = () => {
           style={[styles.squareButton, {margin: 10}]}
         />
       </HorizontalView>
-      <TouchableRipple onPress={() => setEditing(editing => !editing)}>
-        <HorizontalView
-          style={{alignItems: 'center', justifyContent: 'center'}}>
-          <IconButton icon={editing ? 'content-save' : 'pen'} />
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              shadowColor: theme.color.textSecondary,
-            }}>
-            {editing ? 'Save profile' : 'Edit profile'}
-          </Paragraph>
-        </HorizontalView>
-      </TouchableRipple>
+      <OnlyShow
+        If={editing}
+      >
+        <Button
+          icon={'restore'}
+          color={theme.color.textPrimary}
+          uppercase={false}
+          onPress={()=>restoreProfile(undefined)}>
+            Discard changes
+        </Button>
+      </OnlyShow>
+      <Button
+        icon={editing ? 'content-save' : 'pen'}
+        color={theme.color.textPrimary}
+        uppercase={false}
+        onPress={editing ? saveProfile : () => setEditing(true)}>
+        {editing ? 'Save profile' : 'Edit profile'}
+      </Button>
     </>
   );
 };
@@ -150,7 +300,7 @@ function UserProfile() {
   return (
     <ScrollView
       style={{backgroundColor: theme.color.secondary, height: '100%'}}>
-      <ProfilePreview />
+      <EditableProfilePreview />
       <WaitingForYouList />
       <WaitingForThemList />
     </ScrollView>
