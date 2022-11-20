@@ -7,3 +7,35 @@ export type User = {
   listenWithMeURI: string,
   initials: string,
 }
+
+export type WaitAtType = {
+  locationAliasA: string,
+  locationAliasB: string,
+  locationAliasC: string,
+  createdAt: number,
+  expiresAt: number,
+}
+
+export type WaitingForType = WaitAtType & {
+  handleForWaiter: string,
+}
+
+export type WaiterType = {
+  user: User,
+  arrivedAt: number,
+}
+
+export type WaitingForYouType = {
+  at: WaitAtType,
+  waiters: WaiterType[],
+}
+
+export type WaitingForThemType = WaitAtType & {
+  handleForAwaited: string,
+}
+
+export type Profile = {
+  user: User,
+  waitingForYou: WaitingForYouType[],
+  waitingForThem: WaitingForThemType[]
+}
