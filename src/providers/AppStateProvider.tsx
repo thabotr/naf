@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/user';
 import {Chat} from '../types/chat';
 import {ThemeSetting} from '../types/settings';
+import {validateContext} from './validateContext';
 
 type Props = {
   children: ReactNode;
@@ -29,7 +30,9 @@ export type AppStateContextType = {
 const logError = (ac: AppStateConstants, e: any) =>
   console.log('failed to save', ac, e);
 
-const AppStateContext = createContext<AppStateContextType | null>(null);
+const AppStateContext = createContext<AppStateContextType | undefined>(
+  undefined,
+);
 
 const AppStateProvider = ({children}: Props) => {
   const [loggedInUser, setLoggedInUser] = useState<User | undefined>();
@@ -100,9 +103,7 @@ const AppStateProvider = ({children}: Props) => {
 
 const useAppState = (): AppStateContextType => {
   const context = useContext(AppStateContext);
-  if (!context)
-    throw new Error('Encapsulate useAppState with AppStateProvider');
-  return context;
+  return validateContext(context, 'useAppState', 'AppStateProvider');
 };
 
 export {AppStateProvider, useAppState};

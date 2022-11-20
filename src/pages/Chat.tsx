@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {SafeAreaView, View, ScrollView} from 'react-native';
+import {SafeAreaView, View, ScrollView, Button} from 'react-native';
 
 import {useTheme} from '../context/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
@@ -12,12 +12,12 @@ import {Appbar} from 'react-native-paper';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
-import {FileManager} from '../services/FileManager';
-import { useColorsForUsers } from '../providers/UserTheme';
+import {useColorsForUsers} from '../providers/UserTheme';
 
-export function Tiler() {
+export function MessageListing() {
   const {theme} = useTheme();
   const {activeChat} = useChats();
+
   return (
     <ScrollView
       style={{height: '100%', backgroundColor: theme.color.secondary}}
@@ -29,7 +29,6 @@ export function Tiler() {
         />
       ))}
       <MessageEditorCard />
-      <View style={{height: 100}}></View>
     </ScrollView>
   );
 }
@@ -39,26 +38,30 @@ function ChatHeader(props: NativeStackHeaderProps) {
   const {activeChat} = useChats();
   const user = activeChat()?.user;
   const {colorsForUsers} = useColorsForUsers();
-  const [colors, setColors] = useState(()=>{
+  const [colors, setColors] = useState(() => {
     return {
-    primary: theme.color.primary,
-    secondary: theme.color.secondary,
-  }});
+      primary: theme.color.primary,
+      secondary: theme.color.secondary,
+    };
+  });
   if (!user) {
     return <></>;
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     const userColors = colorsForUsers.get(user.handle);
-    userColors && setColors({
-      primary:
-        (theme.dark ? userColors.landscape.darkPrimary : userColors.landscape.lightPrimary) ??
-        theme.color.primary,
-      secondary:
-        (theme.dark ? userColors.landscape.darkSecondary : userColors.landscape.lightSecondary) ??
-        theme.color.secondary,
-    })
-  },[theme, colorsForUsers]);
+    userColors &&
+      setColors({
+        primary:
+          (theme.dark
+            ? userColors.landscape.darkPrimary
+            : userColors.landscape.lightPrimary) ?? theme.color.primary,
+        secondary:
+          (theme.dark
+            ? userColors.landscape.darkSecondary
+            : userColors.landscape.lightSecondary) ?? theme.color.secondary,
+      });
+  }, [theme, colorsForUsers]);
 
   return (
     <Appbar.Header style={{backgroundColor: colors.primary}}>
@@ -98,8 +101,9 @@ function Chat() {
   const {theme} = useTheme();
   return (
     <MessageComposerProvider>
-      <SafeAreaView style={{backgroundColor: theme.color.secondary, height: '100%'}}>
-        <Tiler />
+      <SafeAreaView
+        style={{backgroundColor: theme.color.secondary, height: '100%'}}>
+        <MessageListing />
         <VoiceRecorderCard />
         <ComposeFloatingActions />
       </SafeAreaView>

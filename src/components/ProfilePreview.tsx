@@ -1,6 +1,5 @@
-import {View} from 'react-native';
+import {View, ToastAndroid} from 'react-native';
 import {
-  Button,
   IconButton,
   Paragraph,
   TouchableRipple,
@@ -50,10 +49,21 @@ const ProfilePreview = ({user}: {user: User}) => {
           </Paragraph>
         </View>
       </HorizontalView>
-      <TouchableRipple onPress={() => {}}>
+      <TouchableRipple
+        onPress={() => {
+          ToastAndroid.show(`Hold to disconnect \nfrom ${user.name} ${user.surname}`, 3000);
+        }}
+        onLongPress={()=>{}}
+        >
         <HorizontalView
           style={{alignItems: 'center', justifyContent: 'center'}}>
-          <IconButton icon="account-remove" />
+          <IconButton
+            icon="account-remove"
+            color={'red'}
+            style={{
+              shadowColor: theme.color.textSecondary,
+            }}
+          />
           <Paragraph
             style={{
               color: theme.color.textPrimary,

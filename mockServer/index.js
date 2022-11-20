@@ -101,6 +101,7 @@ app.get('/listenwithme/mikeyrich/listen1', (req, resp) => {
 })
 
 app.use((req, resp, next)=>{
+  console.log('request:', req);
   if( req.url.includes('.')){
     try{
       const wHT = sizeOfImg(`./public${req.url}`);

@@ -11,40 +11,32 @@ import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
 import {ThemeProvider} from './src/context/theme';
-import {useLoggedInUser, LoggedInUserProvider} from './src/context/user';
+import {LoggedInUserProvider} from './src/context/user';
 import {StackNavigator} from './src/components/StackNavigator';
 import {ChatsProvider} from './src/context/chat';
-import {Login} from './src/pages/Login';
 import {AppStateProvider} from './src/providers/AppStateProvider';
 import {
   AudioRecorderPlayerProvider,
   useAudioRecorderPlayer,
 } from './src/providers/AudioRecorderPlayer';
 import {FileManager} from './src/services/FileManager';
-import {Show} from './src/components/Helpers/Show';
 import { UserThemeContextProvider } from './src/providers/UserTheme';
+import { NotifierContextProvider } from './src/providers/Notifier';
 
 type Props = {
   children: React.ReactNode;
 };
-
-function RegisterPlayerRecorder() {
-  const {initAudioRecorderPlayer} = useAudioRecorderPlayer();
-  useEffect(() => {
-    initAudioRecorderPlayer();
-  }, []);
-  return <></>;
-}
 
 function SuperContextProvider({children}: Props) {
   return (
     <ThemeProvider>
       <LoggedInUserProvider>
         <AudioRecorderPlayerProvider>
-          <RegisterPlayerRecorder />
           <ChatsProvider>
               <NavigationContainer>
-                <Provider>{children}</Provider>
+                <NotifierContextProvider>
+                  <Provider>{children}</Provider>
+                </NotifierContextProvider>
               </NavigationContainer>
           </ChatsProvider>
         </AudioRecorderPlayerProvider>
@@ -53,25 +45,21 @@ function SuperContextProvider({children}: Props) {
   );
 }
 
-function PageLoginElseHome() {
+function AppSetup() {
+  const {initAudioRecorderPlayer} = useAudioRecorderPlayer();
+
   useEffect(() => {
-    FileManager.InitFilePaths()
-      .then(b => {
-        if (!b) console.error('failed to create file structure');
-      })
-      .catch(e => console.error('failed to create file structure', e));
+    const initFilePaths = FileManager.InitFilePaths();
+    initAudioRecorderPlayer();
+
+    initFilePaths.then(b => {
+      if (!b) console.error('failed to create file structure');
+    })
+    .catch(e => console.error('failed to create file structure', e));
   }, []);
-  const {user} = useLoggedInUser();
+
   return (
-    <Show
-      component={<Login />}
-      If={!user.handle}
-      ElseShow={
-        <>
-          <StackNavigator />
-        </>
-      }
-    />
+    <StackNavigator />
   );
 }
 
@@ -80,7 +68,7 @@ function App() {
     <UserThemeContextProvider>
     <AppStateProvider>
       <SuperContextProvider>
-        <PageLoginElseHome />
+        <AppSetup/>
       </SuperContextProvider>
     </AppStateProvider>
     </UserThemeContextProvider>

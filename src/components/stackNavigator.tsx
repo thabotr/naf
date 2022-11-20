@@ -1,4 +1,7 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {
+  createNativeStackNavigator,
+  NativeStackHeaderProps,
+} from '@react-navigation/native-stack';
 import {View} from 'react-native';
 
 import {useTheme} from '../context/theme';
@@ -9,19 +12,41 @@ import {UserProfile, UserProfileHeader} from '../pages/UserProfile';
 import {ChatProfile, ChatProfileHeader} from '../pages/ChatProfile';
 import {GenericHeader} from './GenericPageHeader';
 import {NotificationAppbar} from './NotificationAppbar';
+import {useEffect} from 'react';
+import {useLoggedInUser} from '../context/user';
+import {Login} from '../pages/Login';
 
 const Stack = createNativeStackNavigator();
 
+const LoginHeader = ({props}: {props: NativeStackHeaderProps}) => {
+  const {user} = useLoggedInUser();
+
+  useEffect(() => {
+    if (!user.handle) {
+      props.navigation.navigate('Login', {});
+    } else {
+      props.navigation.navigate('Home', {});
+    }
+  }, [user]);
+  return <></>;
+};
+
 function StackNavigator() {
   const {theme} = useTheme();
+
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="Login"
       screenOptions={{
         header: props => {
           return (
-            <View style={{width: '100%', height: 56, opacity: 1}}>
-              <NotificationAppbar />
+            <View
+              style={{
+                width: '100%',
+                height: 56,
+                opacity: 1,
+                backgroundColor: theme.color.secondary,
+              }}>
               {(() => {
                 switch (props.route.name) {
                   case 'ChatProfile':
@@ -34,8 +59,11 @@ function StackNavigator() {
                     return <ChatHeader {...props} />;
                   case 'Settings':
                     return <GenericHeader name="Settings" props={props} />;
+                  case 'Login':
+                    return <LoginHeader props={props} />;
                 }
               })()}
+              <NotificationAppbar />
             </View>
           );
         },
@@ -46,6 +74,7 @@ function StackNavigator() {
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="UserProfile" component={UserProfile} />
       <Stack.Screen name="ChatProfile" component={ChatProfile} />
+      <Stack.Screen name="Login" component={Login} />
     </Stack.Navigator>
   );
 }

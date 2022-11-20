@@ -1,5 +1,6 @@
 import {createContext, ReactNode, useContext, useState} from 'react';
 import {Colors} from '../services/FileManager';
+import {validateContext} from './validateContext';
 
 export interface ColorPerUserField {
   avatar: Colors;
@@ -55,12 +56,11 @@ function UserThemeContextProvider({children}: Props) {
 
 function useColorsForUsers(): UserColorsContextType {
   const context = useContext(UserThemeContext);
-  if (!context) {
-    throw new Error(
-      'Encapsulate useColorsForUsers with UserThemeContextProvider',
-    );
-  }
-  return context;
+  return validateContext(
+    context,
+    'useColorsForUsers',
+    'UserThemeContextProvider',
+  );
 }
 
 export {UserThemeContextProvider, useColorsForUsers};

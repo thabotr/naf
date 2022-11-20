@@ -7,6 +7,7 @@ import RNAudioRecorderPlayer, {
 import {FileManager} from '../services/FileManager';
 import {FileManagerHelper} from '../services/FileManagerHelper';
 import {PermissionsManager} from '../services/PermissionsManager';
+import {validateContext} from './validateContext';
 
 enum RecordPlayState {
   RECORDING,
@@ -49,12 +50,14 @@ type Props = {
   children?: ReactNode;
 };
 
-const AudioRecorderPlayerContext =
-  createContext<AudioRecorderPlayerContextType | null>(null);
+const AudioRecorderPlayerContext = createContext<
+  AudioRecorderPlayerContextType | undefined
+>(undefined);
 
 function AudioRecorderPlayerProvider({children}: Props) {
-  const [audioRecorderPlayer, setAudioRecorderPlayer] =
-    useState<RNAudioRecorderPlayer | null>(null);
+  const [audioRecorderPlayer, setAudioRecorderPlayer] = useState<
+    RNAudioRecorderPlayer | undefined
+  >(undefined);
   const [recorderPlayerState, setRecorderPlayerState] = useState(
     RecordPlayState.IDLE,
   );
@@ -233,13 +236,11 @@ function AudioRecorderPlayerProvider({children}: Props) {
 
 const useAudioRecorderPlayer = (): AudioRecorderPlayerContextType => {
   const context = useContext(AudioRecorderPlayerContext);
-  if (!context) {
-    throw new Error(
-      'Encapsulate useAudioRecorderPlayer with AudioRecorderPlayerProvider',
-    );
-  }
-
-  return context;
+  return validateContext(
+    context,
+    'useAudioRecorderPlayer',
+    'AudioRecorderPlayerProvider',
+  );
 };
 
 export {useAudioRecorderPlayer, AudioRecorderPlayerProvider, RecordPlayState};

@@ -4,8 +4,10 @@ import {FileType} from '../../types/message';
 import {Image} from '../Image';
 import {OverlayedView} from '../Helpers/OverlayedView';
 import {Show} from '../Helpers/Show';
+import {useTheme} from '../../context/theme';
 
 const VisualPreview = ({mFile}: {mFile: FileType}) => {
+  const {theme} = useTheme();
   const styles = StyleSheet.create({
     container: {
       borderRadius: 0,
@@ -13,13 +15,15 @@ const VisualPreview = ({mFile}: {mFile: FileType}) => {
       height: 120,
       margin: 1,
       flexGrow: 1,
+      backgroundColor: theme.color.secondary,
     },
-    image: {flex: 1, margin: 1},
+    image: {flex: 1, margin: 1, backgroundColor: theme.color.secondary},
     vidIconContainer: {
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
       height: '100%',
+      backgroundColor: theme.color.secondary,
     },
     vidThumbnail: {height: '100%', width: '100%', opacity: 0.6},
   });
