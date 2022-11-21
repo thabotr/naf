@@ -1,20 +1,20 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState, useEffect} from 'react';
 import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
 import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
-import {useAppState} from '../providers/AppStateProvider';
 import {useColorsForUsers} from '../providers/UserTheme';
 import {Remote} from '../services/Remote';
+import {Profile} from '../types/user';
 import {getColorsForUser} from '../utils/getUserColors';
 
 export function Login() {
   const {theme} = useTheme();
   const [loginError, setLoginError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {loggedInUser, saveAppLoggedInUser} = useAppState();
-  const {loginAs, useProfile} = useLoggedInUser();
+  const {useProfile} = useLoggedInUser();
   const {saveUserColors} = useColorsForUsers();
   const [credentials, setCredentials] = useState<{
     token: string;
@@ -22,8 +22,16 @@ export function Login() {
   }>({handle: '', token: ''});
 
   useEffect(() => {
-    loggedInUser && loginAs(loggedInUser);
-  }, [loggedInUser]);
+    setLoading(true);
+    AsyncStorage.getItem('profile')
+      .then(profileString => {
+        if (profileString) {
+          const profile = JSON.parse(profileString) as Profile;
+          useProfile(profile);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const login = () => {
     setLoginError(false);
@@ -32,10 +40,8 @@ export function Login() {
       .then(profile => {
         if (profile) {
           setLoginError(false);
-          loginAs(profile.user);
           useProfile(profile);
-          saveAppLoggedInUser(profile.user);
-          // saveUserColors(profile.user.handle)
+          AsyncStorage.setItem('profile', JSON.stringify(profile));
           getColorsForUser(profile.user).then(
             colors => colors && saveUserColors(profile.user.handle, colors),
           );
