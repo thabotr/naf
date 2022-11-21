@@ -22,6 +22,8 @@ import {
 import {FileManager} from './src/services/FileManager';
 import { UserThemeContextProvider } from './src/providers/UserTheme';
 import { NotifierContextProvider } from './src/providers/Notifier';
+import { Snackbar } from './src/components/Snackbar';
+import { SnackableContextProvider } from './src/providers/Snackable';
 
 type Props = {
   children: React.ReactNode;
@@ -69,6 +71,9 @@ function App() {
     <AppStateProvider>
       <SuperContextProvider>
         <AppSetup/>
+        <SnackableContextProvider>
+          <Snackbar/>
+        </SnackableContextProvider>
       </SuperContextProvider>
     </AppStateProvider>
     </UserThemeContextProvider>
