@@ -116,10 +116,36 @@ const WaitingForThemList = () => {
     !!wftData.locationAliasB &&
     !!wftData.locationAliasC;
 
+  const styles = StyleSheet.create({
+    title: {
+      fontWeight: 'bold',
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+    description: {
+      color: theme.color.textSecondary,
+      shadowColor: theme.color.textPrimary,
+    },
+    squareButton: {
+      borderRadius: 0,
+      color: theme.color.textPrimary,
+    },
+    minimalButton: {
+      margin: 0,
+      padding: 0,
+    },
+    placeText: {
+      width: '33%',
+      marginHorizontal: 1,
+    },
+  });
+
   return (
     <List.Accordion
       style={{backgroundColor: theme.color.secondary}}
-      title="Waiting for them">
+      title="Waiting for them"
+      titleStyle={styles.title}  
+    >
       {userProfile.waitingForThem.map(wft => (
         <List.Item
           style={{
@@ -139,6 +165,7 @@ const WaitingForThemList = () => {
           left={_ => (
             <IconButton
               icon="delete"
+              color={theme.color.textPrimary}
               style={[
                 styles.squareButton,
                 styles.minimalButton,
@@ -147,7 +174,8 @@ const WaitingForThemList = () => {
               onPress={() => deleteWFT(wft)}
             />
           )}
-          titleStyle={{fontWeight: 'bold'}}
+          titleStyle={styles.title}
+          descriptionStyle={styles.description}
           key={`${wft.handleForAwaited}-${wft.locationAliasA}-${wft.locationAliasB}-${wft.locationAliasC}`}
         />
       ))}
@@ -226,19 +254,5 @@ const WaitingForThemList = () => {
     </List.Accordion>
   );
 };
-
-const styles = StyleSheet.create({
-  squareButton: {
-    borderRadius: 0,
-  },
-  minimalButton: {
-    margin: 0,
-    padding: 0,
-  },
-  placeText: {
-    width: '33%',
-    marginHorizontal: 1,
-  },
-});
 
 export {WaitingForThemList};

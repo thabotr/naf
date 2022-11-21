@@ -1,25 +1,16 @@
-import {
-  Button,
-  IconButton,
-  List,
-  Paragraph,
-  TextInput,
-} from 'react-native-paper';
+import {Button, IconButton, List, TextInput} from 'react-native-paper';
 import {StyleSheet, View, Pressable} from 'react-native';
 import {useTheme} from '../../context/theme';
 import {useLoggedInUser} from '../../context/user';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {Image} from '../Image';
 import {Show} from '../Helpers/Show';
-import {
-  User,
-  WaitAtType,
-  WaiterType,
-  WaitingForYouType,
-} from '../../types/user';
-import {verboseDuration, verboseTime} from '../../helper';
+import {WaitAtType, WaiterType, WaitingForYouType} from '../../types/user';
+import {verboseTime} from '../../helper';
 import {useState} from 'react';
 import {deduplicatedConcat} from '../../utils/deduplicatedConcat';
+import {LRFilter} from '../../utils/lrFilter';
+import {useChats} from '../../context/chat';
 
 const emptyWFY: WaitAtType = {
   createdAt: 0,
@@ -31,12 +22,56 @@ const emptyWFY: WaitAtType = {
 
 const WaitingForYouList = () => {
   const {userProfile, updateProfile} = useLoggedInUser();
+  const {updateChats} = useChats();
   const {theme} = useTheme();
   const [addingWFM, setAddingWFM] = useState(false);
   const [wAtData, setWAtData] = useState(emptyWFY);
 
-  const dismissWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {};
-  const connectWWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {};
+  const removeWFYWaiter = (wfy: WaitingForYouType, wt: WaiterType) => {
+    updateProfile(p => {
+      const {truthy, falsey} = LRFilter(
+        p.waitingForYou,
+        pwfy =>
+          pwfy.at.locationAliasA === wfy.at.locationAliasA &&
+          pwfy.at.locationAliasB === wfy.at.locationAliasB &&
+          pwfy.at.locationAliasC === wfy.at.locationAliasC,
+      );
+      const targetWFY = truthy.find(_ => true);
+      if (!targetWFY) return p;
+      const updatedWFYs = falsey.concat({
+        ...targetWFY,
+        waiters: targetWFY.waiters.filter(
+          w => w.user.handle !== wt.user.handle,
+        ),
+      });
+      return {
+        ...p,
+        waitingForYou: updatedWFYs,
+      };
+    });
+  };
+
+  const dismissWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
+    // TODO sync with remote
+    removeWFYWaiter(wfy, wt);
+  };
+  const connectWWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
+    // TODO sync with remote
+    updateChats(chats =>
+      deduplicatedConcat(
+        chats,
+        [
+          {
+            user: wt.user,
+            messages: [],
+            messageThreads: [],
+          },
+        ],
+        (c1, c2) => c1.user.handle === c2.user.handle,
+      ),
+    );
+    removeWFYWaiter(wfy, wt);
+  };
   const deleteWFY = (wfy: WaitingForYouType) => {
     updateProfile(p => {
       return {
@@ -52,7 +87,7 @@ const WaitingForYouList = () => {
       };
     });
   };
-  const discardWFT = () => {
+  const discardWFY = () => {
     setWAtData(emptyWFY);
     setAddingWFM(false);
   };
@@ -81,7 +116,7 @@ const WaitingForYouList = () => {
         ),
       };
     });
-    discardWFT();
+    discardWFY();
   };
   const setLocation = (location: 'A' | 'B' | 'C', value: string) => {
     const v = value.trim();
@@ -106,6 +141,32 @@ const WaitingForYouList = () => {
     });
   };
 
+  const styles = StyleSheet.create({
+    title: {
+      fontWeight: 'bold',
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+    description: {
+      color: theme.color.textSecondary,
+      shadowColor: theme.color.textPrimary,
+    },
+    squareButton: {
+      borderRadius: 0,
+      color: theme.color.textPrimary,
+    },
+    minimalButton: {
+      margin: 0,
+      padding: 0,
+      color: theme.color.textPrimary,
+    },
+    placeText: {
+      width: '33%',
+      marginHorizontal: 1,
+      color: theme.color.textPrimary,
+    },
+  });
+
   const allFieldsFilled =
     !!wAtData.locationAliasA &&
     !!wAtData.locationAliasB &&
@@ -114,13 +175,15 @@ const WaitingForYouList = () => {
   return (
     <List.Accordion
       style={{backgroundColor: theme.color.secondary}}
-      title="Waiting for you">
+      title="Waiting for you"
+      titleStyle={styles.title}>
       <View>
         {userProfile.waitingForYou.map(wfy => (
           <HorizontalView
             key={`${wfy.at.locationAliasA}-${wfy.at.locationAliasB}-${wfy.at.locationAliasC}`}>
             <IconButton
               icon="delete"
+              color={theme.color.textPrimary}
               style={styles.squareButton}
               onPress={() => deleteWFY(wfy)}
             />
@@ -131,33 +194,31 @@ const WaitingForYouList = () => {
                 backgroundColor: theme.color.secondary,
               }}
               title={`@ ${wfy.at.locationAliasA} | ${wfy.at.locationAliasB} | ${wfy.at.locationAliasC}`}
-              titleStyle={{fontWeight: 'bold'}}
               description={`created ${verboseTime(
                 wfy.at.createdAt,
               )}\nexpires @ ${new Date(
                 wfy.at.expiresAt * 1000,
               ).toLocaleTimeString()}, ${new Date(
                 wfy.at.expiresAt * 1000,
-              ).toDateString()}`}>
+              ).toDateString()}`}
+              titleStyle={styles.title}
+              descriptionStyle={styles.description}>
               {wfy.waiters.map(w => (
                 <List.Item
                   left={_ => (
                     <Image
                       source={w.user.avatarURI}
-                      style={{width: 50, height: 50}}
+                      style={{width: 50, height: 50, alignSelf: 'center'}}
                       viewable
                     />
                   )}
                   key={w.user.handle}
-                  style={{width: '100%'}}
-                  titleStyle={{
-                    color: theme.color.textPrimary,
-                    shadowColor: theme.color.textSecondary,
-                  }}
                   title={w.user.handle}
                   description={`${w.user.name} ${w.user.surname} [${
                     w.user.initials
-                  }] arrived @ ${verboseTime(w.arrivedAt)}`}
+                  }]\narrived ${verboseTime(w.arrivedAt)}`}
+                  titleStyle={styles.title}
+                  descriptionStyle={styles.description}
                   right={_ => (
                     <>
                       <IconButton
@@ -168,7 +229,7 @@ const WaitingForYouList = () => {
                       />
                       <IconButton
                         icon="account-plus"
-                        color={theme.color.textPrimary}
+                        color={'green'}
                         style={styles.squareButton}
                         onPress={() => connectWWaitingUser(wfy, w)}
                       />
@@ -205,7 +266,7 @@ const WaitingForYouList = () => {
                   <IconButton
                     icon="delete"
                     style={styles.squareButton}
-                    onPress={discardWFT}
+                    onPress={discardWFY}
                   />
                   <HorizontalView style={{flex: 1, paddingVertical: 2}}>
                     <TextInput
@@ -239,19 +300,4 @@ const WaitingForYouList = () => {
     </List.Accordion>
   );
 };
-
-const styles = StyleSheet.create({
-  squareButton: {
-    borderRadius: 0,
-  },
-  minimalButton: {
-    margin: 0,
-    padding: 0,
-  },
-  placeText: {
-    width: '33%',
-    marginHorizontal: 1,
-  },
-});
-
 export {WaitingForYouList};
