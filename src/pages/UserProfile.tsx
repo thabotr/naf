@@ -1,12 +1,11 @@
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {View, StyleSheet, ScrollView, ToastAndroid} from 'react-native';
 import {
   Button,
   IconButton,
   Paragraph,
   TextInput,
-  TouchableRipple,
 } from 'react-native-paper';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
