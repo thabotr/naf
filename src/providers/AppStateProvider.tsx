@@ -26,6 +26,7 @@ export type AppStateContextType = {
   saveAppLoggedInUser: (user: User) => void;
   saveAppSettings: (settings: SettingsType) => void;
   saveAppChats: (chats: Chat[]) => void;
+  clearAppState: ()=>void;
 };
 const logError = (ac: AppStateConstants, e: any) =>
   console.log('failed to save', ac, e);
@@ -62,6 +63,10 @@ const AppStateProvider = ({children}: Props) => {
     );
   };
 
+  const clearAppState = ()=>{
+    AsyncStorage.multiRemove([AppStateConstants.CHATS, AppStateConstants.SETTINGS, AppStateConstants.USER]);
+  }
+
   useEffect(() => {
     AsyncStorage.multiGet(['loggedInUser', 'settings', 'chats'])
       .then(res => {
@@ -92,6 +97,7 @@ const AppStateProvider = ({children}: Props) => {
     saveAppChats: saveAppChats,
     saveAppLoggedInUser: saveAppLoggedInUser,
     saveAppSettings: saveAppSettings,
+    clearAppState: clearAppState,
   };
 
   return (

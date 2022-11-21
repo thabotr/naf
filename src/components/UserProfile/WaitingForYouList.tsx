@@ -197,9 +197,9 @@ const WaitingForYouList = () => {
               description={`created ${verboseTime(
                 wfy.at.createdAt,
               )}\nexpires @ ${new Date(
-                wfy.at.expiresAt * 1000,
+                wfy.at.expiresAt,
               ).toLocaleTimeString()}, ${new Date(
-                wfy.at.expiresAt * 1000,
+                wfy.at.expiresAt,
               ).toDateString()}`}
               titleStyle={styles.title}
               descriptionStyle={styles.description}>
@@ -216,7 +216,13 @@ const WaitingForYouList = () => {
                   title={w.user.handle}
                   description={`${w.user.name} ${w.user.surname} [${
                     w.user.initials
-                  }]\narrived ${verboseTime(w.arrivedAt)}`}
+                  }]\narrived ${verboseTime(w.arrivedAt)}\n and will leave @ 
+                  ${new Date(
+                    wfy.at.expiresAt,
+                  ).toLocaleTimeString()}, ${new Date(
+                    wfy.at.expiresAt,
+                  ).toDateString()}
+                  `}
                   titleStyle={styles.title}
                   descriptionStyle={styles.description}
                   right={_ => (

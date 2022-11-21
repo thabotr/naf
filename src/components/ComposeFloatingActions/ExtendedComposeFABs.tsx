@@ -82,7 +82,7 @@ const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
                 to: interlocutor.handle,
                 id: timestamp.toString(),
                 files: [pic],
-                timestamp: timestamp/1000,
+                timestamp: timestamp,
                 voiceRecordings: [],
               }
             }

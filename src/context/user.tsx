@@ -1,4 +1,5 @@
 import {useState, ReactNode, createContext, useContext} from 'react';
+import { useAppState } from '../providers/AppStateProvider';
 import {validateContext} from '../providers/validateContext';
 import {Profile, User} from '../types/user';
 
@@ -31,76 +32,21 @@ const emptyUser = {
 
 const emptyProfile: Profile = {
   user: emptyUser,
-  waitingForThem: [
-    {
-      createdAt: new Date().getTime() / 1000 + 3600,
-      expiresAt: new Date().getTime() / 1000 + 3600 * 13,
-      handleForAwaited: '->mickeyDons',
-      locationAliasA: 'spain',
-      locationAliasB: 'uruguay',
-      locationAliasC: 'brazil',
-    },
-  ],
-  waitingForYou: [
-    {
-      at: {
-        locationAliasA: 'spain',
-        locationAliasB: 'uruguay',
-        locationAliasC: 'brazil',
-        createdAt: new Date().getTime() / 1000 - 3600,
-        expiresAt: new Date().getTime() / 1000 + 3600 * 13,
-      },
-      waiters: [],
-    },
-    {
-      at: {
-        locationAliasA: 'italy',
-        locationAliasB: 'morocco',
-        locationAliasC: 'sudan',
-        createdAt: new Date().getTime() / 1000 - 36000,
-        expiresAt: new Date().getTime() / 1000,
-      },
-      waiters: [
-        {
-          arrivedAt: new Date().getTime() / 1000,
-          user: {
-            name: 'spenser',
-            avatarURI: 'https://picsum.photos/317',
-            handle: '->susPens',
-            initials: 'SD',
-            surname: 'D',
-            landscapeURI: 'https://picsum.photos/2172',
-            listenWithMeURI:
-              'https://up.fakazaweb.com/wp-content/uploads/2022/09/AKA_ft_Nasty_C_-_Lemons_Lemonade__Fakaza.Me.com.mp3',
-          },
-        },
-        {
-          arrivedAt: new Date().getTime() / 1000,
-          user: {
-            name: 'don',
-            avatarURI: 'https://picsum.photos/117',
-            handle: '->vinny',
-            initials: 'SD',
-            surname: 'torretor',
-            landscapeURI: 'https://picsum.photos/1172',
-            listenWithMeURI:
-              'https://up.fakazaweb.com/wp-content/uploads/2022/09/AKA_ft_Nasty_C_-_Lemons_Lemonade__Fakaza.Me.com.mp3',
-          },
-        },
-      ],
-    },
-  ],
+  waitingForThem: [],
+  waitingForYou: [],
 };
 
 const LoggedInUserProvider = ({children}: Props) => {
   const [user, setUser] = useState<User>(emptyUser);
   const [userProfile, setUserProfile] = useState<Profile>(emptyProfile);
+  const {clearAppState} = useAppState();
 
   const loginAs = (u: User) => {
     setUser(u);
   };
 
   const logOut = () => {
+    clearAppState();
     setUser(emptyUser);
   };
 

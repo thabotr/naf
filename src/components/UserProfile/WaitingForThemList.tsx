@@ -158,9 +158,9 @@ const WaitingForThemList = () => {
           description={`created @ ${verboseTime(
             wft.createdAt,
           )}\nexpires @ ${new Date(
-            wft.expiresAt * 1000,
+            wft.expiresAt,
           ).toLocaleTimeString()}, ${new Date(
-            wft.expiresAt * 1000,
+            wft.expiresAt,
           ).toDateString()}`}
           left={_ => (
             <IconButton

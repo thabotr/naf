@@ -23,6 +23,7 @@ export type WaitingForType = WaitAtType & {
 export type WaiterType = {
   user: User,
   arrivedAt: number,
+  leavesAt: number,
 }
 
 export type WaitingForYouType = {
