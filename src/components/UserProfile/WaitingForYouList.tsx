@@ -11,6 +11,9 @@ import {useState} from 'react';
 import {deduplicatedConcat} from '../../utils/deduplicatedConcat';
 import {LRFilter} from '../../utils/lrFilter';
 import {useChats} from '../../context/chat';
+import {Remote} from '../../services/Remote';
+import { getColorsForUser } from '../../utils/getUserColors';
+import { useColorsForUsers } from '../../providers/UserTheme';
 
 const emptyWFY: WaitAtType = {
   createdAt: 0,
@@ -26,6 +29,7 @@ const WaitingForYouList = () => {
   const {theme} = useTheme();
   const [addingWFM, setAddingWFM] = useState(false);
   const [wAtData, setWAtData] = useState(emptyWFY);
+  const {saveUserColors} = useColorsForUsers();
 
   const removeWFYWaiter = (wfy: WaitingForYouType, wt: WaiterType) => {
     updateProfile(p => {
@@ -57,20 +61,28 @@ const WaitingForYouList = () => {
   };
   const connectWWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
     // TODO sync with remote
-    updateChats(chats =>
-      deduplicatedConcat(
-        chats,
-        [
-          {
-            user: wt.user,
-            messages: [],
-            messageThreads: [],
-          },
-        ],
-        (c1, c2) => c1.user.handle === c2.user.handle,
-      ),
-    );
-    removeWFYWaiter(wfy, wt);
+    Remote.acceptConnection(
+      userProfile.credentials.token,
+      userProfile.credentials.handle,
+      wfy,
+      wt,
+    ).then(chat => {
+      if (chat) {
+        updateChats(chats =>
+          deduplicatedConcat(
+            chats,
+            [chat],
+            (c1, c2) => c1.user.handle === c2.user.handle,
+          ),
+        );
+        getColorsForUser(chat.user).then(
+          colors => colors && saveUserColors(chat.user.handle, colors),
+        );
+        removeWFYWaiter(wfy, wt);
+      } else {
+        // Inform user of error
+      }
+    });
   };
   const deleteWFY = (wfy: WaitingForYouType) => {
     updateProfile(p => {

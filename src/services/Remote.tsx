@@ -1,6 +1,6 @@
 import RNFetchBlob from 'rn-fetch-blob';
 import {Chat} from '../types/chat';
-import {Profile} from '../types/user';
+import {Profile, WaiterType, WaitingForYouType} from '../types/user';
 
 class Remote {
   static async getProfile(
@@ -32,6 +32,36 @@ class Remote {
       console.error('Remote.getProfile:', 'did not get status 200');
     } catch (e) {
       console.error('Remote.getProfile:', e);
+    }
+    return;
+  }
+
+  static async acceptConnection(
+    token: string,
+    handle: string,
+    wfy: WaitingForYouType,
+    wt: WaiterType,
+  ): Promise<Chat | undefined> {
+    try {
+      const res = await RNFetchBlob.fetch(
+        'POST',
+        'http://10.0.2.2:3000/connection',
+        {
+          token: token,
+          handle: handle,
+          'Content-Type': 'application/json',
+        },
+        JSON.stringify({
+          ...wfy.at,
+          userHandle: wt.user.handle,
+        }),
+      );
+
+      if (res.info().status === 200) {
+        return res.json() as Chat;
+      }
+    } catch (e) {
+      console.error('Remote.acceptConnection:', e);
     }
     return;
   }

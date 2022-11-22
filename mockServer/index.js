@@ -325,7 +325,6 @@ app.post('/connection', (req, resp)=>{
   }
 
   const {locationAliasA, locationAliasB, locationAliasC, userHandle} = req.body;
-
   const wfmInd = waitingForYous.findIndex(wfy => 
       wfy.to === handle &&
       wfy.locationAliasA === locationAliasA &&
@@ -336,6 +335,13 @@ app.post('/connection', (req, resp)=>{
   if( wfmInd < 0){
     return resp.status(400).send(`${userHandle} is not waiting for you`);
   }
+
+  users.forEach(u=>{
+    if(u.handle === handle){
+      u.lastModified = new Date().getTime();
+    }
+  });
+
   const wfm = waitingForYous.splice(wfmInd, 1).find(_=>true);
   connections.push({
     user1: handle,

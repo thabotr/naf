@@ -40,7 +40,7 @@ function ProfileHeader({
           }}
         />
       </OnlyShow>
-      <Appbar.Content title={'Profile'} />
+      <Appbar.Content color={theme.color.textPrimary} title={'Profile'} />
       <Image source={user.avatarURI} style={{width: 50, height: '100%'}} />
     </Appbar.Header>
   );
