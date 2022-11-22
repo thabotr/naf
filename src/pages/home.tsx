@@ -91,8 +91,10 @@ function Home({navigation}: {navigation: any}) {
 
   useEffect(() => {
     if (savedChats.length) {
+      setFetchingChats(true);
       saveChats(savedChats);
       updateChatAndUserColors(savedChats);
+      setFetchingChats(false);
     } else {
       fetchChats();
     }

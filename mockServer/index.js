@@ -27,7 +27,8 @@ let users = [
     initials: 'UE',
     avatarURI: 'https://picsum.photos/113',
     landscapeURI: 'https://picsum.photos/1113',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',  
+    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
+    lastModified: 0,
   },
   {
     name: 'Penuel',
@@ -196,16 +197,21 @@ const getWaitingForThem=(handle)=>{
 }
 
 app.get('/profile', (req, resp) => {
-  const {token, handle} = req.headers;
+  const {token, handle, lastmodified} = req.headers;
   const validHandle = AuthTokensForUsers[token];
   if( !handle || handle !== validHandle){
     return resp.status(403).send('Unauthorized');
   }
+  const user = getUser(handle);
+  if(lastmodified >= user.lastModified){
+    return resp.status(204).send();
+  }
 
   resp.send({
-    user: getUser(handle),
+    user: user,
     waitingForYou: getWaitingForYou(handle),
     waitingForThem: getWaitingForThem(handle),
+    lastModified: user.lastModified,
   });
 });
 

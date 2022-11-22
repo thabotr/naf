@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState, ReactNode, createContext, useContext} from 'react';
-import { useAppState } from '../providers/AppStateProvider';
+import {useAppState} from '../providers/AppStateProvider';
 import {validateContext} from '../providers/validateContext';
 import {Profile, User} from '../types/user';
 
@@ -35,6 +35,11 @@ const emptyProfile: Profile = {
   user: emptyUser,
   waitingForThem: [],
   waitingForYou: [],
+  lastModified: 0,
+  credentials: {
+    handle: '',
+    token: '',
+  },
 };
 
 const LoggedInUserProvider = ({children}: Props) => {

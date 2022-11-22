@@ -7,7 +7,7 @@ import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {useColorsForUsers} from '../providers/UserTheme';
 import {Remote} from '../services/Remote';
-import {Profile} from '../types/user';
+import {Profile, UserCredentials} from '../types/user';
 import {getColorsForUser} from '../utils/getUserColors';
 
 export function Login() {
@@ -16,10 +16,10 @@ export function Login() {
   const [loading, setLoading] = useState(false);
   const {useProfile} = useLoggedInUser();
   const {saveUserColors} = useColorsForUsers();
-  const [credentials, setCredentials] = useState<{
-    token: string;
-    handle: string;
-  }>({handle: '', token: ''});
+  const [credentials, setCredentials] = useState<UserCredentials>({
+    handle: '',
+    token: '',
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -27,7 +27,17 @@ export function Login() {
       .then(profileString => {
         if (profileString) {
           const profile = JSON.parse(profileString) as Profile;
-          useProfile(profile);
+          Remote.getProfile(
+            profile.credentials.token,
+            profile.credentials.handle,
+            profile.lastModified,
+          ).then(profile => {
+            if (profile) {
+              AsyncStorage.setItem('profile', JSON.stringify(profile));
+              useProfile(profile);
+            }
+          });
+          useProfile({...profile, credentials: profile.credentials});
         }
       })
       .finally(() => setLoading(false));
@@ -36,7 +46,7 @@ export function Login() {
   const login = () => {
     setLoginError(false);
     setLoading(true);
-    Remote.getProfile(credentials.token, credentials.handle)
+    Remote.getProfile(credentials.token, credentials.handle, -1)
       .then(profile => {
         if (profile) {
           setLoginError(false);
