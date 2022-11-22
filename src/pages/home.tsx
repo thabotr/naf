@@ -10,21 +10,20 @@ import {useChats} from '../context/chat';
 import {ListenWithMeContextProvider} from '../context/listenWithMe';
 import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
-import {useAppState} from '../providers/AppStateProvider';
-import {remoteGetChats} from '../remote/chats';
 import {getColorsForUser} from '../utils/getUserColors';
 import {useColorsForUsers} from '../providers/UserTheme';
-import { Chat } from '../types/chat';
+import {Chat} from '../types/chat';
+import {Remote} from '../services/Remote';
 
 function HomeHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
   const {userProfile} = useLoggedInUser();
 
-  useEffect(()=>{
-    if(!userProfile.user.handle){
+  useEffect(() => {
+    if (!userProfile.user.handle) {
       props.navigation.navigate('Login');
     }
-  },[userProfile]);
+  }, [userProfile]);
 
   return (
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
@@ -61,11 +60,10 @@ function Home({navigation}: {navigation: any}) {
   const [fetchingChats, setFetchingChats] = useState(false);
   const {theme} = useTheme();
   const {saveChats, chats} = useChats();
-  const {saveAppChats, chats: savedChats} = useAppState();
   const {saveUserColors} = useColorsForUsers();
-  const {user} = useLoggedInUser();
+  const {user, userProfile} = useLoggedInUser();
 
-  const updateChatAndUserColors=(chats: Chat[])=>{
+  const updateChatAndUserColors = (chats: Chat[]) => {
     chats.forEach(c => {
       getColorsForUser(c.user).then(
         colors => colors && saveUserColors(c.user.handle, colors),
@@ -74,15 +72,17 @@ function Home({navigation}: {navigation: any}) {
     getColorsForUser(user).then(
       colors => colors && saveUserColors(user.handle, colors),
     );
-  }
+  };
 
   const fetchChats = () => {
     setFetchingChats(true);
-    remoteGetChats()
+    Remote.getChats(
+      userProfile.credentials.token,
+      userProfile.credentials.handle,
+    )
       .then(chats => {
         if (chats) {
           saveChats(chats);
-          saveAppChats(chats);
           updateChatAndUserColors(chats);
         }
       })
@@ -90,15 +90,10 @@ function Home({navigation}: {navigation: any}) {
   };
 
   useEffect(() => {
-    if (savedChats.length) {
-      setFetchingChats(true);
-      saveChats(savedChats);
-      updateChatAndUserColors(savedChats);
-      setFetchingChats(false);
-    } else {
+    if (userProfile.user.handle) {
       fetchChats();
     }
-  }, [savedChats]);
+  }, [userProfile]);
 
   return (
     <ListenWithMeContextProvider>

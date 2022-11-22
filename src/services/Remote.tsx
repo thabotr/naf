@@ -69,16 +69,14 @@ class Remote {
   static async getChats(
     token: string,
     handle: string,
-    lastModified?: number,
   ): Promise<Chat[] | undefined> {
     try {
       const res = await RNFetchBlob.fetch(
         'GET',
-        'http://localhost:3000/chats',
+        'http://10.0.2.2:3000/chats',
         {
           token: token,
           handle: handle,
-          lastModified: (lastModified ?? 0).toString(),
         },
       );
       if (res.info().status === 200) {
