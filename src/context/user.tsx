@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState, ReactNode, createContext, useContext} from 'react';
 import { useAppState } from '../providers/AppStateProvider';
 import {validateContext} from '../providers/validateContext';
@@ -39,15 +40,14 @@ const emptyProfile: Profile = {
 const LoggedInUserProvider = ({children}: Props) => {
   const [user, setUser] = useState<User>(emptyUser);
   const [userProfile, setUserProfile] = useState<Profile>(emptyProfile);
-  const {clearAppState} = useAppState();
 
   const loginAs = (u: User) => {
     setUser(u);
   };
 
   const logOut = () => {
-    clearAppState();
-    setUser(emptyUser);
+    AsyncStorage.multiRemove(['profile', 'settings']);
+    setUserProfile(emptyProfile);
   };
 
   const updateProfile = (mutator: (profile: Profile) => Profile) => {

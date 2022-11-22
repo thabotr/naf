@@ -18,7 +18,7 @@ import { Chat } from '../types/chat';
 
 function HomeHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   return (
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <IconButton
@@ -32,17 +32,17 @@ function HomeHeader(props: NativeStackHeaderProps) {
           color: theme.color.textPrimary,
           textShadowColor: theme.color.textSecondary,
         }}
-        title={user?.handle}
+        title={userProfile.user.handle}
         subtitleStyle={{
           color: theme.color.textPrimary,
           textShadowColor: theme.color.textSecondary,
         }}
-        subtitle={`${user?.name} ${user?.surname}`}
+        subtitle={`${userProfile.user.name} ${userProfile.user.surname}`}
       />
       <View style={{height: '100%', width: 50, marginRight: 10}}>
         <Image
           onPress={() => props.navigation.navigate('UserProfile')}
-          source={user?.avatarURI}
+          source={userProfile.user.avatarURI}
           style={{height: '100%', width: '100%'}}
         />
       </View>

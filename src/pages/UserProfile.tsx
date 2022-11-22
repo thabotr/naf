@@ -1,12 +1,7 @@
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, ToastAndroid} from 'react-native';
-import {
-  Button,
-  IconButton,
-  Paragraph,
-  TextInput,
-} from 'react-native-paper';
+import {Button, IconButton, Paragraph, TextInput} from 'react-native-paper';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
@@ -18,11 +13,14 @@ import {WaitingForYouList} from '../components/UserProfile/WaitingForYouList';
 import {WaitingForThemList} from '../components/UserProfile/WaitingForThemList';
 import {FileManager} from '../services/FileManager';
 import {Show} from '../components/Helpers/Show';
+import {GenericHeader} from '../components/GenericPageHeader';
+import {getColorsForUser} from '../utils/getUserColors';
 
 const EditableProfilePreview = () => {
-  const {user: loggedInUser, logOut, loginAs} = useLoggedInUser();
+  const {userProfile, logOut, updateProfile} = useLoggedInUser();
   const {theme} = useTheme();
   const [editing, setEditing] = useState(false);
+  const loggedInUser = userProfile.user;
   const [user, setUser] = useState(() => loggedInUser);
 
   const restoreProfile = (
@@ -59,7 +57,12 @@ const EditableProfilePreview = () => {
 
   const saveProfile = () => {
     // send profile update to remote
-    loginAs(user);
+    updateProfile(p => {
+      return {
+        ...p,
+        user: user,
+      };
+    });
     setEditing(false);
   };
 
@@ -266,15 +269,13 @@ const EditableProfilePreview = () => {
           style={[styles.squareButton, {margin: 10}]}
         />
       </HorizontalView>
-      <OnlyShow
-        If={editing}
-      >
+      <OnlyShow If={editing}>
         <Button
           icon={'restore'}
           color={theme.color.textPrimary}
           uppercase={false}
-          onPress={()=>restoreProfile(undefined)}>
-            Discard changes
+          onPress={() => restoreProfile(undefined)}>
+          Discard changes
         </Button>
       </OnlyShow>
       <Button
@@ -289,9 +290,21 @@ const EditableProfilePreview = () => {
 };
 
 function UserProfileHeader(props: NativeStackHeaderProps) {
-  const {user} = useLoggedInUser();
-  if (user) return <ProfileHeader user={user} props={props} />;
-  return <></>;
+  const {userProfile} = useLoggedInUser();
+  const {theme} = useTheme();
+  const [color, setColor] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    getColorsForUser(userProfile.user).then(
+      colors =>
+        colors &&
+        setColor(
+          theme.dark
+            ? colors.landscape.darkPrimary
+            : colors.landscape.lightPrimary,
+        ),
+    );
+  }, []);
+  return <GenericHeader name="Your profile" props={props} bgColor={color} />;
 }
 
 function UserProfile() {

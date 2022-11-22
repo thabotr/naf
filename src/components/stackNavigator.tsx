@@ -19,15 +19,15 @@ import {Login} from '../pages/Login';
 const Stack = createNativeStackNavigator();
 
 const LoginHeader = ({props}: {props: NativeStackHeaderProps}) => {
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
 
   useEffect(() => {
-    if (!user.handle) {
+    if (!userProfile.user.handle) {
       props.navigation.navigate('Login', {});
     } else {
       props.navigation.navigate('Home', {});
     }
-  }, [user]);
+  }, [userProfile]);
   return <></>;
 };
 
