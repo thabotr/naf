@@ -19,16 +19,6 @@ const port = 3000;
 //   ],
 // }
 
-// const ourUser = {
-//   name: 'Unai',
-//   surname: 'Emery',
-//   handle: 'w/unodosthreenfour',
-//   initials: 'UE',
-//   avatarURI: 'https://picsum.photos/713',
-//   landscapeURI: 'https://picsum.photos/1713',
-//   listenWithMeURI: 'http://10.0.2.2:3000/listen1.mp3',
-// }
-
 let users = [
   {
     name: 'Unai',

@@ -22,9 +22,7 @@ const LoginHeader = ({props}: {props: NativeStackHeaderProps}) => {
   const {userProfile} = useLoggedInUser();
 
   useEffect(() => {
-    if (!userProfile.user.handle) {
-      props.navigation.navigate('Login', {});
-    } else {
+    if (userProfile.user.handle) {
       props.navigation.navigate('Home', {});
     }
   }, [userProfile]);
@@ -36,7 +34,7 @@ function StackNavigator() {
 
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Home"
       screenOptions={{
         header: props => {
           return (

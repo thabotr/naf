@@ -19,6 +19,13 @@ import { Chat } from '../types/chat';
 function HomeHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
   const {userProfile} = useLoggedInUser();
+
+  useEffect(()=>{
+    if(!userProfile.user.handle){
+      props.navigation.navigate('Login');
+    }
+  },[userProfile]);
+
   return (
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <IconButton
