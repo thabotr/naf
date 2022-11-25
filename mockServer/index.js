@@ -16,87 +16,6 @@ const port = 3000;
 //   ],
 // }
 
-// let users = [
-//   {
-//     name: 'Unai',
-//     surname: 'Emery',
-//     handle: 'w/unodosthreenfour',
-//     initials: 'UE',
-//     avatarURI: 'https://picsum.photos/113',
-//     landscapeURI: 'https://picsum.photos/1113',
-//     listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
-//     lastModified: 0,
-//     connections: {
-//       "w/maybeBlackPen" : { metOn: 1669031624575, },
-//     },
-//     waitingForYou: {
-//       "argentina|maine|iran":{
-//         createdAt: 1669031624575,
-//         expiresAt: 1669042924575,
-//       },
-//       "germany|italy|netherlands" : {
-//         createdAt: 1669037824575,
-//         expiresAt: 1669037824575+1000*60*60*7,
-//         waiters: [
-//           {
-//             handle: 'w/hudson-odoi',
-//             arrivedAt: 1669037824575,
-//             leavesAt: 1669037824575+1000*60*60*7,
-//           },
-//         ]
-//       }
-//     },
-//     waitingForThem: {
-//       'w/kMondy': {
-//         at: 'germany|italy|netherlands',
-//         createdAt: 1669037724575,
-//         expiresAt: 1669138724575,
-//       }
-//     }
-//   },
-  // {
-  //   name: 'Penuel',
-  //   surname: 'McKenzie',
-  //   handle: 'w/maybeBlackPen',
-  //   initials: 'PM',
-  //   avatarURI: 'https://picsum.photos/213',
-  //   landscapeURI: 'https://picsum.photos/1213',
-  //   listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Disciples_of_House_-_Wena_Fakaza.Me.com.mp3',
-  //   connections: {
-  //     'w/unodosthreenfour' : { metOn: 1669031624575, },
-  //   }
-  // },
-//   {
-//     name: 'Sergino',
-//     surname: 'Dest',
-//     handle: 'w/sgd',
-//     initials: 'SD',
-//     avatarURI: 'https://picsum.photos/313',
-//     landscapeURI: 'https://picsum.photos/1313',
-//     listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Soa_Mattrix_-_Why_Ninga_Lali_Emakhaya_Fakaza.Me.com.mp3',  
-//   },
-  // {
-  //   name: 'Calum',
-  //   surname: 'Hudson-Odoi',
-  //   handle: 'w/hudson-odoi',
-  //   initials: 'CHO',
-  //   avatarURI: 'https://picsum.photos/413',
-  //   landscapeURI: 'https://picsum.photos/1413',
-  //   listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2021/08/Sir_Trill_Jessica_LM_ft_ThackzinDJ_Tee_Jay_-_Lwandle_Xiluva__Fakaza.Me.com.mp3',
-  // },
-//   {
-//     name: 'King',
-//     surname: 'Monada',
-//     handle: 'w/kMondy',
-//     initials: 'MK',
-//     avatarURI: 'https://picsum.photos/513',
-//     landscapeURI: 'https://picsum.photos/1513',
-//     listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Bailey_DJ_Givy_Baby_Emjaykeyz_-_Staring_Fakaza.Me.com.mp3',
-//     lastModified: 0, 
-//   },
-// ]
-
-
 const users = {
   'w/unodosthreenfour': {
     name: 'Unai',
@@ -161,6 +80,25 @@ const users = {
         expiresAt: 1669037824575+1000*60*60*7,
       }
     }
+  },
+  'w/kMondy': {
+    name: 'King',
+    surname: 'Monada',
+    handle: 'w/kMondy',
+    initials: 'MK',
+    avatarURI: 'https://picsum.photos/513',
+    landscapeURI: 'https://picsum.photos/1513',
+    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Bailey_DJ_Givy_Baby_Emjaykeyz_-_Staring_Fakaza.Me.com.mp3',
+    lastModified: 0, 
+  },
+  'w/sgd' : {
+    name: 'Sergino',
+    surname: 'Dest',
+    handle: 'w/sgd',
+    initials: 'SD',
+    avatarURI: 'https://picsum.photos/313',
+    landscapeURI: 'https://picsum.photos/1313',
+    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Soa_Mattrix_-_Why_Ninga_Lali_Emakhaya_Fakaza.Me.com.mp3',  
   },
 }
 
@@ -243,13 +181,6 @@ app.use(express.json());
 app.use(authenticate);
 
 app.get('/profile', (req, resp) => {
-  // const {token, handle, lastmodified} = req.headers;
-  // const validHandle = AuthTokensForUsers[token];
-  // const user = users[handle];
-
-  // if( !handle || handle !== validHandle || !user){
-  //   return resp.status(403).send('Unauthorized');
-  // }
   const {handle, lastmodified} = req.headers;
   const user = users[handle];
   
@@ -261,17 +192,13 @@ app.get('/profile', (req, resp) => {
 });
 
 app.get('/chats', (req, resp) => {
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const resChats = [];
 
   for( const interlocutorHandle in user.connections){
-    const interlocutorChat = chats[[validHandle, interlocutorHandle].sort().join('|')];
+    const interlocutorChat = chats[[handle, interlocutorHandle].sort().join('|')];
     const interlocutorUser = users[interlocutorHandle];
     interlocutorChat && interlocutorUser &&
     resChats.push({
@@ -305,12 +232,8 @@ const validateLocations = (at)=>{
 }
 
 app.post('/waitforyou', (req, resp)=>{
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const {at} = req.body;
   if( !validateLocations(at)){
@@ -338,7 +261,16 @@ app.post('/waitforyou', (req, resp)=>{
 });
 
 app.delete('/waitforyou', (req, resp)=>{
+  const {handle} = req.headers;
+  const user = users[handle];
 
+  const {at} = req.body;
+  if( !validateLocations(at)){
+    return resp.status(400)
+    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  }
+  user.waitingForYou && delete user.waitingForYou[at];
+  resp.status(200).send();
 })
 
 app.post('/user', (req, resp)=>{
@@ -346,12 +278,8 @@ app.post('/user', (req, resp)=>{
 });
 
 app.post('/waitforthem', (req, resp)=>{
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const {at, to} = req.body;
   if(to === handle){
@@ -411,12 +339,8 @@ app.post('/waitforthem', (req, resp)=>{
 });
 
 app.delete('/waitforthem', (req, resp)=>{
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const {to} = req.body;
   if(!validateHandle(to)){
@@ -438,12 +362,8 @@ app.delete('/waitforthem', (req, resp)=>{
 });
 
 app.delete('/connection', (req, resp)=>{
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const {interlocutorHandle} = req.body;
   if(!validateHandle(interlocutorHandle)){
@@ -460,12 +380,8 @@ app.delete('/connection', (req, resp)=>{
 })
 
 app.post('/connection', (req, resp)=>{
-  const {token, handle} = req.headers;
-  const validHandle = AuthTokensForUsers[token];
+  const {handle} = req.headers;
   const user = users[handle];
-  if(!user || !handle || handle !== validHandle){
-    return resp.status(403).send('Unauthorized');
-  }
 
   const {at, waiterHandle} = req.body;
   if(!validateHandle(waiterHandle)){
