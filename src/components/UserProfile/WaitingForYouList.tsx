@@ -12,8 +12,8 @@ import {deduplicatedConcat} from '../../utils/deduplicatedConcat';
 import {LRFilter} from '../../utils/lrFilter';
 import {useChats} from '../../context/chat';
 import {Remote} from '../../services/Remote';
-import { getColorsForUser } from '../../utils/getUserColors';
-import { useColorsForUsers } from '../../providers/UserTheme';
+import {getColorsForUser} from '../../utils/getUserColors';
+import {useColorsForUsers} from '../../providers/UserTheme';
 
 const emptyWFY: WaitAtType = {
   createdAt: 0,
@@ -56,8 +56,12 @@ const WaitingForYouList = () => {
   };
 
   const dismissWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
-    // TODO sync with remote
-    removeWFYWaiter(wfy, wt);
+    Remote.deleteConnection(
+      userProfile.credentials.token,
+      userProfile.credentials.handle,
+      wt.user.handle,
+    ).then(b => b && removeWFYWaiter(wfy, wt));
+    //handle dismiss failure
   };
   const connectWWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
     // TODO sync with remote

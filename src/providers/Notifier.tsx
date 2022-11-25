@@ -1,4 +1,7 @@
-import {createContext, ReactNode, useContext, useState} from 'react';
+import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import {useChats} from '../context/chat';
+import {useLoggedInUser} from '../context/user';
+import {Remote} from '../services/Remote';
 import {Message} from '../types/message';
 import {User} from '../types/user';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
@@ -20,6 +23,37 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
   const [incomingMessages, setIncomingMessages] = useState<
     IncomingMessageType[]
   >([]);
+
+  const [spinner, setSpinner] = useState(true);
+  const {userProfile, updateProfile} = useLoggedInUser();
+  const {lastModified, saveChats, chats} = useChats();
+
+  useEffect(() => {
+    setTimeout(() => setSpinner(v => !v), 500);
+    Remote.getProfile(
+      userProfile.credentials.token,
+      userProfile.credentials.handle,
+      userProfile.lastModified,
+    ).then(profile => {
+      profile && updateProfile(_ => profile);
+    });
+    Remote.getChats(
+      userProfile.credentials.token,
+      userProfile.credentials.handle,
+      lastModified,
+    ).then(chats => chats && saveChats(chats));
+  }, []);
+
+  useEffect(() => {
+    const unreadMsgs = chats
+      .flatMap(c =>
+        c.messages.map(m => {
+          return {intelocutor: c.user, message: m};
+        }),
+      )
+      .filter(incMsg => incMsg.message.unread);
+    unreadMsgs.forEach(m => noteIncomingMsg(m));
+  }, [chats]);
 
   const noteIncomingMsg = (incMsg: IncomingMessageType) => {
     setIncomingMessages(msgs =>

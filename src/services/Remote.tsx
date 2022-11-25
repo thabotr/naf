@@ -69,16 +69,13 @@ class Remote {
   static async getChats(
     token: string,
     handle: string,
+    lastModified?: number,
   ): Promise<Chat[] | undefined> {
     try {
-      const res = await RNFetchBlob.fetch(
-        'GET',
-        'http://10.0.2.2:3000/chats',
-        {
-          token: token,
-          handle: handle,
-        },
-      );
+      const res = await RNFetchBlob.fetch('GET', 'http://10.0.2.2:3000/chats', {
+        token: token,
+        handle: handle,
+      });
       if (res.info().status === 200) {
         return res.json() as Chat[];
       }
@@ -87,6 +84,31 @@ class Remote {
       console.error('Remote.getChats:', e);
     }
     return;
+  }
+  static async deleteConnection(
+    token: string,
+    handle: string,
+    userHandle: string,
+  ): Promise<boolean> {
+    try {
+      const res = await RNFetchBlob.fetch(
+        'GET',
+        'http://10.0.2.2:3000/chats',
+        {
+          token: token,
+          handle: handle,
+          'Content-Type': 'application/json',
+        },
+        JSON.stringify({userHandle: userHandle}),
+      );
+      if (res.info().status === 200) {
+        return true;
+      }
+      console.error('Remote.getChats:', 'did not get status 200');
+    } catch (e) {
+      console.error('Remote.getChats:', e);
+    }
+    return false;
   }
 }
 

@@ -4,6 +4,7 @@ import {Chat} from '../types/chat';
 import {Message, MessagePK} from '../types/message';
 
 export type ChatsContextType = {
+  lastModified?: number;
   chats: Chat[];
   saveChats: (chats: Chat[]) => void;
   activeChat: () => Chat;
@@ -22,6 +23,7 @@ const ChatsContext = createContext<ChatsContextType | undefined>(undefined);
 
 const ChatsProvider = ({children}: Props) => {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [lastModified, setLastModified] = useState(0);
   const [activeChatHandle, setActiveChatHandle] = useState<
     string | undefined
   >();
@@ -126,6 +128,7 @@ const ChatsProvider = ({children}: Props) => {
     addChatMessages: addChatMessages,
     deleteChatMessages: deleteChatMessages,
     updateChats: updateChats,
+    lastModified: lastModified,
   };
 
   return (
