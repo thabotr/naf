@@ -442,6 +442,7 @@ app.delete('/connection', (req, resp)=>{
 
   if(user.connections[interlocutorHandle]){
     delete user.connections[interlocutorHandle];
+    delete chats[[interlocutorHandle, handle].sort().join('|')];
     touchUser(handle);
   }
 

@@ -47,7 +47,7 @@ class Remote {
         at: at,
         waiterHandle: waiterHandle,
       });
-      const res = await fetch('http://10.0.2.2:3000/connection',{
+      const res = await fetch('http://10.0.2.2:3000/connection', {
         method: 'POST',
         headers: {
           token: token,
@@ -71,6 +71,35 @@ class Remote {
     return;
   }
 
+  static async deleteConnection(
+    token: string,
+    handle: string,
+    interlocutorHandle: string,
+  ): Promise<boolean> {
+    try {
+      const body = JSON.stringify({
+        interlocutorHandle: interlocutorHandle,
+      });
+      const res = await fetch('http://10.0.2.2:3000/connection', {
+        method: 'DELETE',
+        headers: {
+          token: token,
+          handle: handle,
+          'Content-Type': 'application/json',
+        },
+        body: body,
+      });
+
+      if (res.status === 200) {
+        return true;
+      }
+      console.error('Remote.deleteConnection:', 'did not get status 200');
+    } catch (e) {
+      console.error('Remote.deleteConnection:', e);
+    }
+    return false;
+  }
+
   static async getChats(
     token: string,
     handle: string,
@@ -91,14 +120,14 @@ class Remote {
       );
       if (res.info().status === 200) {
         const chats = res.json() as Chat[];
-        chats.forEach(c=>{
-          if(!c.messages){
+        chats.forEach(c => {
+          if (!c.messages) {
             c.messages = [];
           }
-          if(!c.messageThreads){
+          if (!c.messageThreads) {
             c.messageThreads = [];
           }
-        })
+        });
         return chats;
       } else if (res.info().status === 204) {
         return;
@@ -117,7 +146,7 @@ class Remote {
     waiterHandle: string,
   ): Promise<boolean> {
     try {
-      const res = await fetch('http://10.0.2.2:3000/waitforyou/user',{
+      const res = await fetch('http://10.0.2.2:3000/waitforyou/user', {
         method: 'DELETE',
         headers: {
           token: token,
@@ -125,11 +154,15 @@ class Remote {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({at: at, waiterHandle: waiterHandle}),
-      })
+      });
       if (res.status === 200) {
         return true;
       }
-      console.error('Remote.deleteWaitForYouUser:', 'did not get status 200. got status', res.status);
+      console.error(
+        'Remote.deleteWaitForYouUser:',
+        'did not get status 200. got status',
+        res.status,
+      );
     } catch (e) {
       console.error('Remote.deleteWaitForYouUser:', e);
     }
@@ -142,7 +175,7 @@ class Remote {
     at: string,
   ): Promise<boolean> {
     try {
-      const res = await fetch('http://10.0.2.2:3000/waitforyou',{
+      const res = await fetch('http://10.0.2.2:3000/waitforyou', {
         method: 'DELETE',
         headers: {
           token: token,
@@ -150,11 +183,15 @@ class Remote {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({at: at}),
-      })
+      });
       if (res.status === 200) {
         return true;
       }
-      console.error('Remote.deleteWaitForYou:', 'did not get status 200. got status', res.status);
+      console.error(
+        'Remote.deleteWaitForYou:',
+        'did not get status 200. got status',
+        res.status,
+      );
     } catch (e) {
       console.error('Remote.deleteWaitForYou:', e);
     }
@@ -166,7 +203,7 @@ class Remote {
     userHandle: string,
   ): Promise<boolean> {
     try {
-      const res = await fetch('http://10.0.2.2:3000/waitforthem',{
+      const res = await fetch('http://10.0.2.2:3000/waitforthem', {
         method: 'DELETE',
         headers: {
           token: token,
@@ -174,11 +211,15 @@ class Remote {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({to: userHandle}),
-      })
+      });
       if (res.status === 200) {
         return true;
       }
-      console.error('Remote.deleteWaitForThem:', 'did not get status 200. got status', res.status);
+      console.error(
+        'Remote.deleteWaitForThem:',
+        'did not get status 200. got status',
+        res.status,
+      );
     } catch (e) {
       console.error('Remote.deleteWaitForThem:', e);
     }
@@ -189,9 +230,9 @@ class Remote {
     handle: string,
     at: string,
     userHandle: string,
-  ): Promise<WFTType|undefined> {
+  ): Promise<WFTType | undefined> {
     try {
-      const res = await fetch('http://10.0.2.2:3000/waitforthem',{
+      const res = await fetch('http://10.0.2.2:3000/waitforthem', {
         method: 'POST',
         headers: {
           token: token,
@@ -199,12 +240,16 @@ class Remote {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({at: at, to: userHandle}),
-      })
+      });
       if (res.status === 201) {
-        return await res.json() as WFTType;
+        return (await res.json()) as WFTType;
       }
       console.log(await res.text());
-      console.error('Remote.addWaitForThem:', 'did not get status 201. got status', res.status);
+      console.error(
+        'Remote.addWaitForThem:',
+        'did not get status 201. got status',
+        res.status,
+      );
     } catch (e) {
       console.error('Remote.addWaitForThem:', e);
     }
@@ -214,9 +259,9 @@ class Remote {
     token: string,
     handle: string,
     at: string,
-  ): Promise<WFYType|undefined> {
+  ): Promise<WFYType | undefined> {
     try {
-      const res = await fetch('http://10.0.2.2:3000/waitforyou',{
+      const res = await fetch('http://10.0.2.2:3000/waitforyou', {
         method: 'POST',
         headers: {
           token: token,
@@ -224,15 +269,19 @@ class Remote {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({at: at}),
-      })
+      });
       if (res.status === 200) {
-        const wfy = await res.json() as WFYType;
-        if(!wfy[at].waiters){
+        const wfy = (await res.json()) as WFYType;
+        if (!wfy[at].waiters) {
           wfy[at].waiters = {};
         }
         return wfy;
       }
-      console.error('Remote.addWaitForYou:', 'did not get status 200. got status', res.status);
+      console.error(
+        'Remote.addWaitForYou:',
+        'did not get status 200. got status',
+        res.status,
+      );
     } catch (e) {
       console.error('Remote.addWaitForYou:', e);
     }

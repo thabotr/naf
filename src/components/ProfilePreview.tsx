@@ -1,4 +1,4 @@
-import {View, ToastAndroid} from 'react-native';
+import {View, ToastAndroid, StyleSheet} from 'react-native';
 import {Button, Paragraph} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {useChats} from '../context/chat';
@@ -6,16 +6,39 @@ import {useTheme} from '../context/theme';
 import {User} from '../types/user';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {Image} from './Image';
+import {useState} from 'react';
+import {Remote} from '../services/Remote';
+import {useLoggedInUser} from '../context/user';
 
 const ProfilePreview = ({user}: {user: User}) => {
   const {theme} = useTheme();
   const {updateChats} = useChats();
   const navigation = useNavigation<any>();
+  const [state, setState] = useState<'error' | 'loading' | 'idle'>('idle');
+  const {userProfile} = useLoggedInUser();
+
   const disconnectFromUser = () => {
-    // TODO send remote disconnect request
-    navigation.navigate('Home', {});
-    updateChats(chats => chats.filter(c => c.user.handle !== user.handle));
+    setState('loading');
+    Remote.deleteConnection(userProfile.token, userProfile.handle, user.handle)
+      .then(disconnected => {
+        if (disconnected) {
+          navigation.navigate('Home', {});
+          updateChats(chats =>
+            chats.filter(c => c.user.handle !== user.handle),
+          );
+        }
+      })
+      .finally(() => setState('error'));
   };
+
+  const styles = StyleSheet.create({
+    disconnectButton: {
+      shadowColor: theme.color.textSecondary,
+      borderWidth: state === 'error' ? 1 : 0,
+      borderColor: 'red',
+    },
+  });
+
   return (
     <>
       <Image viewable source={user?.landscapeURI} style={{width: '100%'}} />
@@ -63,11 +86,11 @@ const ProfilePreview = ({user}: {user: User}) => {
           );
         }}
         onLongPress={disconnectFromUser}
-        color={'red'}
+        color={state === 'idle'? 'red' : theme.color.textPrimary}
         uppercase={false}
-        style={{
-          shadowColor: theme.color.textSecondary,
-        }}>
+        loading={state === 'loading'}
+        disabled={state === 'loading'}
+        style={styles.disconnectButton}>
         Disconnect from {user.handle}
       </Button>
     </>
