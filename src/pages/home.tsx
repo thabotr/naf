@@ -20,7 +20,7 @@ function HomeHeader(props: NativeStackHeaderProps) {
   const {userProfile} = useLoggedInUser();
 
   useEffect(() => {
-    if (!userProfile.user.handle) {
+    if (!userProfile.handle) {
       props.navigation.navigate('Login');
     }
   }, [userProfile]);
@@ -38,17 +38,17 @@ function HomeHeader(props: NativeStackHeaderProps) {
           color: theme.color.textPrimary,
           textShadowColor: theme.color.textSecondary,
         }}
-        title={userProfile.user.handle}
+        title={userProfile.handle}
         subtitleStyle={{
           color: theme.color.textPrimary,
           textShadowColor: theme.color.textSecondary,
         }}
-        subtitle={`${userProfile.user.name} ${userProfile.user.surname}`}
+        subtitle={`${userProfile.name} ${userProfile.surname}`}
       />
       <View style={{height: '100%', width: 50, marginRight: 10}}>
         <Image
           onPress={() => props.navigation.navigate('UserProfile')}
-          source={userProfile.user.avatarURI}
+          source={userProfile.avatarURI}
           style={{height: '100%', width: '100%'}}
         />
       </View>
@@ -76,10 +76,7 @@ function Home({navigation}: {navigation: any}) {
 
   const fetchChats = () => {
     setFetchingChats(true);
-    Remote.getChats(
-      userProfile.credentials.token,
-      userProfile.credentials.handle,
-    )
+    Remote.getChats(userProfile.token, userProfile.handle)
       .then(chats => {
         if (chats) {
           saveChats(chats);
@@ -90,7 +87,7 @@ function Home({navigation}: {navigation: any}) {
   };
 
   useEffect(() => {
-    if (userProfile.user.handle) {
+    if (userProfile.handle) {
       fetchChats();
     }
   }, [userProfile]);

@@ -22,7 +22,7 @@ const LoginHeader = ({props}: {props: NativeStackHeaderProps}) => {
   const {userProfile} = useLoggedInUser();
 
   useEffect(() => {
-    if (userProfile.user.handle) {
+    if (userProfile.handle) {
       props.navigation.navigate('Home', {});
     }
   }, [userProfile]);

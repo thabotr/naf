@@ -1,19 +1,21 @@
-import {Button, IconButton, List, TextInput} from 'react-native-paper';
+import {Button, List, TextInput} from 'react-native-paper';
 import {StyleSheet, View, Pressable} from 'react-native';
 import {useTheme} from '../../context/theme';
 import {useLoggedInUser} from '../../context/user';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {Image} from '../Image';
 import {Show} from '../Helpers/Show';
-import {WaitAtType, WaiterType, WaitingForYouType} from '../../types/user';
+import {WaitAtType} from '../../types/user';
 import {verboseTime} from '../../helper';
 import {useState} from 'react';
 import {deduplicatedConcat} from '../../utils/deduplicatedConcat';
-import {LRFilter} from '../../utils/lrFilter';
 import {useChats} from '../../context/chat';
 import {Remote} from '../../services/Remote';
 import {getColorsForUser} from '../../utils/getUserColors';
 import {useColorsForUsers} from '../../providers/UserTheme';
+import {MutexContextProvider, useMutex} from '../../providers/MutexProvider';
+import {deepCopy} from '../../utils/deepCopy';
+import {AsyncIconButton} from './AsyncIconButton';
 
 const emptyWFY: WaitAtType = {
   createdAt: 0,
@@ -31,108 +33,90 @@ const WaitingForYouList = () => {
   const [wAtData, setWAtData] = useState(emptyWFY);
   const {saveUserColors} = useColorsForUsers();
 
-  const removeWFYWaiter = (wfy: WaitingForYouType, wt: WaiterType) => {
+  const removeWFYWaiter = (at: string, waiterHandle: string) => {
     updateProfile(p => {
-      const {truthy, falsey} = LRFilter(
-        p.waitingForYou,
-        pwfy =>
-          pwfy.at.locationAliasA === wfy.at.locationAliasA &&
-          pwfy.at.locationAliasB === wfy.at.locationAliasB &&
-          pwfy.at.locationAliasC === wfy.at.locationAliasC,
-      );
-      const targetWFY = truthy.find(_ => true);
-      if (!targetWFY) return p;
-      const updatedWFYs = falsey.concat({
-        ...targetWFY,
-        waiters: targetWFY.waiters.filter(
-          w => w.user.handle !== wt.user.handle,
-        ),
-      });
-      return {
-        ...p,
-        waitingForYou: updatedWFYs,
-      };
+      delete p.waitingForYou[at].waiters[waiterHandle];
+      return deepCopy(p);
     });
   };
 
-  const dismissWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
-    Remote.deleteConnection(
-      userProfile.credentials.token,
-      userProfile.credentials.handle,
-      wt.user.handle,
-    ).then(b => b && removeWFYWaiter(wfy, wt));
-    //handle dismiss failure
+  const dismissWaitingUser = async (at: string, waiterHandle: string) => {
+    const deleted = await Remote.deleteWaitForYouUser(
+      userProfile.token,
+      userProfile.handle,
+      at,
+      waiterHandle,
+    );
+    if (deleted) {
+      removeWFYWaiter(at, waiterHandle);
+    } else {
+      throw new Error('failed to dismiss waiting user');
+    }
   };
-  const connectWWaitingUser = (wfy: WaitingForYouType, wt: WaiterType) => {
-    // TODO sync with remote
-    Remote.acceptConnection(
-      userProfile.credentials.token,
-      userProfile.credentials.handle,
-      wfy,
-      wt,
-    ).then(chat => {
-      if (chat) {
-        updateChats(chats =>
-          deduplicatedConcat(
-            chats,
-            [chat],
-            (c1, c2) => c1.user.handle === c2.user.handle,
-          ),
-        );
-        getColorsForUser(chat.user).then(
-          colors => colors && saveUserColors(chat.user.handle, colors),
-        );
-        removeWFYWaiter(wfy, wt);
-      } else {
-        // Inform user of error
-      }
-    });
-  };
-  const deleteWFY = (wfy: WaitingForYouType) => {
-    updateProfile(p => {
-      return {
-        ...p,
-        waitingForYou: p.waitingForYou.filter(
-          ewfy =>
-            !(
-              ewfy.at.locationAliasA === wfy.at.locationAliasA &&
-              ewfy.at.locationAliasB === wfy.at.locationAliasB &&
-              ewfy.at.locationAliasC === wfy.at.locationAliasC
-            ),
+  const connectWWaitingUser = async (at: string, waiterHandle: string) => {
+    const chat = await Remote.acceptConnection(
+      userProfile.token,
+      userProfile.handle,
+      at,
+      waiterHandle,
+    );
+    if (chat) {
+      updateChats(chats =>
+        deduplicatedConcat(
+          chats,
+          [chat],
+          (c1, c2) => c1.user.handle === c2.user.handle,
         ),
-      };
-    });
+      );
+      getColorsForUser(chat.user).then(
+        colors => colors && saveUserColors(chat.user.handle, colors),
+      );
+      removeWFYWaiter(at, waiterHandle);
+      return;
+    } else {
+      throw new Error('no chat found');
+    }
   };
-  const discardWFY = () => {
+
+  const deleteWFY = async (at: string) => {
+    const res = await Remote.deleteWaitForYou(
+      userProfile.token,
+      userProfile.handle,
+      at,
+    );
+    if (res) {
+      updateProfile(p => {
+        delete p.waitingForYou[at];
+        return deepCopy(p);
+      });
+    } else {
+      throw new Error('failed to delete wait for you');
+    }
+  };
+  const discardWFY = async () => {
     setWAtData(emptyWFY);
     setAddingWFM(false);
   };
-  const saveWFY = () => {
-    //TODO send remote
-    const timestamp = new Date().getTime() / 1000;
-    updateProfile(p => {
-      return {
-        ...p,
-        waitingForYou: deduplicatedConcat(
-          p.waitingForYou,
-          [
-            {
-              at: {
-                ...wAtData,
-                createdAt: timestamp,
-                expiresAt: timestamp + 60 * 60 * 24,
-              },
-              waiters: [],
-            },
-          ],
-          (w1, w2) =>
-            w1.at.locationAliasA === w2.at.locationAliasA &&
-            w1.at.locationAliasB === w2.at.locationAliasB &&
-            w1.at.locationAliasC === w2.at.locationAliasC,
-        ),
-      };
-    });
-    discardWFY();
+  const saveWFY = async () => {
+    const at = [
+      wAtData.locationAliasA,
+      wAtData.locationAliasB,
+      wAtData.locationAliasC,
+    ].join('|');
+    const wfy = await Remote.addWaitForYou(
+      userProfile.token,
+      userProfile.handle,
+      at,
+    );
+    if (wfy) {
+      updateProfile(p => {
+        p.waitingForYou[at] = wfy[at];
+        return deepCopy(p);
+      });
+      discardWFY();
+    } else {
+      throw new Error('failed to save wfy');
+    }
   };
   const setLocation = (location: 'A' | 'B' | 'C', value: string) => {
     const v = value.trim();
@@ -194,72 +178,73 @@ const WaitingForYouList = () => {
       title="Waiting for you"
       titleStyle={styles.title}>
       <View>
-        {userProfile.waitingForYou.map(wfy => (
-          <HorizontalView
-            key={`${wfy.at.locationAliasA}-${wfy.at.locationAliasB}-${wfy.at.locationAliasC}`}>
-            <IconButton
-              icon="delete"
-              color={theme.color.textPrimary}
-              style={styles.squareButton}
-              onPress={() => deleteWFY(wfy)}
-            />
-            <List.Accordion
-              style={{
-                width: 400,
-                padding: 0,
-                backgroundColor: theme.color.secondary,
-              }}
-              title={`@ ${wfy.at.locationAliasA} | ${wfy.at.locationAliasB} | ${wfy.at.locationAliasC}`}
-              description={`created ${verboseTime(
-                wfy.at.createdAt,
-              )}\nexpires @ ${new Date(
-                wfy.at.expiresAt,
-              ).toLocaleTimeString()}, ${new Date(
-                wfy.at.expiresAt,
-              ).toDateString()}`}
-              titleStyle={styles.title}
-              descriptionStyle={styles.description}>
-              {wfy.waiters.map(w => (
-                <List.Item
-                  left={_ => (
-                    <Image
-                      source={w.user.avatarURI}
-                      style={{width: 50, height: 50, alignSelf: 'center'}}
-                      viewable
+        {Object.entries(userProfile.waitingForYou).map(([at, wfy]) => (
+          <HorizontalView key={at}>
+            <MutexContextProvider>
+              <AsyncIconButton
+                icon="delete"
+                style={styles.squareButton}
+                onPress={() => deleteWFY(at)}
+              />
+              <List.Accordion
+                style={{
+                  width: 400,
+                  padding: 0,
+                  backgroundColor: theme.color.secondary,
+                }}
+                title={`@ ${at}`}
+                description={`created ${verboseTime(
+                  wfy.createdAt,
+                )}\nexpires @ ${new Date(
+                  wfy.expiresAt,
+                ).toLocaleTimeString()}, ${new Date(
+                  wfy.expiresAt,
+                ).toDateString()}`}
+                titleStyle={styles.title}
+                descriptionStyle={styles.description}>
+                {wfy.waiters &&
+                  Object.entries(wfy.waiters).map(([waiterHandle, w]) => (
+                    <List.Item
+                      left={_ => (
+                        <Image
+                          source={w.avatarURI}
+                          style={{width: 50, height: 50, alignSelf: 'center'}}
+                          viewable
+                        />
+                      )}
+                      key={waiterHandle}
+                      title={waiterHandle}
+                      description={`arrived ${verboseTime(
+                        w.arrivedAt,
+                      )}\nwill leave @ 
+                ${new Date(w.leavesAt).toLocaleTimeString()}, ${new Date(
+                        w.leavesAt,
+                      ).toDateString()}
+                `}
+                      titleStyle={styles.title}
+                      descriptionStyle={styles.description}
+                      right={_ => (
+                        <>
+                          <AsyncIconButton
+                            icon="cancel"
+                            color={theme.color.textPrimary}
+                            style={styles.squareButton}
+                            onPress={() => dismissWaitingUser(at, waiterHandle)}
+                          />
+                          <AsyncIconButton
+                            icon="account-plus"
+                            style={styles.squareButton}
+                            color={'green'}
+                            onPress={() =>
+                              connectWWaitingUser(at, waiterHandle)
+                            }
+                          />
+                        </>
+                      )}
                     />
-                  )}
-                  key={w.user.handle}
-                  title={w.user.handle}
-                  description={`${w.user.name} ${w.user.surname} [${
-                    w.user.initials
-                  }]\narrived ${verboseTime(w.arrivedAt)}\n and will leave @ 
-                  ${new Date(
-                    wfy.at.expiresAt,
-                  ).toLocaleTimeString()}, ${new Date(
-                    wfy.at.expiresAt,
-                  ).toDateString()}
-                  `}
-                  titleStyle={styles.title}
-                  descriptionStyle={styles.description}
-                  right={_ => (
-                    <>
-                      <IconButton
-                        icon="cancel"
-                        color={theme.color.textPrimary}
-                        style={styles.squareButton}
-                        onPress={() => dismissWaitingUser(wfy, w)}
-                      />
-                      <IconButton
-                        icon="account-plus"
-                        color={'green'}
-                        style={styles.squareButton}
-                        onPress={() => connectWWaitingUser(wfy, w)}
-                      />
-                    </>
-                  )}
-                />
-              ))}
-            </List.Accordion>
+                  ))}
+              </List.Accordion>
+            </MutexContextProvider>
           </HorizontalView>
         ))}
         <Pressable>
@@ -284,8 +269,8 @@ const WaitingForYouList = () => {
               }
               If={!addingWFM}
               ElseShow={
-                <>
-                  <IconButton
+                <MutexContextProvider>
+                  <AsyncIconButton
                     icon="delete"
                     style={styles.squareButton}
                     onPress={discardWFY}
@@ -307,13 +292,13 @@ const WaitingForYouList = () => {
                       style={{flex: 1}}
                     />
                   </HorizontalView>
-                  <IconButton
+                  <AsyncIconButton
                     icon="content-save"
                     onPress={saveWFY}
                     disabled={!allFieldsFilled}
                     style={styles.squareButton}
                   />
-                </>
+                </MutexContextProvider>
               }
             />
           </HorizontalView>

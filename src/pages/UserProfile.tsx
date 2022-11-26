@@ -20,7 +20,7 @@ const EditableProfilePreview = () => {
   const {userProfile, logOut, updateProfile} = useLoggedInUser();
   const {theme} = useTheme();
   const [editing, setEditing] = useState(false);
-  const loggedInUser = userProfile.user;
+  const loggedInUser = userProfile;
   const [user, setUser] = useState(() => loggedInUser);
 
   const restoreProfile = (
@@ -294,7 +294,7 @@ function UserProfileHeader(props: NativeStackHeaderProps) {
   const {theme} = useTheme();
   const [color, setColor] = useState<string | undefined>(undefined);
   useEffect(() => {
-    getColorsForUser(userProfile.user).then(
+    getColorsForUser(userProfile).then(
       colors =>
         colors &&
         setColor(

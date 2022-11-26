@@ -1,7 +1,6 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {useChats} from '../context/chat';
 import {useLoggedInUser} from '../context/user';
-import {Remote} from '../services/Remote';
 import {Message} from '../types/message';
 import {User} from '../types/user';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
@@ -28,21 +27,21 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
   const {userProfile, updateProfile} = useLoggedInUser();
   const {lastModified, saveChats, chats} = useChats();
 
-  useEffect(() => {
-    setTimeout(() => setSpinner(v => !v), 500);
-    Remote.getProfile(
-      userProfile.credentials.token,
-      userProfile.credentials.handle,
-      userProfile.lastModified,
-    ).then(profile => {
-      profile && updateProfile(_ => profile);
-    });
-    Remote.getChats(
-      userProfile.credentials.token,
-      userProfile.credentials.handle,
-      lastModified,
-    ).then(chats => chats && saveChats(chats));
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => setSpinner(v => !v), 500);
+  //   Remote.getProfile(
+  //     userProfile.credentials.token,
+  //     userProfile.credentials.handle,
+  //     userProfile.lastModified,
+  //   ).then(profile => {
+  //     profile && updateProfile(_ => profile);
+  //   });
+  //   Remote.getChats(
+  //     userProfile.credentials.token,
+  //     userProfile.credentials.handle,
+  //     lastModified,
+  //   ).then(chats => chats && saveChats(chats));
+  // }, []);
 
   useEffect(() => {
     const unreadMsgs = chats

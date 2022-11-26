@@ -2,20 +2,6 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-// const ourUser = {
-//   name: string,
-//   surname: string,
-//   handle: string,
-//   initials: string,
-//   avatarURI: {
-//      uri: string, size: number, type: string, name?:string,
-//   } | string,
-//   landscapeURI: sameTypeAsAvatarURI,
-//   listenWithMeURI: [
-//    {} sameTypeAsAvatarURI
-//   ],
-// }
-
 const users = {
   'w/unodosthreenfour': {
     name: 'Unai',
@@ -39,6 +25,7 @@ const users = {
         expiresAt: 1669037824575+1000*60*60*7,
         waiters: {
           'w/hudson-odoi': {
+            avatarURI: 'https://picsum.photos/413',
             arrivedAt: 1669037824575,
             leavesAt: 1669037824575+1000*60*60*7,
           },
@@ -167,6 +154,41 @@ const touchUser = (handle, timestamp)=>{
   }
 }
 
+app.post('/user', (req, resp)=>{
+  const {name, surname, handle, initials, token} = req.body;
+  if(!validateHandle(handle)){
+    return resp.status(400)
+    .send("'handle' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  }
+
+  for(const h in users){
+    if(h === handle){
+      return resp.status(400)
+      .send(`handle ${handle} already taken`);
+    }
+  }
+
+  if( token.trim().length < 8){
+    return resp.status(400)
+    .send("'token' parameter should be greater than 8 characters");
+  }
+
+  for(const n of [name, surname, initials]){
+    if( n.trim().length === 0){
+      return resp.status(400)
+      .send("'name', 'surname', 'initials' should not be empty")
+    }
+  }
+
+  // name: 'Unai',
+  // surname: 'Emery',
+  // handle: 'w/unodosthreenfour',
+  // initials: 'UE',
+  // avatarURI: 'https://picsum.photos/113',
+  // landscapeURI: 'https://picsum.photos/1113',
+  // listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
+});
+
 const authenticate = (req, resp, next)=>{
   const {token, handle} = req.headers;
   const validHandle = AuthTokensForUsers[token];
@@ -192,8 +214,12 @@ app.get('/profile', (req, resp) => {
 });
 
 app.get('/chats', (req, resp) => {
-  const {handle} = req.headers;
+  const {handle, lastmodified} = req.headers;
   const user = users[handle];
+
+  if(lastmodified >= user.lastModified){
+    return resp.status(204).send();
+  }
 
   const resChats = [];
 
@@ -218,6 +244,9 @@ app.get('/chats', (req, resp) => {
 });
 
 const validateHandle = (handle)=>{
+  if(!handle){
+    return false;
+  }
   return !!handle.match('^w/[a-zA-Z0-9\-\_]{1,32}$');
 }
 
@@ -243,7 +272,9 @@ app.post('/waitforyou', (req, resp)=>{
 
   const timestamp = new Date().getTime();
   if( user.waitingForYou && user.waitingForYou[at]){
-    return resp.send(user.waitingForYou[at]);
+    const res = {};
+    res[at] = user.waitingForYou[at];
+    return resp.send(res);
   }
 
   user.waitingForYou ??= {};
@@ -256,8 +287,11 @@ app.post('/waitforyou', (req, resp)=>{
     user.waitingForYou[at].waiters = user.danglingWFY[at].waiters;
     delete user.danglingWFY[at];
   }
-  
-  return resp.status(201).send(user.waitingForYou[at]);
+
+  touchUser(user.handle);
+  const res = {};
+  res[at] = user.waitingForYou[at];
+  return resp.send(res);
 });
 
 app.delete('/waitforyou', (req, resp)=>{
@@ -269,13 +303,36 @@ app.delete('/waitforyou', (req, resp)=>{
     return resp.status(400)
     .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
   }
-  user.waitingForYou && delete user.waitingForYou[at];
+
+  if(user.waitingForYou && user.waitingForYou[at]){
+    delete user.waitingForYou[at];
+    touchUser(user.handle);
+  }
   resp.status(200).send();
 })
 
-app.post('/user', (req, resp)=>{
+app.delete('/waitforyou/user', (req, resp)=>{
+  const {handle} = req.headers;
+  const user = users[handle];
 
-});
+  const {at, waiterHandle} = req.body;
+  if( !validateLocations(at)){
+    return resp.status(400)
+    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  }
+
+  if(!validateHandle(waiterHandle)){
+    return resp.status(400)
+    .send("'to' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  }
+
+  if(user.waitingForYou && user.waitingForYou[at]){
+    user.waitingForYou[at].waiters[waiterHandle] &&
+    touchUser(user.handle);
+    delete user.waitingForYou[at].waiters[waiterHandle];
+  }
+  resp.status(200).send();
+})
 
 app.post('/waitforthem', (req, resp)=>{
   const {handle} = req.headers;
@@ -315,27 +372,36 @@ app.post('/waitforthem', (req, resp)=>{
   }
   touchUser(user.handle, timestamp);
 
-  if( interlocutor.waitingForYou && interlocutor.waitingForYou[at]){
+  interlocutor.waitingForYou ??= {};
+
+  if(interlocutor.waitingForYou[at]){
     interlocutor.waitingForYou[at].waiters[handle] = {
       arrivedAt: timestamp,
       leavesAt: timestamp+sevenHrs,
     }
     touchUser(interlocutor.handle, timestamp);
   }else {
-    danglingWFTs[[to,at].join(';')] = {
-      from: handle,
+    interlocutor.danglingWFY ??= {};
+    interlocutor.danglingWFY[at] ??= {
+      createdAt: 0,
+      expiresAt: 0,
+    };
+    interlocutor.danglingWFY[at].waiters ??= {};
+    interlocutor.danglingWFY[at].waiters[to] = {
       at: at,
-      arrivedAt: timestamp,
+      createdAt: timestamp,
       expiresAt: timestamp+sevenHrs,
-    }
+    };
   }
 
-  resp.status(201).send({
-    to: to,
+  const res={};
+  res[to] = {
     at: at,
     createdAt: timestamp,
     expiresAt: timestamp+sevenHrs,
-  });
+  };
+
+  resp.status(201).send(res);
 });
 
 app.delete('/waitforthem', (req, resp)=>{
@@ -350,13 +416,16 @@ app.delete('/waitforthem', (req, resp)=>{
   const wft = {
     ...user.waitingForThem[to],
   }
-  delete user.waitingForThem[to];
-  delete danglingWFTs[[to,wft.at].join(';')];
-  const interlocutor = users[to];
-  interlocutor && interlocutor.waitingForYou &&
-  interlocutor.waitingForYou[wft.at] &&
-  delete interlocutor.waitingForYou[wft.at].waiters[user.handle];
 
+  const them = users[to];
+  if(them.waitingForYou && them.waitingForYou[wft.at] && them.waitingForYou[wft.at].waiters && them.waitingForYou[wft.at].waiters[to]){
+    delete them.waitingForYou[wft.at].waiters[to];
+    touchUser(them.handle);
+  }else if( them.danglingWFY && them.danglingWFY[wft.at] && them.danglingWFY[wft.at].waiters && them.danglingWFY[wft.at].waiters[to]){
+    delete them.danglingWFY[wft.at].waiters[to];
+  }
+
+  delete user.waitingForThem[to];
   touchUser(user.handle);
   return resp.send(wft);
 });
@@ -389,6 +458,19 @@ app.post('/connection', (req, resp)=>{
     .send("'waiterHandle' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
   }
 
+  if(user.connections[waiterHandle]){
+    return resp.send({
+      user: {
+        name: users[waiterHandle].name,
+        surname: users[waiterHandle].surname,
+        initials: users[waiterHandle].initials,
+        handle: users[waiterHandle].handle,
+        avatarURI: users[waiterHandle].avatarURI,
+        landscapeURI: users[waiterHandle].landscapeURI,
+      },
+    })
+  }
+
   if(!user.waitingForYou[at]){
     return resp.status(400)
     .send(`location '${at}' not found`);
@@ -414,6 +496,11 @@ app.post('/connection', (req, resp)=>{
   // remove waiting for you
   delete user.waitingForYou[at].waiters[waiterHandle];
   delete interlocutorUser.waitingForThem[user.handle];
+
+  // add chat
+  chats[[handle, waiterHandle].sort().join('|')] = {
+    lastModified: timestamp,
+  };
 
   touchUser(user.handle, timestamp);
   touchUser(interlocutorUser.handle, timestamp);

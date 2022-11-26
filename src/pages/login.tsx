@@ -21,39 +21,39 @@ export function Login() {
     token: '',
   });
 
-  useEffect(() => {
-    setLoading(true);
-    AsyncStorage.getItem('profile')
-      .then(profileString => {
-        if (profileString) {
-          const profile = JSON.parse(profileString) as Profile;
-          Remote.getProfile(
-            profile.credentials.token,
-            profile.credentials.handle,
-            profile.lastModified,
-          ).then(profile => {
-            if (profile) {
-              AsyncStorage.setItem('profile', JSON.stringify(profile));
-              useProfile(profile);
-            }
-          });
-          useProfile({...profile, credentials: profile.credentials});
-        }
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   AsyncStorage.getItem('profile')
+  //     .then(profileString => {
+  //       if (profileString) {
+  //         const profile = JSON.parse(profileString) as Profile;
+  //         Remote.getProfile(
+  //           profile.credentials.token,
+  //           profile.credentials.handle,
+  //           profile.lastModified,
+  //         ).then(profile => {
+  //           if (profile) {
+  //             AsyncStorage.setItem('profile', JSON.stringify(profile));
+  //             useProfile(profile);
+  //           }
+  //         });
+  //         useProfile({...profile, credentials: profile.credentials});
+  //       }
+  //     })
+  //     .finally(() => setLoading(false));
+  // }, []);
 
   const login = () => {
     setLoginError(false);
     setLoading(true);
-    Remote.getProfile(credentials.token, credentials.handle, -1)
+    Remote.getProfile(credentials.token, credentials.handle)
       .then(profile => {
         if (profile) {
           setLoginError(false);
           useProfile(profile);
           AsyncStorage.setItem('profile', JSON.stringify(profile));
-          getColorsForUser(profile.user).then(
-            colors => colors && saveUserColors(profile.user.handle, colors),
+          getColorsForUser(profile).then(
+            colors => colors && saveUserColors(profile.handle, colors),
           );
         } else {
           setLoginError(true);

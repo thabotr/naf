@@ -40,11 +40,36 @@ export type UserCredentials = {
   handle: string;
 };
 
-export type Profile = {
-  user: User;
-  waitingForYou: WaitingForYouType[];
-  waitingForThem: WaitingForThemType[];
-  lastModified: number;
-  credentials: UserCredentials;
+type ConnectionType = {
+  metOn: number;
 };
 
+export type WFYType = {
+  [at: string]: {
+    createdAt: number;
+    expiresAt: number;
+    waiters: {
+      [handle: string]: {
+        arrivedAt: number;
+        leavesAt: number;
+        avatarURI: string;
+      };
+    };
+  };
+};
+
+export type WFTType = {
+  [handle: string]: {
+    at: string;
+    createdAt: number;
+    expiresAt: number;
+  };
+};
+
+export type Profile = User & {
+  lastmodified: number;
+  connections: {[handle: string]: ConnectionType};
+  waitingForYou: WFYType;
+  waitingForThem: WFTType;
+  token: string,
+};
