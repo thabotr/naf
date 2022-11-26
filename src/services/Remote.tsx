@@ -121,12 +121,12 @@ class Remote {
       if (res.info().status === 200) {
         const chats = res.json() as Chat[];
         chats.forEach(c => {
-          if (!c.messages) {
-            c.messages = [];
-          }
-          if (!c.messageThreads) {
-            c.messageThreads = [];
-          }
+          c.messages ??= [];
+          c.messageThreads ??= [];
+          c.messages.forEach(m => {
+            m.files ??= [];
+            m.voiceRecordings ??= [];
+          });
         });
         return chats;
       } else if (res.info().status === 204) {
