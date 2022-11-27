@@ -16,14 +16,13 @@ export type FileType = {size: number; name?: string; type: string; uri: string};
 export type Message = {
   from: string;
   to: string;
-  id: string;
+  id: number;
   text?: string;
   voiceRecordings: VoiceNoteType[];
   files: FileType[];
-  timestamp?: number;
   status?: DeliveryStatusType;
   unread?: boolean;
   draft?: boolean;
 };
 
-export type MessagePK = {toHandle: string; fromHandle: string; id: string};
+export type MessagePK = {toHandle: string; fromHandle: string; id: number};

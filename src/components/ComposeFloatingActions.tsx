@@ -32,10 +32,9 @@ const ComposeFloatingActions = () => {
         return {
           from: user.handle,
           to: interlocutor.handle,
-          id: `${new Date().getTime()}`,
+          id: new Date().getTime(),
           files: [],
           voiceRecordings: [],
-          timestamp: new Date().getTime()/1_000,
         }
       }else{
         return msg;

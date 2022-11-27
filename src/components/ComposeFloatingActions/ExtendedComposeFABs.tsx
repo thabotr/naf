@@ -28,10 +28,9 @@ const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
         return {
           from: user.handle,
           to: interlocutor.handle,
-          id: `${new Date().getTime()}`,
+          id: new Date().getTime(),
           files: [],
           voiceRecordings: [],
-          timestamp: new Date().getTime()/1_000,
         }
       }else{
         return msg;
@@ -76,13 +75,11 @@ const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
                 files: msg.files.concat(pic),
               }
             }else{
-              const timestamp = new Date().getTime();
               return {
                 from: user.handle,
                 to: interlocutor.handle,
-                id: timestamp.toString(),
+                id: new Date().getTime(),
                 files: [pic],
-                timestamp: timestamp,
                 voiceRecordings: [],
               }
             }

@@ -66,14 +66,12 @@ function VoiceRecorderCard() {
           voiceRecordings: msg.voiceRecordings.concat(file),
         };
       } else {
-        const timestamp = new Date().getTime();
         return {
           voiceRecordings: [file],
           files: [],
-          timestamp: timestamp / 1000,
           from: user.handle,
           to: chatUser.handle,
-          id: timestamp.toString(),
+          id: new Date().getTime(),
         };
       }
     });

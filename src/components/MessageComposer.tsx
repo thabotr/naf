@@ -58,10 +58,9 @@ const EditorActions = () => {
               return {
                 from: user.handle,
                 to: interlocutor.handle,
-                id: `${new Date().getTime()}`,
+                id: new Date().getTime(),
                 files: [vidOrPic],
                 voiceRecordings: [],
-                timestamp: new Date().getTime() / 1000,
               };
             }
           });
@@ -99,16 +98,14 @@ const EditorActions = () => {
           icon="content-save-edit"
           disabled={!composeMsg?.text && !composeMsg?.files.length}
           onPress={() => {
-            const timestamp = new Date().getTime();
             composeMsg &&
               addChatMessages([
                 {
                   ...composeMsg,
-                  id: timestamp.toString(),
+                  id: new Date().getTime(),
                   from: user?.handle ?? '',
                   to: activeChat()?.user.handle ?? '',
                   draft: true,
-                  timestamp: timestamp / 1_000,
                 },
               ]);
             saveComposeMsg(_ => undefined);

@@ -24,12 +24,10 @@ function DraftMessageActionsOverlay({msg}: {msg: Message}) {
 
   const sendDraft = () => {
     // TODO sync with remote
-    const timestamp = new Date().getTime();
     addChatMessages([
       {
         ...msg,
-        id: timestamp.toString(),
-        timestamp: timestamp / 1_000,
+        id: new Date().getTime(),
         draft: undefined,
       },
     ]);
