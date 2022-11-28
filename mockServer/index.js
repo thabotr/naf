@@ -530,7 +530,9 @@ app.post(
     .send(`not connected to user ${to}`);
   }
 
-  const {files, voiceRecordings} = req.files;
+  const {files: aFiles, voiceRecordings: voiceRs} = req.files;
+  const files = aFiles ?? [];
+  const voiceRecordings = voiceRs ?? [];
   const timestamp = new Date().getTime();
   message = {
     to: to,
