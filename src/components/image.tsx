@@ -36,6 +36,7 @@ function Image({source, style, onURI, viewable, onPress, alt}: Props) {
       FileManager.getFileURI(link, mimeType ?? 'image/jpg', {
         token: userProfile.token,
         handle: userProfile.handle,
+        // interlocutor_handle: 
       })
         .then(uri => {
           if (uri) {

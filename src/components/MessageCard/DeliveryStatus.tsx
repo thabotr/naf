@@ -1,5 +1,6 @@
 import {ToastAndroid} from 'react-native';
 import {IconButton} from 'react-native-paper';
+import { useTheme } from '../../context/theme';
 import {Message} from '../../types/message';
 
 const deliveryStatusDetails = {
@@ -12,6 +13,7 @@ const deliveryStatusDetails = {
 };
 
 function DeliveryStatus({msg}: {msg: Message}) {
+  const {theme} = useTheme();
   const details =
     deliveryStatusDetails[msg.status ?? 'NONE'] ??
     deliveryStatusDetails['NONE'];
@@ -24,6 +26,7 @@ function DeliveryStatus({msg}: {msg: Message}) {
       size={15}
       onPress={() => {}}
       onLongPress={displayMessageStatus}
+      color={theme.color.textPrimary}
       icon={details.icon}
       style={{padding: 0, margin: 0, borderRadius: 0}}
     />

@@ -87,10 +87,12 @@ class FileManager {
           localFilePath
         );
       }
-      console.error('FileManager.getFileURI:',
+      console.error(
+        'FileManager.getFileURI:',
         'got remote response status code',
         remoteResult.info().status,
-        'TODO handle',
+        'on account of',
+        remoteResult.text(),
       );
       return;
     } catch (e) {

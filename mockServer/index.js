@@ -103,39 +103,39 @@ const sevenHrs = 12*60*60*1000;
 const chats = {
   "w/maybeBlackPen|w/unodosthreenfour" : {
     messages: [
-      {
-        from: 'w/unodosthreenfour',
-        to: 'w/maybeBlackPen',
-        id: 1669031624575,
-        text: "this text over here this text over here this text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over here",
-      },
-      {
-        from: 'w/unodosthreenfour',
-        to: 'w/maybeBlackPen',
-        id: 1669041624575,
-        text: "this draft message over here",
-        draft: true,
-      },
-      {
-        to: 'w/unodosthreenfour',
-        from: 'w/maybeBlackPen',
-        id: 1669051624575,
-        voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
-        files: [{
-          type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg', size: 2121,
-        }],
-      },
-      {
-        to: 'w/unodosthreenfour',
-        from: 'w/maybeBlackPen',
-        id: 1669061624575,
-        voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
-        files: [
-          {type: 'image/jpeg', uri: 'http://10.0.2.2:3000/avatar1.jpg', size: 2_121,},
-          {type: 'video/mp4', uri: 'http://10.0.2.2:3000/vid1.mp4', size: 68_693_203,},
-          {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
-        ],
-      },
+      // {
+      //   from: 'w/unodosthreenfour',
+      //   to: 'w/maybeBlackPen',
+      //   id: 1669031624575,
+      //   text: "this text over here this text over here this text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over here",
+      // },
+      // {
+      //   from: 'w/unodosthreenfour',
+      //   to: 'w/maybeBlackPen',
+      //   id: 1669041624575,
+      //   text: "this draft message over here",
+      //   draft: true,
+      // },
+      // {
+      //   to: 'w/unodosthreenfour',
+      //   from: 'w/maybeBlackPen',
+      //   id: 1669051624575,
+      //   voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
+      //   files: [{
+      //     type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg', size: 2121,
+      //   }],
+      // },
+      // {
+      //   to: 'w/unodosthreenfour',
+      //   from: 'w/maybeBlackPen',
+      //   id: 1669061624575,
+      //   voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
+      //   files: [
+      //     {type: 'image/jpeg', uri: 'http://10.0.2.2:3000/avatar1.jpg', size: 2_121,},
+      //     {type: 'video/mp4', uri: 'http://10.0.2.2:3000/vid1.mp4', size: 68_693_203,},
+      //     {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
+      //   ],
+      // },
     ],
     lastModified: 0,
   }
@@ -507,13 +507,45 @@ app.post('/connection', (req, resp)=>{
   })
 });
 
-app.use(express.static('./public'));
+// const filesAuthenticate = (req, resp, next)=>{
+//   if(req.url.match('^/files/.*')){
+//     const {interlocutor_handle, message_id, handle} = req.headers;
+//     if(!validateHandle(interlocutor_handle)){
+//       return resp.status(400)
+//         .send("'interlocutor_handle' header should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+//     }
+
+//     if(!message_id){
+//       return resp.status(400)
+//         .send("required header 'message_id' is missing");
+//     }
+
+//     const chatPk = [handle, interlocutor_handle].sort().join('|');
+//     const chat = chats[chatPk];
+//     chat.messages && chat.messages.forEach(m=>{
+//       m.files && m.files.forEach(f=>{
+//         if(f.uri.match(req.url)){
+//           next();
+//           return;
+//         }
+//       });
+//       m.voiceRecordings && m.voiceRecordings.forEach(f=>{
+//         if(f.uri.match(req.url)){
+//           next();
+//           return;
+//         }
+//       });
+//     })
+//     return resp.status(404)
+//     .send("file not found");
+//   }
+//   next();
+// }
+
+// app.use(filesAuthenticate);
+app.use('/files', express.static('uploads'));
 
 const upload = multer({dest: 'uploads/'});
-
-app.post('/uploadfile', upload.single('file'), (req, resp)=>{
-  resp.send(req.file);
-});
 
 app.post(
   '/message', 
@@ -544,7 +576,7 @@ app.post(
         name: f.originalname,
         type: f.mimetype,
         size: f.size,
-        uri: 'http://10.0.2.2:3000/uploads/'.concat(f.filename),
+        uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
       }
     }),
     voiceRecordings: voiceRecordings.map(f=>{
@@ -552,7 +584,7 @@ app.post(
         name: f.originalname,
         type: f.mimetype,
         size: f.size,
-        uri: 'http://10.0.2.2:3000/uploads/'.concat(f.filename),
+        uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
         duration: durationsForVoiceRecordings[f.originalname] ?? 0,
       }
     }),
@@ -562,6 +594,7 @@ app.post(
   const chatKey = [to, handle].sort().join('|');
   chats[chatKey] ??= {};
   chats[chatKey].messages ??= [];
+  chats[chatKey].lastModified = timestamp;
   chats[chatKey].messages.push(message);
 
   resp.status(201).send(message);

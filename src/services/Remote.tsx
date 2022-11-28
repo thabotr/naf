@@ -13,7 +13,7 @@ class Remote {
     messageForm.append('to', message.to);
     message.text && messageForm.append('text', message.text);
 
-    message.files.forEach(f=>{
+    message.files.forEach(f => {
       messageForm.append('files', {
         name: f.name,
         size: f.size,
@@ -22,20 +22,22 @@ class Remote {
       });
     });
 
-    const durationsForVoiceRecordings: {[name:string]:number} = {};
-    
-    message.voiceRecordings.forEach(vr =>{
+    const durationsForVoiceRecordings: {[name: string]: number} = {};
+
+    message.voiceRecordings.forEach(vr => {
       messageForm.append('voiceRecordings', {
         name: vr.name,
         size: vr.size,
         type: vr.type,
         uri: vr.uri,
-      })
-      durationsForVoiceRecordings[vr.name??""] = vr.duration;
-      }
-    );
+      });
+      durationsForVoiceRecordings[vr.name ?? ''] = vr.duration;
+    });
 
-    messageForm.append('durationsForVoiceRecordings', JSON.stringify(durationsForVoiceRecordings));
+    messageForm.append(
+      'durationsForVoiceRecordings',
+      JSON.stringify(durationsForVoiceRecordings),
+    );
 
     try {
       const res = await fetch('http://10.0.2.2:3000/message', {
@@ -53,7 +55,13 @@ class Remote {
         msgResult.voiceRecordings ??= [];
         return msgResult;
       }
-      console.error('Remote.sendMessage:', 'did not get status 201');
+      console.error(
+        'Remote.sendMessage:',
+        'did not get status 201. got status',
+        res.status,
+        'because',
+        await res.text(),
+      );
     } catch (e) {
       console.error('Remote.sendMessage:', e);
     }

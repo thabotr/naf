@@ -37,6 +37,7 @@ function AttachmentsPreview({
       backgroundColor: sender
         ? theme.color.userSecondary
         : theme.color.friendSecondary,
+      color: theme.color.textPrimary,
     },
     paragraph: {
       color: theme.color.textPrimary,
@@ -95,7 +96,7 @@ function AttachmentsPreview({
           <FilePreviewCard key={f.uri} file={f} user={sender} />
         ))}
       </HorizontalView>
-      <OnlyShow If={msg.files.length+msg.voiceRecordings.length>0}>
+      <OnlyShow If={msg.files.length>0}>
         <Chip
           onPress={previewAllFiles}
           style={styles.chip}
