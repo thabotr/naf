@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
@@ -7,7 +7,7 @@ import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {useColorsForUsers} from '../providers/UserTheme';
 import {Remote} from '../services/Remote';
-import {Profile, UserCredentials} from '../types/user';
+import {UserCredentials} from '../types/user';
 import {getColorsForUser} from '../utils/getUserColors';
 
 export function Login() {

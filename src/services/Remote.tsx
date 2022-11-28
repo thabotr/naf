@@ -1,8 +1,66 @@
 import RNFetchBlob from 'rn-fetch-blob';
 import {Chat} from '../types/chat';
+import {Message} from '../types/message';
 import {Profile, WFTType, WFYType} from '../types/user';
 
 class Remote {
+  static async sendMessage(
+    token: string,
+    handle: string,
+    message: Message,
+  ): Promise<Message | undefined> {
+    const messageForm = new FormData();
+    messageForm.append('to', message.to);
+    message.text && messageForm.append('text', message.text);
+
+    message.files.forEach(f=>{
+      messageForm.append('files', {
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        uri: f.uri,
+      });
+    });
+
+    const durationsForVoiceRecordings: {[name:string]:number} = {};
+    
+    message.voiceRecordings.forEach(vr =>{
+      messageForm.append('voiceRecordings', {
+        name: vr.name,
+        size: vr.size,
+        type: vr.type,
+        uri: vr.uri,
+      })
+      durationsForVoiceRecordings[vr.name??""] = vr.duration;
+      }
+    );
+
+    messageForm.append('durationsForVoiceRecordings', JSON.stringify(durationsForVoiceRecordings));
+
+    try {
+      const res = await fetch('http://10.0.2.2:3000/message', {
+        method: 'POST',
+        headers: {
+          token: token,
+          handle: handle,
+          'Content-Type': 'multipart/form-data',
+        },
+        body: messageForm,
+      });
+      if (res.status === 201) {
+        const msgResult = (await res.json()) as Message;
+        msgResult.files ??= [];
+        msgResult.voiceRecordings ??= [];
+        return msgResult;
+      }
+      console.error('Remote.sendMessage:', 'did not get status 201');
+    } catch (e) {
+      console.error('Remote.sendMessage:', e);
+    }
+
+    return;
+  }
+
   static async getProfile(
     token: string,
     handle: string,

@@ -13,16 +13,17 @@ import {OnlyShow} from './Helpers/OnlyShow';
 import {Show} from './Helpers/Show';
 import { useLoggedInUser } from '../context/user';
 import { useChats } from '../context/chat';
+import { MutexContextProvider } from '../providers/MutexProvider';
 
 const ComposeFloatingActions = () => {
   const {theme} = useTheme();
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const interlocutor = useChats().activeChat()?.user;
   const [expanded, setExpanded] = useState(false);
   const {saveComposeMsg, composeMsg} = useMessageComposer();
   const {recorderPlayerState} = useAudioRecorderPlayer();
 
-  if(!user || !interlocutor){
+  if(!interlocutor){
     return <></>;
   }
 
@@ -30,7 +31,7 @@ const ComposeFloatingActions = () => {
     saveComposeMsg(msg=>{
       if(!msg){
         return {
-          from: user.handle,
+          from: userProfile.handle,
           to: interlocutor.handle,
           id: new Date().getTime(),
           files: [],
@@ -48,6 +49,7 @@ const ComposeFloatingActions = () => {
 
   return (
     <OnlyShow If={!composeMsg && !recordingOrPaused}>
+      <MutexContextProvider>
       <HorizontalView
         style={{
           padding: 0,
@@ -69,6 +71,7 @@ const ComposeFloatingActions = () => {
           ElseShow={<ExtendedComposeFABs onBack={() => setExpanded(false)} />}
         />
       </HorizontalView>
+      </MutexContextProvider>
     </OnlyShow>
   );
 };

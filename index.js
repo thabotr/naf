@@ -6,7 +6,7 @@ import {AppRegistry} from 'react-native';
 import TrackPlayer, {AppKilledPlaybackBehavior, Capability} from 'react-native-track-player';
 
 import App from './App';
-// import DummyApp from './DummyApp';
+import DummyApp from './DummyApp';
 import {name as appName} from './app.json';
 import {PlaybackService} from './src/services';
 

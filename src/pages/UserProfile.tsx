@@ -6,7 +6,6 @@ import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
 import {HorizontalView} from '../components/Helpers/HorizontalView';
-import {ProfileHeader} from '../components/ProfileHeader';
 import {useTheme} from '../context/theme';
 import {useLoggedInUser} from '../context/user';
 import {WaitingForYouList} from '../components/UserProfile/WaitingForYouList';

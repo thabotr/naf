@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ToastAndroid, StyleSheet} from 'react-native';
+import {View, ToastAndroid, StyleSheet, Platform} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
 import RNFetchBlob from 'rn-fetch-blob';
 
@@ -26,10 +26,10 @@ function VoiceRecorderCard() {
     pauseRecorder,
   } = useAudioRecorderPlayer();
   const {theme} = useTheme();
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const chatUser = useChats().activeChat()?.user;
 
-  if (!user || !chatUser) {
+  if (!chatUser) {
     return <></>;
   }
 
@@ -56,8 +56,8 @@ function VoiceRecorderCard() {
       duration: recorderPlayerData.recordingPosition,
       name: recordingFileStat.filename,
       size: recordingFileStat.size,
-      uri: recordingFileStat.path,
-      type: recordingFileStat.type,
+      uri: Platform.select({android: 'file://'.concat(recordingFileStat.path)}) ?? recordingFileStat.path,
+      type: 'audio/mpeg', // FIXME currently filestat just returns type="file", find way to fix this
     };
     saveComposeMsg(msg => {
       if (msg) {
@@ -69,7 +69,7 @@ function VoiceRecorderCard() {
         return {
           voiceRecordings: [file],
           files: [],
-          from: user.handle,
+          from: userProfile.handle,
           to: chatUser.handle,
           id: new Date().getTime(),
         };

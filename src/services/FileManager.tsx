@@ -8,7 +8,7 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 
 import {FileManagerHelper} from './FileManagerHelper';
-import { FileType } from '../types/message';
+import {FileType, Message} from '../types/message';
 
 class FileManager {
   static RootDir = RNFetchBlob.fs.dirs.CacheDir;
@@ -49,6 +49,7 @@ class FileManager {
   static async getFileURI(
     source: string,
     mimeType?: string,
+    headers?: {[key: string]: string},
   ): Promise<string | undefined> {
     if (!source.includes('http')) {
       return source;
@@ -79,15 +80,15 @@ class FileManager {
     try {
       const remoteResult = await RNFetchBlob.config({
         path: localFilePath,
-      }).fetch('GET', source);
+      }).fetch('GET', source, headers);
       if (remoteResult.info().status === 200) {
         return (
           Platform.select({android: 'file://'.concat(localFilePath)}) ??
           localFilePath
         );
       }
-      console.log(
-        'got remote response status code ',
+      console.error('FileManager.getFileURI:',
+        'got remote response status code',
         remoteResult.info().status,
         'TODO handle',
       );
@@ -142,45 +143,45 @@ class FileManager {
   }
 
   static async getCameraMedia(mode: 'video' | 'photo') {
-    try{
-    const cameraRes = await launchCamera({
-      mediaType: mode,
-      quality: 1,
-      maxHeight: 7680,
-      maxWidth: 4320,
-      videoQuality: 'high',
-      durationLimit: 10 * 60,
-      includeExtra: true,
-    });
+    try {
+      const cameraRes = await launchCamera({
+        mediaType: mode,
+        quality: 1,
+        maxHeight: 7680,
+        maxWidth: 4320,
+        videoQuality: 'high',
+        durationLimit: 10 * 60,
+        includeExtra: true,
+      });
 
-    if (cameraRes.didCancel) return;
-    if (cameraRes.errorCode) throw new Error(cameraRes.errorMessage);
+      if (cameraRes.didCancel) return;
+      if (cameraRes.errorCode) throw new Error(cameraRes.errorMessage);
 
-    const resultAsset: {
-      id?: string;
-      fileName?: string;
-      bitrate?: number;
-      duration?: number;
-      fileSize?: number;
-      height?: number;
-      width?: number;
-      timestamp?: string;
-      type?: string;
-      uri?: string;
-    } = (cameraRes.assets ?? [])[0];
+      const resultAsset: {
+        id?: string;
+        fileName?: string;
+        bitrate?: number;
+        duration?: number;
+        fileSize?: number;
+        height?: number;
+        width?: number;
+        timestamp?: string;
+        type?: string;
+        uri?: string;
+      } = (cameraRes.assets ?? [])[0];
 
-    return {
-      name:
-        resultAsset.type &&
-        `${new Date().getTime()}`.concat(
-          FileManagerHelper.ExtForMimetypes[resultAsset.type],
-        ),
-      uri: resultAsset.uri ?? '',
-      type: resultAsset.type ?? '',
-      size: resultAsset.fileSize ?? 0,
-    };
-    }catch(e){
-      console.error('camera error', e)
+      return {
+        name:
+          resultAsset.type &&
+          `${new Date().getTime()}`.concat(
+            FileManagerHelper.ExtForMimetypes[resultAsset.type],
+          ),
+        uri: resultAsset.uri ?? '',
+        type: resultAsset.type ?? '',
+        size: resultAsset.fileSize ?? 0,
+      };
+    } catch (e) {
+      console.error('camera error', e);
     }
   }
 
@@ -196,22 +197,24 @@ class FileManager {
     }
   };
 
-  static async pickFiles():Promise<FileType[]|undefined>{
-    try{
-      const dprs: Array<DocumentPickerResponse> | null | undefined = await DocumentPicker.pick({allowMultiSelection: true, copyTo: 'cachesDirectory'});
+  static async pickFiles(): Promise<FileType[] | undefined> {
+    try {
+      const dprs: Array<DocumentPickerResponse> | null | undefined =
+        await DocumentPicker.pick({
+          allowMultiSelection: true,
+          copyTo: 'cachesDirectory',
+        });
       if (dprs) {
-        return dprs.map(
-          (dpr: DocumentPickerResponse): FileType => {
-            return {
-              name: dpr.name ?? undefined,
-              size: dpr.size ?? 0,
-              type: dpr.type ?? '',
-              uri: dpr.fileCopyUri ?? dpr.uri,
-            };
-          },
-        );
+        return dprs.map((dpr: DocumentPickerResponse): FileType => {
+          return {
+            name: dpr.name ?? undefined,
+            size: dpr.size ?? 0,
+            type: dpr.type ?? '',
+            uri: dpr.fileCopyUri ?? dpr.uri,
+          };
+        });
       }
-    }catch(e){
+    } catch (e) {
       this.#handleError(e);
     }
   }

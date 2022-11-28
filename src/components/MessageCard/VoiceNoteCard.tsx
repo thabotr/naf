@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {StyleSheet, View, ToastAndroid} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {
   ProgressBar,
   IconButton,
@@ -17,6 +17,7 @@ import {FileManager} from '../../services/FileManager';
 import {VoiceNoteType} from '../../types/message';
 import {OnlyShow} from '../Helpers/OnlyShow';
 import {HorizontalView} from '../Helpers/HorizontalView';
+import {useLoggedInUser} from '../../context/user';
 
 const enum PlayState {
   PAUSED,
@@ -58,9 +59,13 @@ export function VoiceNoteCard({
     return PlayState.STOPPED;
   });
   const [uri, setURI] = useState('');
+  const {userProfile} = useLoggedInUser();
 
   useEffect(() => {
-    FileManager.getFileURI(file.uri, file.type).then(uri => uri && setURI(uri));
+    FileManager.getFileURI(file.uri, file.type, {
+      handle: userProfile.handle,
+      token: userProfile.token,
+    }).then(uri => uri && setURI(uri));
     setURI(file.uri);
     return onPausePlay;
   }, []);
@@ -103,7 +108,6 @@ export function VoiceNoteCard({
   };
 
   const stopPlay = () => {
-    console.log('called');
     if (playId === recorderPlayerData.playId) {
       stopPlayer();
     }

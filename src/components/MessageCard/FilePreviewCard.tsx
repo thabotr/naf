@@ -1,10 +1,10 @@
 import {StyleSheet} from 'react-native';
 import {Card, List, Paragraph} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
-import {getFilePath} from '../../file';
+import {useLoggedInUser} from '../../context/user';
 import {openFile} from '../../fileViewer';
 import {verboseSize} from '../../helper';
-import {FileManagerHelper} from '../../services/FileManagerHelper';
+import {FileManager} from '../../services/FileManager';
 import {FileType} from '../../types/message';
 
 const fileType: {[key: string]: string} = {
@@ -13,19 +13,16 @@ const fileType: {[key: string]: string} = {
   'application/pdf': 'file-pdf-box',
 };
 
-const FilePreviewCard = ({
-  file,
-  user = true,
-}: {
-  file: FileType;
-  user?: boolean;
-}) => {
+const FilePreviewCard = ({file, user}: {file: FileType; user?: boolean}) => {
   const {theme} = useTheme();
+  const {userProfile} = useLoggedInUser();
 
   const openThisFile = async () => {
     if (file.uri.includes('http')) {
-      const ext = FileManagerHelper.ExtForMimetypes[file.type];
-      const path = await getFilePath(file.uri, ext);
+      const path = await FileManager.getFileURI(file.uri, file.type, {
+        handle: userProfile.handle,
+        token: userProfile.token,
+      });
       path && openFile(path);
     } else openFile(file.uri);
   };

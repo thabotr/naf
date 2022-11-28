@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const app = express();
 const port = 3000;
 
@@ -175,14 +176,6 @@ app.post('/user', (req, resp)=>{
       .send("'name', 'surname', 'initials' should not be empty")
     }
   }
-
-  // name: 'Unai',
-  // surname: 'Emery',
-  // handle: 'w/unodosthreenfour',
-  // initials: 'UE',
-  // avatarURI: 'https://picsum.photos/113',
-  // landscapeURI: 'https://picsum.photos/1113',
-  // listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
 });
 
 const authenticate = (req, resp, next)=>{
@@ -509,8 +502,67 @@ app.post('/connection', (req, resp)=>{
       handle: interlocutorUser.handle,
       avatarURI: interlocutorUser.avatarURI,
       landscapeURI: interlocutorUser.landscapeURI,
+      listenWithMeURI: interlocutorUser.listenWithMeURI,
     },
   })
+});
+
+app.use(express.static('./public'));
+
+const upload = multer({dest: 'uploads/'});
+
+app.post('/uploadfile', upload.single('file'), (req, resp)=>{
+  resp.send(req.file);
+});
+
+app.post(
+  '/message', 
+  upload.fields([
+    { name: 'files', maxCount: 5}, 
+    { name: 'voiceRecordings', maxCount: 5},
+  ]),
+(req, resp)=>{
+  const {handle} = req.headers;
+  const {to, text, durationsForVoiceRecordings} = req.body;
+
+  if(!users[handle].connections[to]){
+    return resp.status(400)
+    .send(`not connected to user ${to}`);
+  }
+
+  const {files, voiceRecordings} = req.files;
+  const timestamp = new Date().getTime();
+  message = {
+    to: to,
+    from: handle,
+    id: timestamp,
+    text: text, 
+    files: files.map(f=>{
+      return {
+        name: f.originalname,
+        type: f.mimetype,
+        size: f.size,
+        uri: 'http://10.0.2.2:3000/uploads/'.concat(f.filename),
+      }
+    }),
+    voiceRecordings: voiceRecordings.map(f=>{
+      return {
+        name: f.originalname,
+        type: f.mimetype,
+        size: f.size,
+        uri: 'http://10.0.2.2:3000/uploads/'.concat(f.filename),
+        duration: durationsForVoiceRecordings[f.originalname] ?? 0,
+      }
+    }),
+    status: 'SENT' // DELIVERED, READ
+  }
+
+  const chatKey = [to, handle].sort().join('|');
+  chats[chatKey] ??= {};
+  chats[chatKey].messages ??= [];
+  chats[chatKey].messages.push(message);
+
+  resp.status(201).send(message);
 });
 
 app.listen(port, () => {

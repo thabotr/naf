@@ -21,10 +21,10 @@ function AttachmentsPreview({
   composing?: boolean;
 }) {
   const {theme} = useTheme();
-  const {user} = useLoggedInUser();
-  const {composeMsg, saveComposeMsg} = useMessageComposer();
+  const {userProfile} = useLoggedInUser();
+  const {saveComposeMsg} = useMessageComposer();
   const [expandedPreview, setExpandedPreview] = useState(false);
-  const sender = user?.handle === msg.from;
+  const sender = userProfile.handle === msg.from;
   const {truthy: visuals, falsey: nonVisuals} = LRFilter(
     msg.files,
     f => f.type.split('/')[0] === 'image' || f.type.split('/')[0] === 'video',
@@ -95,7 +95,7 @@ function AttachmentsPreview({
           <FilePreviewCard key={f.uri} file={f} user={sender} />
         ))}
       </HorizontalView>
-      <OnlyShow If={nonVisuals.slice(2).length + visuals.slice(4).length > 0}>
+      <OnlyShow If={msg.files.length+msg.voiceRecordings.length>0}>
         <Chip
           onPress={previewAllFiles}
           style={styles.chip}

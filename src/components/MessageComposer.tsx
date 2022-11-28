@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card, IconButton as Button, TextInput} from 'react-native-paper';
 import {StyleSheet, View} from 'react-native';
+import {Card, TextInput} from 'react-native-paper';
 
 import {useMessageComposer} from '../context/messageEditor';
 import {useTheme} from '../context/theme';
@@ -11,38 +11,24 @@ import {useAudioRecorderPlayer} from '../providers/AudioRecorderPlayer';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {FileManager} from '../services/FileManager';
 import {AttachmentsPreview} from './MessageCard/AttachmentsPreview';
-import {deduplicatedConcat} from '../utils/deduplicatedConcat';
+import {Remote} from '../services/Remote';
+import {AsyncIconButton} from './UserProfile/AsyncIconButton';
+import {MutexContextProvider, useMutex} from '../providers/MutexProvider';
 
 const EditorActions = () => {
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const {addChatMessages, activeChat} = useChats();
 
-  const {composeMsg, saveComposeMsg, saveComposeState, composeState} =
-    useMessageComposer();
+  const {
+    composeMsg,
+    saveComposeMsg,
+    saveComposeState,
+    composeState,
+    addAttachments,
+  } = useMessageComposer();
   const {startRecorder} = useAudioRecorderPlayer();
 
   const interlocutor = activeChat()?.user;
-
-  const addAttachments = () => {
-    FileManager.pickFiles().then(files => {
-      if (!files) return;
-      saveComposeMsg(msg => {
-        if (msg) {
-          return {
-            ...msg,
-            files: deduplicatedConcat(
-              msg.files,
-              files,
-              (f1, f2) =>
-                f1.name === f2.name &&
-                f1.size === f2.size &&
-                f1.type === f2.type,
-            ),
-          };
-        }
-      });
-    });
-  };
 
   const openCamInMode = (mode: 'video' | 'photo') => {
     FileManager.getCameraMedia(mode)
@@ -56,7 +42,7 @@ const EditorActions = () => {
               };
             } else {
               return {
-                from: user.handle,
+                from: userProfile.handle,
                 to: interlocutor.handle,
                 id: new Date().getTime(),
                 files: [vidOrPic],
@@ -68,64 +54,78 @@ const EditorActions = () => {
       .catch(e => console.warn('camera error', e));
   };
 
-  const styles = StyleSheet.create({
-    squareButton: {borderRadius: 0},
-  });
+  const saveDraft = async () => {
+    composeMsg &&
+      addChatMessages([
+        {
+          ...composeMsg,
+          id: new Date().getTime(),
+          from: userProfile.handle ?? '',
+          to: activeChat()?.user.handle ?? '',
+          draft: true,
+        },
+      ]);
+    saveComposeMsg(_ => undefined);
+  };
 
-  const IconButton = ({
-    icon,
-    onPress,
-    disabled,
-  }: {
-    icon: string;
-    onPress: () => void;
-    disabled?: boolean;
-  }) => {
-    return (
-      <Button
-        icon={icon}
-        onPress={onPress}
-        disabled={disabled}
-        style={styles.squareButton}
-      />
-    );
+  const sendMessage = async () => {
+    if (composeMsg) {
+      const msgRes = await Remote.sendMessage(
+        userProfile.token,
+        userProfile.handle,
+        {
+          ...composeMsg,
+          from: userProfile.handle,
+          to: interlocutor.handle,
+        },
+      );
+      if (msgRes) {
+        saveComposeMsg(_ => undefined);
+        addChatMessages([msgRes]);
+      } else {
+        throw new Error('failed to send message draft');
+      }
+    }
   };
 
   return (
     <HorizontalView style={{justifyContent: 'space-between'}}>
       <HorizontalView>
-        <IconButton
+        <AsyncIconButton
           icon="content-save-edit"
           disabled={!composeMsg?.text && !composeMsg?.files.length}
-          onPress={() => {
-            composeMsg &&
-              addChatMessages([
-                {
-                  ...composeMsg,
-                  id: new Date().getTime(),
-                  from: user?.handle ?? '',
-                  to: activeChat()?.user.handle ?? '',
-                  draft: true,
-                },
-              ]);
-            saveComposeMsg(_ => undefined);
-          }}
+          onPress={saveDraft}
         />
-        <IconButton
+        <AsyncIconButton
           icon="delete"
-          onPress={() => saveComposeMsg(_ => undefined)}
+          onPress={async () => saveComposeMsg(_ => undefined)}
         />
       </HorizontalView>
 
       <HorizontalView>
-        <IconButton icon="emoticon-excited-outline" onPress={() => {}} />
-        <IconButton icon="microphone" onPress={startRecorder} />
-        <IconButton icon="attachment" onPress={addAttachments} />
-        <IconButton icon="camera" onPress={() => openCamInMode('photo')} />
-        <IconButton icon="video" onPress={() => openCamInMode('video')} />
-        <IconButton
+        <AsyncIconButton
+          icon="emoticon-excited-outline"
+          onPress={async () => {}}
+        />
+        <AsyncIconButton
+          icon="microphone"
+          onPress={async () => startRecorder()}
+        />
+        <AsyncIconButton
+          icon="attachment"
+          onPress={async () => addAttachments()}
+        />
+        <AsyncIconButton
+          icon="camera"
+          onPress={async () => openCamInMode('photo')}
+        />
+        <AsyncIconButton
+          icon="video"
+          onPress={async () => openCamInMode('video')}
+        />
+        <AsyncIconButton
           icon={composeState.inputTextEnabled ? 'pencil-minus' : 'pencil-plus'}
-          onPress={() => {
+          onPress={async () => {
             saveComposeMsg(msg => {
               if (msg) {
                 return {
@@ -144,13 +144,23 @@ const EditorActions = () => {
         />
       </HorizontalView>
 
-      <IconButton icon="send" onPress={() => {}} />
+      <AsyncIconButton
+        icon="send"
+        onPress={sendMessage}
+        disabled={
+          !(
+            composeMsg?.text ||
+            composeMsg?.files.length ||
+            composeMsg?.voiceRecordings.length
+          )
+        }
+      />
     </HorizontalView>
   );
 };
 
 export const MessageEditorCard = () => {
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const {theme} = useTheme();
   const {activeChat} = useChats();
 
@@ -158,7 +168,7 @@ export const MessageEditorCard = () => {
 
   const interlocutor = activeChat()?.user;
 
-  if (!user || !interlocutor) {
+  if (!interlocutor) {
     return <></>;
   }
 
@@ -174,11 +184,13 @@ export const MessageEditorCard = () => {
   };
 
   const EditorTextInput = () => {
+    const {slots} = useMutex();
     return (
       <OnlyShow If={!!composeMsg && composeState.inputTextEnabled}>
         <TextInput
           defaultValue={composeMsg?.text}
           onEndEditing={e => saveMessageTxt(e.nativeEvent.text)}
+          disabled={!slots}
           multiline
           numberOfLines={6}
           style={{width: '100%'}}
@@ -199,13 +211,15 @@ export const MessageEditorCard = () => {
 
   return (
     <OnlyShow If={!!composeMsg}>
-      <Card style={styles.editorContainer}>
-        <View style={styles.editorBody}>
-          <EditorActions />
-          <EditorTextInput />
-          {composeMsg && <AttachmentsPreview msg={composeMsg} composing />}
-        </View>
-      </Card>
+      <MutexContextProvider>
+        <Card style={styles.editorContainer}>
+          <View style={styles.editorBody}>
+            <EditorActions />
+            <EditorTextInput />
+            {composeMsg && <AttachmentsPreview msg={composeMsg} composing />}
+          </View>
+        </Card>
+      </MutexContextProvider>
     </OnlyShow>
   );
 };

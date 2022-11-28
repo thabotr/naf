@@ -21,9 +21,9 @@ function ViewAllFilesDialog({
   composing?: boolean;
   visible: boolean;
 }) {
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const {theme} = useTheme();
-  const fromUser = msg.from === user?.handle;
+  const fromUser = msg.from === userProfile.handle;
   const [files, setFiles] = useState(() => msg.files);
 
   useEffect(() => {

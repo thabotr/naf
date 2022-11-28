@@ -61,7 +61,7 @@ function Home({navigation}: {navigation: any}) {
   const {theme} = useTheme();
   const {saveChats, chats} = useChats();
   const {saveUserColors} = useColorsForUsers();
-  const {user, userProfile} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
 
   const updateChatAndUserColors = (chats: Chat[]) => {
     chats.forEach(c => {
@@ -69,8 +69,8 @@ function Home({navigation}: {navigation: any}) {
         colors => colors && saveUserColors(c.user.handle, colors),
       );
     });
-    getColorsForUser(user).then(
-      colors => colors && saveUserColors(user.handle, colors),
+    getColorsForUser(userProfile).then(
+      colors => colors && saveUserColors(userProfile.handle, colors),
     );
   };
 

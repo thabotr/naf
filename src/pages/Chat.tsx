@@ -25,7 +25,7 @@ export function MessageListing() {
       {activeChat()?.messages.map(m => (
         <MessageCard
           msg={m}
-          key={`senderId-[${m.from}]recipientId-[${m.to}]messageId-[${m.id}]`}
+          key={[m.from, m.to,m.id].join('|')}
         />
       ))}
       <MessageEditorCard />

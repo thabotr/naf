@@ -1,40 +1,33 @@
-import { ToastAndroid } from "react-native";
-import { IconButton } from "react-native-paper";
-import { DeliveryStatusType, Message } from "../../types/message";
+import {ToastAndroid} from 'react-native';
+import {IconButton} from 'react-native-paper';
+import {Message} from '../../types/message';
 
-const deliveryStatusDetails = new Map<
-DeliveryStatusType,
-{icon: string; message: string}
->([
-[
-  DeliveryStatusType.ERROR,
-  {icon: 'message-alert', message: 'message delivery failed'},
-],
-[DeliveryStatusType.SEEN, {icon: 'eye', message: 'message viewed'}],
-[DeliveryStatusType.UNSEEN, {icon: 'eye-off', message: 'message delivered'}],
-[DeliveryStatusType.NONE, {icon: 'circle-small', message: 'message status'}],
-]);
+const deliveryStatusDetails = {
+  NONE: {icon: 'circle-outline', message: 'message status'},
+  SENT: {icon: 'circle-slice-2', message: 'message sent'},
+  DELIVERED: {icon: 'circle-slice-4', message: 'message delivered'},
+  SEEN: {icon: 'circle-slice-6', message: 'message viewed'},
+  REPLIED: {icon: 'circle-slice-8', message: 'message responded'},
+  ERROR: {icon: 'circle-alert-outline', message: 'message failed'},
+};
 
-function DeliveryStatus({msg}:{msg: Message}){
-  if(!msg.status){
-    return <></>;
-  }
-
-  const details = deliveryStatusDetails.get(msg.status) ?? {icon: 'circle-small', message: 'message status'};
+function DeliveryStatus({msg}: {msg: Message}) {
+  const details =
+    deliveryStatusDetails[msg.status ?? 'NONE'] ??
+    deliveryStatusDetails['NONE'];
   const displayMessageStatus = () => {
-    details && ToastAndroid.show(
-      details.message,
-      3000,
-    );
+    details && ToastAndroid.show(details.message, 3000);
   };
 
-  return <IconButton
-    size={15}
-    onPress={() => {}}
-    onLongPress={displayMessageStatus}
-    icon={details.message}
-    style={{padding: 0, margin: 0, borderRadius: 0}}
-  />
+  return (
+    <IconButton
+      size={15}
+      onPress={() => {}}
+      onLongPress={displayMessageStatus}
+      icon={details.icon}
+      style={{padding: 0, margin: 0, borderRadius: 0}}
+    />
+  );
 }
 
 export {DeliveryStatus};

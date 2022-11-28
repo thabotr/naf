@@ -14,9 +14,9 @@ import {DeliveryStatus} from './MessageCard/DeliveryStatus';
 import {LiveTimeStamp} from './MessageCard/LiveTimeStamp';
 
 export const MessageCard = ({msg}: {msg: Message}) => {
-  const {user} = useLoggedInUser();
+  const {userProfile} = useLoggedInUser();
   const {theme} = useTheme();
-  const fromYou = user?.handle === msg.from;
+  const fromYou = userProfile.handle === msg.from;
   const styles = StyleSheet.create({
     messageContainer: {
       backgroundColor: fromYou
@@ -36,7 +36,7 @@ export const MessageCard = ({msg}: {msg: Message}) => {
           <AttachmentsPreview msg={msg} />
           <HorizontalView>
             <DeliveryStatus msg={msg} />
-            <LiveTimeStamp timestamp={msg.timestamp} sender={fromYou} />
+            <LiveTimeStamp timestamp={msg.id} sender={fromYou} />
           </HorizontalView>
           <DraftMessageActionsOverlay msg={msg} />
         </View>
