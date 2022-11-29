@@ -20,7 +20,7 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
   return (
     <TouchableOpacity
       style={{
-        width: '100%',
+        flex: 1,
         height: '100%',
         backgroundColor: theme.color.secondary,
         opacity: 0.5,

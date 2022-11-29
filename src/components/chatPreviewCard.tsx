@@ -15,6 +15,8 @@ import {UnreadMessageCountBadge} from './ChatPreviewCard/UnreadMessageCountBadge
 import {AvatarAndDetailsSection} from './ChatPreviewCard/AvatarAndDetailsSection';
 import {MessagePreviewSection} from './ChatPreviewCard/MessagePreviewSection';
 import {ListenWithMeSection} from './ChatPreviewCard/ListenWithMeSection';
+import { WatchWithMeSection } from './ChatPreviewCard/WatchWithMeSection';
+import { ReadWithMeSection } from './ChatPreviewCard/ReadWithMeSection';
 
 export function ChatPreviewCard({
   chat,
@@ -89,13 +91,15 @@ export function ChatPreviewCard({
             navigation={navigation}
           />
           <View style={{height: '100%', width: '75%'}}>
-            <View
+            <HorizontalView
               style={{
                 width: '100%',
                 height: '25%',
               }}>
               <ListenWithMeSection chat={chat} />
-            </View>
+              <WatchWithMeSection chat={chat} />
+              <ReadWithMeSection chat={chat} />
+            </HorizontalView>
             <View style={{width: '100%', height: '50%'}} />
             <View style={{width: '100%', height: '25%'}}>
               <MessagePreviewSection chat={chat} navigation={navigation} />

@@ -25,12 +25,13 @@ export const verboseTime = (timestamp?: number):string|undefined => {
       MINUTES: Math.floor(timeDiffSec/min)
   }
   if( TimeDifference.WEEKS > 1) return `${time.toLocaleTimeString()}, ${time.toLocaleDateString()}`;
-  if( TimeDifference.WEEKS === 1) return 'a week ago';
-  if( TimeDifference.DAYS > 1) return `${TimeDifference.DAYS} days ago`;
-  if( TimeDifference.DAYS === 1) return 'a day ago';
-  if( TimeDifference.HOURS > 1) return `${TimeDifference.HOURS} hours ago`;
-  if( TimeDifference.HOURS === 1) return 'an hour ago';
-  if( TimeDifference.MINUTES > 1) return `${TimeDifference.MINUTES} minutes ago`;
+  else if( TimeDifference.WEEKS === 1) return 'a week ago';
+  else if( TimeDifference.DAYS > 1) return `${TimeDifference.DAYS} days ago`;
+  else if( TimeDifference.DAYS === 1) return 'a day ago';
+  else if( TimeDifference.HOURS > 1) return `${TimeDifference.HOURS} hrs ago`;
+  else if( TimeDifference.HOURS === 1) return 'an hour ago';
+  else if( TimeDifference.MINUTES > 1) return `${TimeDifference.MINUTES} mins ago`;
+  else if( TimeDifference.MINUTES === 1) return `a minute ago`;
   return 'just now';
 }
 

@@ -1,4 +1,4 @@
-import {Pressable, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {Avatar, Paragraph} from 'react-native-paper';
 import {useChats} from '../../context/chat';
 import {useTheme} from '../../context/theme';
@@ -26,8 +26,7 @@ function AvatarAndDetailsSection({
         saveActiveChat(chat);
         navigation.navigate('ChatProfile');
       }}
-      activeOpacity={0.8}
-      >
+      activeOpacity={0.8}>
       <View style={{height: '50%', width: '100%'}}>
         <Lay
           component={
