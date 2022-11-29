@@ -27,7 +27,9 @@ function WatchWithMeSection({chat}: {chat: Chat}) {
           3000,
         );
       }}>
-      <IconButton icon="movie" />
+      <IconButton icon="movie"
+        color={theme.color.textPrimary}
+      />
     </TouchableOpacity>
   );
 }

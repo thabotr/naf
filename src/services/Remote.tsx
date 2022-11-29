@@ -175,8 +175,8 @@ class Remote {
       token: token,
       handle: handle,
     };
-    if (lastModified !== undefined) {
-      headers['lastmodified'] = lastModified;
+    if (lastModified) {
+      headers['lastmodified'] = `${lastModified}`;
     }
     try {
       const res = await RNFetchBlob.fetch(
@@ -198,7 +198,13 @@ class Remote {
       } else if (res.info().status === 204) {
         return;
       }
-      console.error('Remote.getChats:', 'did not get status 200 or 204');
+      console.error(
+        'Remote.getChats:',
+        'did not get status 200 or 204. got',
+        res.info().status,
+        'on account of',
+        await res.text(),
+      );
     } catch (e) {
       console.error('Remote.getChats:', e);
     }

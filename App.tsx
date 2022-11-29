@@ -20,10 +20,10 @@ import {
   useAudioRecorderPlayer,
 } from './src/providers/AudioRecorderPlayer';
 import {FileManager} from './src/services/FileManager';
-import { UserThemeContextProvider } from './src/providers/UserTheme';
-import { NotifierContextProvider } from './src/providers/Notifier';
-import { Snackbar } from './src/components/Snackbar';
-import { SnackableContextProvider } from './src/providers/Snackable';
+import {UserThemeContextProvider} from './src/providers/UserTheme';
+import {NotifierContextProvider} from './src/providers/Notifier';
+import {Snackbar} from './src/components/Snackbar';
+import {SnackableContextProvider} from './src/providers/Snackable';
 
 type Props = {
   children: React.ReactNode;
@@ -35,11 +35,9 @@ function SuperContextProvider({children}: Props) {
       <LoggedInUserProvider>
         <AudioRecorderPlayerProvider>
           <ChatsProvider>
-              <NavigationContainer>
-                <NotifierContextProvider>
-                  <Provider>{children}</Provider>
-                </NotifierContextProvider>
-              </NavigationContainer>
+            <NavigationContainer>
+              <Provider>{children}</Provider>
+            </NavigationContainer>
           </ChatsProvider>
         </AudioRecorderPlayerProvider>
       </LoggedInUserProvider>
@@ -54,28 +52,31 @@ function AppSetup() {
     const initFilePaths = FileManager.InitFilePaths();
     initAudioRecorderPlayer();
 
-    initFilePaths.then(b => {
-      if (!b) console.error('failed to create file structure');
-    })
-    .catch(e => console.error('failed to create file structure', e));
+    initFilePaths
+      .then(b => {
+        if (!b) console.error('failed to create file structure');
+      })
+      .catch(e => console.error('failed to create file structure', e));
   }, []);
 
   return (
-    <StackNavigator />
+    <NotifierContextProvider>
+      <StackNavigator />
+    </NotifierContextProvider>
   );
 }
 
 function App() {
   return (
     <UserThemeContextProvider>
-    <AppStateProvider>
-      <SuperContextProvider>
-        <AppSetup/>
-        <SnackableContextProvider>
-          <Snackbar/>
-        </SnackableContextProvider>
-      </SuperContextProvider>
-    </AppStateProvider>
+      <AppStateProvider>
+        <SuperContextProvider>
+          <AppSetup />
+          <SnackableContextProvider>
+            <Snackbar />
+          </SnackableContextProvider>
+        </SuperContextProvider>
+      </AppStateProvider>
     </UserThemeContextProvider>
   );
 }

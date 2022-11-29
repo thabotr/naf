@@ -35,7 +35,9 @@ export const MessageCard = ({msg}: {msg: Message}) => {
           <ExpandableParagraph text={msg.text} />
           <AttachmentsPreview msg={msg} />
           <HorizontalView>
-            <DeliveryStatus msg={msg} />
+            <OnlyShow If={userProfile.handle !== msg.from}>
+              <DeliveryStatus msg={msg} />
+            </OnlyShow>
             <LiveTimeStamp timestamp={msg.id} sender={fromYou} />
           </HorizontalView>
           <DraftMessageActionsOverlay msg={msg} />

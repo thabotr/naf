@@ -23,7 +23,6 @@ const ChatsContext = createContext<ChatsContextType | undefined>(undefined);
 
 const ChatsProvider = ({children}: Props) => {
   const [chats, setChats] = useState<Chat[]>([]);
-  const [lastModified, setLastModified] = useState(0);
   const [activeChatHandle, setActiveChatHandle] = useState<
     string | undefined
   >();
@@ -128,7 +127,6 @@ const ChatsProvider = ({children}: Props) => {
     addChatMessages: addChatMessages,
     deleteChatMessages: deleteChatMessages,
     updateChats: updateChats,
-    lastModified: lastModified,
   };
 
   return (

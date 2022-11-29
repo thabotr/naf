@@ -27,7 +27,9 @@ function ReadWithMeSection({chat}: {chat: Chat}) {
           3000,
         );
       }}>
-      <IconButton icon="bookshelf" />
+      <IconButton icon="bookshelf"
+        color={theme.color.textPrimary}
+      />
     </TouchableOpacity>
   );
 }

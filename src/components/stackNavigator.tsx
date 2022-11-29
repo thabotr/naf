@@ -15,6 +15,7 @@ import {NotificationAppbar} from './NotificationAppbar';
 import {useEffect} from 'react';
 import {useLoggedInUser} from '../context/user';
 import {Login} from '../pages/Login';
+import {OnlyShow} from './Helpers/OnlyShow';
 
 const Stack = createNativeStackNavigator();
 
@@ -61,7 +62,7 @@ function StackNavigator() {
                     return <LoginHeader props={props} />;
                 }
               })()}
-              <NotificationAppbar />
+              <NotificationAppbar/>
             </View>
           );
         },

@@ -45,7 +45,7 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
             .then(track => track && playUserTrack(chat.user.handle, track))
             .catch(e => console.log(e));
       }}>
-      <IconButton icon="account-music" />
+      <IconButton icon="account-music" color={theme.color.textPrimary} />
       <Paragraph
         style={{
           color: theme.color.textPrimary,
@@ -60,6 +60,7 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
               ? 'pause'
               : 'play'
           }
+          color={theme.color.textPrimary}
         />
         <OverlayedView>
           <ActivityIndicator

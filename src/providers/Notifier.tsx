@@ -1,6 +1,7 @@
 import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
 import {useChats} from '../context/chat';
 import {useLoggedInUser} from '../context/user';
+import {Remote} from '../services/Remote';
 import {Message} from '../types/message';
 import {User} from '../types/user';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
@@ -25,23 +26,45 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
 
   const [spinner, setSpinner] = useState(true);
   const {userProfile, updateProfile} = useLoggedInUser();
-  const {lastModified, saveChats, chats} = useChats();
+  if (!userProfile) {
+    return <>{children}</>;
+  }
+  const {saveChats, chats} = useChats();
+  const [lastModified, setLastModified] = useState(
+    ()=>chats
+      .map(c => c.lastModified ?? 0)
+      .sort()
+      .reverse()
+      .find(_ => true) ?? 0,
+  );
 
-  // useEffect(() => {
-  //   setTimeout(() => setSpinner(v => !v), 500);
-  //   Remote.getProfile(
-  //     userProfile.credentials.token,
-  //     userProfile.credentials.handle,
-  //     userProfile.lastModified,
-  //   ).then(profile => {
-  //     profile && updateProfile(_ => profile);
-  //   });
-  //   Remote.getChats(
-  //     userProfile.credentials.token,
-  //     userProfile.credentials.handle,
-  //     lastModified,
-  //   ).then(chats => chats && saveChats(chats));
-  // }, []);
+  useEffect(() => {
+    if (userProfile.handle) {
+      setTimeout(() => setSpinner(v => !v), 1000);
+      //   Remote.getProfile(
+      //     userProfile.credentials.token,
+      //     userProfile.credentials.handle,
+      //     userProfile.lastModified,
+      //   ).then(profile => {
+      //     profile && updateProfile(_ => profile);
+      //   });
+      // Remote.getChats(userProfile.token, userProfile.handle, lastModified).then(
+      //   chats => {
+      //     if (chats) {
+      //       // saveChats(chats);
+      //       // setLastModified(
+      //       //   chats
+      //       //     .map(c => c.lastModified ?? 0)
+      //       //     .sort()
+      //       //     .reverse()
+      //       //     .find(_ => true) ?? 0,
+      //       // );
+      //       console.log(chats);
+      //     }
+      //   },
+      // );
+    }
+  }, [spinner]);
 
   useEffect(() => {
     const unreadMsgs = chats

@@ -206,10 +206,6 @@ app.get('/chats', (req, resp) => {
   const {handle, lastmodified} = req.headers;
   const user = users[handle];
 
-  if(lastmodified >= user.lastModified){
-    return resp.status(204).send();
-  }
-
   const resChats = [];
 
   for( const interlocutorHandle in user.connections){
@@ -227,6 +223,10 @@ app.get('/chats', (req, resp) => {
       },
       ...interlocutorChat,
     });
+  }
+
+  if( lastmodified >= resChats.map(c=>c.lastModified).sort().reverse().find(_=>true)??0){
+    return resp.status(204).send();
   }
 
   resp.send(resChats);
