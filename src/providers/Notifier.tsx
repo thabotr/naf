@@ -46,7 +46,11 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
         userProfile.handle,
         userProfile.lastmodified,
       ).then(profile => {
-        profile && updateProfile(_ => profile);
+        profile && updateProfile(_ => {
+          profile.waitingForThem ??= {};
+          profile.waitingForYou ??= {};
+          return profile;
+        });
       });
       Remote.getChats(userProfile.token, userProfile.handle, lastModified).then(
         chats => {
