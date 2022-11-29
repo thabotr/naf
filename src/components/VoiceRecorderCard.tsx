@@ -15,15 +15,18 @@ import {OnlyShow} from './Helpers/OnlyShow';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
+import {AsyncIconButton} from './UserProfile/AsyncIconButton';
+import {MutexContextProvider} from '../providers/MutexProvider';
 
 function VoiceRecorderCard() {
   const {saveComposeMsg} = useMessageComposer();
   const {
     recorderPlayerState: recorderState,
-    recorderPlayerData,
     stopRecorder,
     resumeRecorder,
     pauseRecorder,
+    recordingPath,
+    recordingPosition,
   } = useAudioRecorderPlayer();
   const {theme} = useTheme();
   const {userProfile} = useLoggedInUser();
@@ -33,30 +36,30 @@ function VoiceRecorderCard() {
     return <></>;
   }
 
-  const onDeleteRecording = () => {
+  const onDeleteRecording = async () => {
     stopRecorder();
-    const recordingUri = recorderPlayerData.recordingPath;
-    !!recordingUri && FileManager.removeFile(recordingUri);
+    recordingPath && FileManager.removeFile(recordingPath);
   };
 
-  const onPauseResumeReconding = () => {
+  const onPauseResumeReconding = async () => {
     paused ? resumeRecorder() : pauseRecorder();
   };
 
   const onDoneRecording = async () => {
     stopRecorder();
-    const recordingUri = recorderPlayerData.recordingPath;
-    if (recordingUri === '') {
+    if (recordingPath === '') {
       ToastAndroid.show('Ooops! Something went wrong.', 3000);
       console.error('recording error: uri of recording not found in VRState.');
       return;
     }
-    const recordingFileStat = await RNFetchBlob.fs.stat(recordingUri);
+    const recordingFileStat = await RNFetchBlob.fs.stat(recordingPath);
     const file = {
-      duration: recorderPlayerData.recordingPosition,
+      duration: recordingPosition,
       name: recordingFileStat.filename,
       size: recordingFileStat.size,
-      uri: Platform.select({android: 'file://'.concat(recordingFileStat.path)}) ?? recordingFileStat.path,
+      uri:
+        Platform.select({android: 'file://'.concat(recordingFileStat.path)}) ??
+        recordingFileStat.path,
       type: 'audio/mpeg', // FIXME currently filestat just returns type="file", find way to fix this
     };
     saveComposeMsg(msg => {
@@ -132,12 +135,14 @@ function VoiceRecorderCard() {
         </View>
         <View>
           <HorizontalView>
-            <Button icon={'delete'} onPress={onDeleteRecording} />
-            <Button
-              icon={paused ? 'play' : 'pause'}
-              onPress={onPauseResumeReconding}
-            />
-            <Button icon={'stop'} onPress={onDoneRecording} />
+            <MutexContextProvider>
+              <AsyncIconButton icon={'delete'} onPress={onDeleteRecording} />
+              <AsyncIconButton
+                icon={paused ? 'play' : 'pause'}
+                onPress={onPauseResumeReconding}
+              />
+              <AsyncIconButton icon={'stop'} onPress={onDoneRecording} />
+            </MutexContextProvider>
           </HorizontalView>
           <View style={styles.rDurationContainer}>
             <Paragraph
@@ -148,7 +153,7 @@ function VoiceRecorderCard() {
                   shadowColor: theme.color.textSecondary,
                 },
               ]}>
-              {verboseDuration(recorderPlayerData.recordingPosition)}
+              {verboseDuration(recordingPosition)}
             </Paragraph>
           </View>
         </View>

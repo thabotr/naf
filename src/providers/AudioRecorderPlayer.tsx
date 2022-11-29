@@ -25,16 +25,14 @@ const recordingPerms = [
 
 type AudioRecorderPlayerContextType = {
   recorderPlayerState: RecordPlayState;
-  recorderPlayerData: {
-    playerDuration: number;
-    playerPosition: number;
-    playingPath: string;
-    recordingPath: string;
-    muted: boolean;
-    volume: number;
-    recordingPosition: number;
-    playId: string;
-  };
+  playerDuration: number;
+  playerPosition: number;
+  playingPath: string;
+  recordingPath: string;
+  muted: boolean;
+  volume: number;
+  recordingPosition: number;
+  playId: string;
   startRecorder: () => void;
   stopRecorder: () => void;
   pauseRecorder: () => void;
@@ -55,49 +53,35 @@ const AudioRecorderPlayerContext = createContext<
 >(undefined);
 
 function AudioRecorderPlayerProvider({children}: Props) {
+  const [playerDuration, setPlayerDuration] = useState(0);
+  const [playerPosition, setPlayerPosition] = useState(0);
+  const [playingPath, setPlayingPath] = useState('');
+  const [recordingPath, setRecordingPath] = useState('');
+  const [muted, setMuted] = useState(false);
+  const [volume, setVolumeV] = useState(1.0);
+  const [recordingPosition, setRecordingPosition] = useState(0);
+  const [playId, setPlayId] = useState('');
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState<
     RNAudioRecorderPlayer | undefined
   >(undefined);
   const [recorderPlayerState, setRecorderPlayerState] = useState(
     RecordPlayState.IDLE,
   );
-  const defaultState = {
-    playerDuration: 0,
-    playerPosition: 0,
-    playingPath: '',
-    recordingPath: '',
-    muted: false,
-    volume: 1.0,
-    recordingPosition: 0,
-    playId: '',
-  };
-  const [state, setState] = useState(defaultState);
-
   const rootDir = FileManager.RootDir.concat('/').concat(
     FileManagerHelper.audioDir,
   );
 
   const onPlayerStart = (pbm: PlayBackType) => {
-    setState(state => {
-      return {
-        ...state,
-        playerDuration: pbm.duration / 1000,
-        playerPosition: pbm.currentPosition / 1000,
-        muted: pbm.isMuted ?? false,
-      };
-    });
+    setPlayerDuration(pbm.duration / 1000);
+    setPlayerPosition(pbm.currentPosition / 1000);
+    setMuted(!!pbm.isMuted);
     if (pbm.duration - pbm.currentPosition < 10) {
       // set player to IDLE within the last 10 milliseconds of the playback
       setRecorderPlayerState(RecordPlayState.IDLE);
     }
   };
   const onStartRecorder = (rbm: RecordBackType) => {
-    setState(state => {
-      return {
-        ...state,
-        recordingPosition: rbm.currentPosition / 1000,
-      };
-    });
+    setRecordingPosition(rbm.currentPosition / 1000);
   };
   const initAudioRecorderPlayer = () => {
     const arp = new RNAudioRecorderPlayer();
@@ -119,13 +103,7 @@ function AudioRecorderPlayerProvider({children}: Props) {
     audioRecorderPlayer
       ?.startRecorder(path)
       .then(uri => {
-        uri &&
-          setState(state => {
-            return {
-              ...state,
-              recordingPath: uri,
-            };
-          });
+        uri && setRecordingPath(uri);
         audioRecorderPlayer.addRecordBackListener(onStartRecorder);
         setRecorderPlayerState(RecordPlayState.RECORDING);
       })
@@ -162,13 +140,8 @@ function AudioRecorderPlayerProvider({children}: Props) {
       .then(_ => {
         audioRecorderPlayer.addPlayBackListener(onPlayerStart);
         setRecorderPlayerState(RecordPlayState.PLAYING);
-        setState(state => {
-          return {
-            ...state,
-            playingPath: uri,
-            playId: playId,
-          };
-        });
+        setPlayingPath(uri);
+        setPlayId(playId);
       })
       .catch(e => console.error('player error:', e));
   };
@@ -178,7 +151,13 @@ function AudioRecorderPlayerProvider({children}: Props) {
       .then(_ => {
         audioRecorderPlayer.removePlayBackListener();
         setRecorderPlayerState(RecordPlayState.IDLE);
-        setState(defaultState);
+        setPlayerDuration(0);
+        setPlayerPosition(0);
+        setPlayingPath('');
+        setRecordingPath('');
+        setMuted(false);
+        setRecordingPosition(0);
+        setPlayId('');
       })
       .catch(e => console.error('error stopping player:', e));
   };
@@ -191,20 +170,13 @@ function AudioRecorderPlayerProvider({children}: Props) {
     }
     audioRecorderPlayer
       ?.setVolume(volume)
-      .then(_ =>
-        setState(state => {
-          return {
-            ...state,
-            volume: volume,
-          };
-        }),
-      )
+      .then(_ => setVolumeV(volume))
       .catch(e => console.error('error changing volume:', e));
   };
   const playerSeekTo = (seconds: number) => {
     if (seconds < 0) {
       console.error(
-        `cannot seek to [${seconds}s]. expected value in range 0-${state.playerDuration}s`,
+        `cannot seek to [${seconds}s]. expected value in range 0-${playerDuration}s`,
       );
       return;
     }
@@ -224,7 +196,14 @@ function AudioRecorderPlayerProvider({children}: Props) {
     startRecorder: startRecorder,
     stopRecorder: stopRecorder,
     initAudioRecorderPlayer: initAudioRecorderPlayer,
-    recorderPlayerData: state,
+    playerDuration: playerDuration,
+    playerPosition: playerPosition,
+    playingPath: playingPath,
+    recordingPath: recordingPath,
+    muted: muted,
+    volume: volume,
+    recordingPosition: recordingPosition,
+    playId: playId,
   };
 
   return (

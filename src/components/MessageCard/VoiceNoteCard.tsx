@@ -18,6 +18,8 @@ import {VoiceNoteType} from '../../types/message';
 import {OnlyShow} from '../Helpers/OnlyShow';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {useLoggedInUser} from '../../context/user';
+import { MutexContextProvider } from '../../providers/MutexProvider';
+import { AsyncIconButton } from '../UserProfile/AsyncIconButton';
 
 const enum PlayState {
   PAUSED,
@@ -38,18 +40,20 @@ export function VoiceNoteCard({
 }) {
   const {theme} = useTheme();
   const {
-    recorderPlayerData,
     playerSeekTo,
+    playId: RPPlayId,
     startPlayer,
     stopPlayer,
     recorderPlayerState,
+    playerPosition,
+    playerDuration,
   } = useAudioRecorderPlayer();
   const [playerValues, setPlayerValues] = useState({
     positionSec: 0,
     durationSec: file.duration,
   });
   const [playState, setPlayState] = useState<PlayState>(() => {
-    if (recorderPlayerData.playId === playId) {
+    if (RPPlayId === playId) {
       if (recorderPlayerState === RecordPlayState.PLAYING)
         return PlayState.PLAYING;
       else {
@@ -67,48 +71,45 @@ export function VoiceNoteCard({
       token: userProfile.token,
     }).then(uri => uri && setURI(uri));
     setURI(file.uri);
-    return onPausePlay;
+    // return onPausePlay;
   }, []);
 
   useEffect(() => {
-    if (playId === recorderPlayerData.playId) {
+    if (playId === RPPlayId) {
       setPlayerValues(pvs => {
         return {
           ...pvs,
-          positionSec: recorderPlayerData.playerPosition,
+          positionSec: playerPosition,
         };
       });
-      if (
-        recorderPlayerData.playerDuration &&
-        recorderPlayerData.playerDuration <= recorderPlayerData.playerPosition
-      ) {
+      if (playerDuration && playerDuration <= playerPosition) {
         setPlayState(PlayState.STOPPED);
       }
     } else if (playState === PlayState.PLAYING) {
       setPlayState(PlayState.PAUSED);
     }
-  }, [recorderPlayerData.playerPosition]);
+  }, [playerPosition]);
 
-  const onResumePlay = () => {
+  const onResumePlay = async () => {
     startPlayer(uri, playId);
     playerSeekTo(playerValues.positionSec);
     setPlayState(PlayState.PLAYING);
   };
 
-  const onStartPlay = () => {
+  const onStartPlay = async () => {
     startPlayer(uri, playId);
     setPlayState(PlayState.PLAYING);
   };
 
-  const onPausePlay = () => {
-    if (playId === recorderPlayerData.playId) {
+  const onPausePlay = async () => {
+    if (playId === RPPlayId) {
       stopPlayer();
       setPlayState(PlayState.PAUSED);
     }
   };
 
-  const stopPlay = () => {
-    if (playId === recorderPlayerData.playId) {
+  const stopPlay = async () => {
+    if (playId === RPPlayId) {
       stopPlayer();
     }
     setPlayState(PlayState.STOPPED);
@@ -176,26 +177,28 @@ export function VoiceNoteCard({
             <ProgressBar color={theme.color.primary} progress={progress} />
           </View>
         </View>
-        <OnlyShow If={!!uri}>
-          <Button
-            icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
-            onPress={() => {
-              switch (playState) {
-                case PlayState.PLAYING:
-                  onPausePlay();
-                  break;
-                case PlayState.PAUSED:
-                  onResumePlay();
-                  break;
-                default:
-                  onStartPlay();
-              }
-            }}
-          />
-        </OnlyShow>
-        <OnlyShow If={playState !== PlayState.STOPPED}>
-          <Button icon="stop" onPress={stopPlay} />
-        </OnlyShow>
+        <MutexContextProvider>
+          <OnlyShow If={!!uri}>
+            <AsyncIconButton
+              icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
+              onPress={async() => {
+                switch (playState) {
+                  case PlayState.PLAYING:
+                    onPausePlay();
+                    break;
+                  case PlayState.PAUSED:
+                    onResumePlay();
+                    break;
+                  default:
+                    onStartPlay();
+                }
+              }}
+            />
+          </OnlyShow>
+          <OnlyShow If={playState !== PlayState.STOPPED}>
+            <AsyncIconButton icon="stop" onPress={stopPlay} />
+          </OnlyShow>
+        </MutexContextProvider>
       </HorizontalView>
     </Card>
   );
