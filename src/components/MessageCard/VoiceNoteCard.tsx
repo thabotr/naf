@@ -150,19 +150,9 @@ export function VoiceNoteCard({
     return <RNPParagraph style={styles.paragraph}>{children}</RNPParagraph>;
   };
 
-  const Button = ({icon, onPress}: {icon: string; onPress: () => void}) => {
-    const recordingInProgress =
+  const recordingInProgress =
       recorderPlayerState === RecordPlayState.RECORDING ||
       recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
-    return (
-      <IconButton
-        icon={icon}
-        onPress={onPress}
-        disabled={recordingInProgress}
-        style={styles.squareButton}
-      />
-    );
-  };
 
   return (
     <Card style={styles.container}>
@@ -180,6 +170,7 @@ export function VoiceNoteCard({
         <MutexContextProvider>
           <OnlyShow If={!!uri}>
             <AsyncIconButton
+              disabled={recordingInProgress}
               icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
               onPress={async() => {
                 switch (playState) {
@@ -196,7 +187,11 @@ export function VoiceNoteCard({
             />
           </OnlyShow>
           <OnlyShow If={playState !== PlayState.STOPPED}>
-            <AsyncIconButton icon="stop" onPress={stopPlay} />
+            <AsyncIconButton
+              icon="stop"
+              onPress={stopPlay}
+              disabled={recordingInProgress}
+            />
           </OnlyShow>
         </MutexContextProvider>
       </HorizontalView>
