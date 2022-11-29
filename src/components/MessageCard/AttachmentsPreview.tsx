@@ -51,12 +51,12 @@ function AttachmentsPreview({
 
   const onExpandedViewDismiss = (files: FileType[]) => {
     if (composing) {
-      saveComposeMsg(msg=>{
-        if(msg){
+      saveComposeMsg(msg => {
+        if (msg) {
           return {
             ...msg,
             files: files,
-          }
+          };
         }
       });
     }
@@ -64,12 +64,12 @@ function AttachmentsPreview({
   };
 
   const onDeleteRecording = (vr: VoiceNoteType) => {
-    saveComposeMsg(msg=>{
-      if(msg){
+    saveComposeMsg(msg => {
+      if (msg) {
         return {
           ...msg,
-          voiceRecordings: msg.voiceRecordings.filter(v=> v.uri !== vr.uri),
-        }
+          voiceRecordings: msg.voiceRecordings.filter(v => v.uri !== vr.uri),
+        };
       }
     });
   };
@@ -96,7 +96,7 @@ function AttachmentsPreview({
           <FilePreviewCard key={f.uri} file={f} user={sender} />
         ))}
       </HorizontalView>
-      <OnlyShow If={msg.files.length>0}>
+      <OnlyShow If={msg.files.length > 0}>
         <Chip
           onPress={previewAllFiles}
           style={styles.chip}

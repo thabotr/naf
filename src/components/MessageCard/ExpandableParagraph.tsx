@@ -39,7 +39,7 @@ const ExpandableParagraph = ({text}: {text?: string}) => {
           </>
         }
         If={(text?.length ?? 0) > 150}
-        ElseShow={<Paragraph style={styles.paragraph}>{text}</Paragraph>}
+        ElseShow={<Paragraph numberOfLines={1} style={styles.paragraph}>{text}</Paragraph>}
       />
     </OnlyShow>
   );

@@ -8,7 +8,7 @@ import DocumentPicker, {
 } from 'react-native-document-picker';
 
 import {FileManagerHelper} from './FileManagerHelper';
-import {FileType, Message} from '../types/message';
+import {FileType} from '../types/message';
 
 class FileManager {
   static RootDir = RNFetchBlob.fs.dirs.CacheDir;

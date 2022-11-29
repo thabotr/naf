@@ -1,11 +1,6 @@
 import {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {
-  ProgressBar,
-  IconButton,
-  Paragraph as RNPParagraph,
-  Card,
-} from 'react-native-paper';
+import {ProgressBar, Paragraph as RNPParagraph, Card} from 'react-native-paper';
 
 import {useTheme} from '../../context/theme';
 import {verboseDuration, verboseSize} from '../../helper';
@@ -18,8 +13,8 @@ import {VoiceNoteType} from '../../types/message';
 import {OnlyShow} from '../Helpers/OnlyShow';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {useLoggedInUser} from '../../context/user';
-import { MutexContextProvider } from '../../providers/MutexProvider';
-import { AsyncIconButton } from '../UserProfile/AsyncIconButton';
+import {MutexContextProvider} from '../../providers/MutexProvider';
+import {AsyncIconButton} from '../UserProfile/AsyncIconButton';
 
 const enum PlayState {
   PAUSED,
@@ -71,7 +66,6 @@ export function VoiceNoteCard({
       token: userProfile.token,
     }).then(uri => uri && setURI(uri));
     setURI(file.uri);
-    // return onPausePlay;
   }, []);
 
   useEffect(() => {
@@ -151,8 +145,8 @@ export function VoiceNoteCard({
   };
 
   const recordingInProgress =
-      recorderPlayerState === RecordPlayState.RECORDING ||
-      recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
+    recorderPlayerState === RecordPlayState.RECORDING ||
+    recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
 
   return (
     <Card style={styles.container}>
@@ -172,7 +166,7 @@ export function VoiceNoteCard({
             <AsyncIconButton
               disabled={recordingInProgress}
               icon={playState === PlayState.PLAYING ? 'pause' : 'play'}
-              onPress={async() => {
+              onPress={async () => {
                 switch (playState) {
                   case PlayState.PLAYING:
                     onPausePlay();

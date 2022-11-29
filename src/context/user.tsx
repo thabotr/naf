@@ -50,6 +50,9 @@ const LoggedInUserProvider = ({children}: Props) => {
   };
 
   const useProfile = (p: Profile) => {
+    p.connections ??= {};
+    p.waitingForThem ??= {};
+    p.waitingForYou ??= {};
     setUserProfile(p);
   };
 
