@@ -5,5 +5,5 @@ export type Chat = {
   user: User,
   messages: Message[],
   messageThreads: MessageThread[],
-  lastModified?: number,
+  lastModified: number,
 }

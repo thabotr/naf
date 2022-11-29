@@ -29,7 +29,7 @@ function NotificationAppbar() {
         setTimeout(() => {
           acknowledgeIncomingMsg(incMsg);
           setNotification(undefined);
-        }, 3600);
+        }, 4500);
     }
   }, [incomingMessages]);
 
@@ -61,26 +61,31 @@ function NotificationAppbar() {
 
     return (
       <List.Item
+        title={`^message/sent media/<reaction>`}
+        description={`${nofication.intelocutor.handle}`}
+        style={{width: '100%'}}
+        right={_ => (
+          <Image
+          style={{width: 40, height: 40, marginRight: 10}}
+          source={nofication.intelocutor.avatarURI}
+          />
+          )}
         titleStyle={{
           color: theme.color.textPrimary,
           shadowColor: theme.color.textSecondary,
           fontWeight: 'bold',
         }}
-        title={`${nofication.intelocutor.handle} says ^message/sent media/<reaction> from 'handle'`}
-        style={{width: '100%'}}
-        right={_ => (
-          <Image
-            style={{width: 40, height: 40, marginRight: 10}}
-            source={nofication.intelocutor.avatarURI}
-          />
-        )}
+        descriptionStyle={{
+          color: theme.color.textPrimary,
+          shadowColor: theme.color.textSecondary,
+        }}
       />
     );
   }
 
   return (
     <OverlayedView>
-      <SlideInView style={{width: '100%'}}>
+      <SlideInView reverseAfter={4000} style={{width: '100%'}}>
         <TouchableRipple onPress={openChatFromNotification}>
           <Lay
             component={<NotificationContent />}
@@ -89,7 +94,7 @@ function NotificationAppbar() {
                 style={{
                   width: '100%',
                   height: '100%',
-                  opacity: 0.7,
+                  opacity: 0.95,
                   backgroundColor: color,
                 }}
               />

@@ -30,39 +30,38 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
     return <>{children}</>;
   }
   const {saveChats, chats} = useChats();
-  const [lastModified, setLastModified] = useState(
-    ()=>chats
+  const [lastModified, setLastModified] = useState<number | undefined>(() =>
+    chats
       .map(c => c.lastModified ?? 0)
       .sort()
       .reverse()
-      .find(_ => true) ?? 0,
+      .find(_ => true),
   );
 
   useEffect(() => {
     if (userProfile.handle) {
       setTimeout(() => setSpinner(v => !v), 1000);
-      //   Remote.getProfile(
-      //     userProfile.credentials.token,
-      //     userProfile.credentials.handle,
-      //     userProfile.lastModified,
-      //   ).then(profile => {
-      //     profile && updateProfile(_ => profile);
-      //   });
-      // Remote.getChats(userProfile.token, userProfile.handle, lastModified).then(
-      //   chats => {
-      //     if (chats) {
-      //       // saveChats(chats);
-      //       // setLastModified(
-      //       //   chats
-      //       //     .map(c => c.lastModified ?? 0)
-      //       //     .sort()
-      //       //     .reverse()
-      //       //     .find(_ => true) ?? 0,
-      //       // );
-      //       console.log(chats);
-      //     }
-      //   },
-      // );
+      Remote.getProfile(
+        userProfile.token,
+        userProfile.handle,
+        userProfile.lastmodified,
+      ).then(profile => {
+        profile && updateProfile(_ => profile);
+      });
+      Remote.getChats(userProfile.token, userProfile.handle, lastModified).then(
+        chats => {
+          if (chats) {
+            saveChats(chats);
+            setLastModified(
+              chats
+                .map(c => c.lastModified ?? 0)
+                .sort()
+                .reverse()
+                .find(_ => true) ?? 0,
+            );
+          }
+        },
+      );
     }
   }, [spinner]);
 

@@ -175,7 +175,7 @@ class Remote {
       token: token,
       handle: handle,
     };
-    if (lastModified) {
+    if (lastModified !== undefined) {
       headers['lastmodified'] = `${lastModified}`;
     }
     try {
@@ -192,6 +192,9 @@ class Remote {
           c.messages.forEach(m => {
             m.files ??= [];
             m.voiceRecordings ??= [];
+            // if( !lastModified || m.id > lastModified){
+            //   m.unread = true;
+            // }
           });
         });
         return chats;

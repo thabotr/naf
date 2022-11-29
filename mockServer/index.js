@@ -225,7 +225,9 @@ app.get('/chats', (req, resp) => {
     });
   }
 
-  if( lastmodified >= resChats.map(c=>c.lastModified).sort().reverse().find(_=>true)??0){
+  const lastModified = resChats.map(c=>c.lastModified).sort().reverse().find(_=>true) ?? 0;
+
+  if( lastmodified >= lastModified){
     return resp.status(204).send();
   }
 

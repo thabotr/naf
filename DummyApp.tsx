@@ -9,7 +9,10 @@ export default () => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <IconButton icon='message' onPress={()=>{
-        // Remote.getChats('token1', 'w/unodosthreenfour')
+        Remote.getChats('token1', 'w/unodosthreenfour', -1)
+        .then(chats=>{
+          console.log(chats);
+        })
         // FileManager.sendWithFile();
       }}/>
     </View>
