@@ -86,11 +86,11 @@ function Home({navigation}: {navigation: any}) {
       .finally(() => setFetchingChats(false));
   };
 
-  // useEffect(() => {
-  //   if (userProfile.handle) {
-  //     fetchChats();
-  //   }
-  // }, [userProfile]);
+  useEffect(() => {
+    if (userProfile.handle) {
+      fetchChats();
+    }
+  }, [userProfile]);
 
   return (
     <ListenWithMeContextProvider>

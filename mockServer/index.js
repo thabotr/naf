@@ -528,11 +528,12 @@ app.post(
   const {handle} = req.headers;
   const {to, text, durationsForVoiceRecordings} = req.body;
 
+  
   if(!users[handle].connections[to]){
     return resp.status(400)
     .send(`not connected to user ${to}`);
   }
-
+  
   const {files: aFiles, voiceRecordings: voiceRs} = req.files;
   const files = aFiles ?? [];
   const voiceRecordings = voiceRs ?? [];
@@ -561,7 +562,7 @@ app.post(
     }),
     status: 'SENT' // DELIVERED, READ
   }
-
+  
   const chatKey = [to, handle].sort().join('|');
   chats[chatKey] ??= {};
   chats[chatKey].messages ??= [];

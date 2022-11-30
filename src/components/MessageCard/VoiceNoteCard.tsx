@@ -43,6 +43,7 @@ export function VoiceNoteCard({
     playerPosition,
     playerDuration,
   } = useAudioRecorderPlayer();
+  
   const [playerValues, setPlayerValues] = useState({
     positionSec: 0,
     durationSec: file.duration,

@@ -32,7 +32,7 @@ const emptyProfile: Profile = {
   ...emptyUser,
   waitingForThem: {},
   waitingForYou: {},
-  lastModified: 0,
+  lastModified: -1,
   token: '',
   connections: {},
 };

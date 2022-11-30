@@ -46,15 +46,17 @@ function VoiceRecorderCard() {
   };
 
   const onDoneRecording = async () => {
+    const recordingFileStat = await RNFetchBlob.fs.stat(recordingPath);
+    const recPos = recordingPosition;
+    
     stopRecorder();
     if (recordingPath === '') {
       ToastAndroid.show('Ooops! Something went wrong.', 3000);
       console.error('recording error: uri of recording not found in VRState.');
       return;
     }
-    const recordingFileStat = await RNFetchBlob.fs.stat(recordingPath);
     const file = {
-      duration: recordingPosition,
+      duration: recPos,
       name: recordingFileStat.filename,
       size: recordingFileStat.size,
       uri:
@@ -110,17 +112,6 @@ function VoiceRecorderCard() {
     },
     rDurationContainer: {justifyContent: 'center', margin: 5},
   });
-
-  const Button = ({icon, onPress}: {icon: string; onPress: () => void}) => {
-    return (
-      <IconButton
-        style={styles.controlButton}
-        size={25}
-        icon={icon}
-        onPress={onPress}
-      />
-    );
-  };
 
   return (
     <OnlyShow If={recording || paused}>
