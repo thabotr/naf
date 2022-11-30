@@ -206,6 +206,7 @@ const WaitingForThemList = () => {
                       onEndEditing={e => {
                         setUser(e.nativeEvent.text);
                       }}
+                      dense
                     />
                     <Paragraph
                       style={{
@@ -219,16 +220,19 @@ const WaitingForThemList = () => {
                       label={'first place'}
                       onEndEditing={e => setLocation('A', e.nativeEvent.text)}
                       style={{width: 150, marginHorizontal: 1}}
+                      dense
                     />
                     <TextInput
                       label={'second place'}
                       onEndEditing={e => setLocation('B', e.nativeEvent.text)}
                       style={{width: 150, marginHorizontal: 1}}
+                      dense
                     />
                     <TextInput
                       label={'third place'}
                       onEndEditing={e => setLocation('C', e.nativeEvent.text)}
                       style={{width: 150, marginHorizontal: 1}}
+                      dense
                     />
                   </ScrollView>
                 </HorizontalView>

@@ -88,6 +88,7 @@ export function Login() {
         backgroundColor: theme.color.secondary,
       }}>
       <TextInput
+        secureTextEntry
         label="your access token"
         error={loginError}
         mode="outlined"

@@ -103,39 +103,6 @@ const sevenHrs = 12*60*60*1000;
 const chats = {
   "w/maybeBlackPen|w/unodosthreenfour" : {
     messages: [
-      // {
-      //   from: 'w/unodosthreenfour',
-      //   to: 'w/maybeBlackPen',
-      //   id: 1669031624575,
-      //   text: "this text over here this text over here this text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over herethis text over here this text over here",
-      // },
-      // {
-      //   from: 'w/unodosthreenfour',
-      //   to: 'w/maybeBlackPen',
-      //   id: 1669041624575,
-      //   text: "this draft message over here",
-      //   draft: true,
-      // },
-      // {
-      //   to: 'w/unodosthreenfour',
-      //   from: 'w/maybeBlackPen',
-      //   id: 1669051624575,
-      //   voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
-      //   files: [{
-      //     type: 'image/jpeg', uri: 'http://10.0.2.2:3000/image1.jpg', size: 2121,
-      //   }],
-      // },
-      // {
-      //   to: 'w/unodosthreenfour',
-      //   from: 'w/maybeBlackPen',
-      //   id: 1669061624575,
-      //   voiceRecordings: [{type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, duration: 211,}],
-      //   files: [
-      //     {type: 'image/jpeg', uri: 'http://10.0.2.2:3000/avatar1.jpg', size: 2_121,},
-      //     {type: 'video/mp4', uri: 'http://10.0.2.2:3000/vid1.mp4', size: 68_693_203,},
-      //     {type: "audio/mpeg", uri: 'http://10.0.2.2:3000/listen1.mp3', size: 8_942_998, name: 'sir trill-busisa iyano.mp3'},
-      //   ],
-      // },
     ],
     lastModified: 0,
   }
@@ -366,6 +333,7 @@ app.post('/waitforthem', (req, resp)=>{
   interlocutor.waitingForYou ??= {};
 
   if(interlocutor.waitingForYou[at]){
+    interlocutor.waitingForYou[at].waiters ??= {};
     interlocutor.waitingForYou[at].waiters[handle] = {
       arrivedAt: timestamp,
       leavesAt: timestamp+sevenHrs,
@@ -378,7 +346,7 @@ app.post('/waitforthem', (req, resp)=>{
       expiresAt: 0,
     };
     interlocutor.danglingWFY[at].waiters ??= {};
-    interlocutor.danglingWFY[at].waiters[to] = {
+    interlocutor.danglingWFY[at].waiters[handle] = {
       at: at,
       createdAt: timestamp,
       expiresAt: timestamp+sevenHrs,
@@ -433,6 +401,7 @@ app.delete('/connection', (req, resp)=>{
 
   if(user.connections[interlocutorHandle]){
     delete user.connections[interlocutorHandle];
+    delete users[interlocutorHandle].connections[user.handle];
     delete chats[[interlocutorHandle, handle].sort().join('|')];
     touchUser(handle);
   }

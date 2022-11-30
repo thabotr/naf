@@ -277,16 +277,19 @@ const WaitingForYouList = () => {
                   />
                   <HorizontalView style={{flex: 1, paddingVertical: 2}}>
                     <TextInput
+                      dense
                       label={'first place'}
                       onEndEditing={e => setLocation('A', e.nativeEvent.text)}
                       style={{flex: 1}}
                     />
                     <TextInput
+                      dense
                       label={'second place'}
                       onEndEditing={e => setLocation('B', e.nativeEvent.text)}
                       style={{flex: 1}}
                     />
                     <TextInput
+                      dense
                       label={'third place'}
                       onEndEditing={e => setLocation('C', e.nativeEvent.text)}
                       style={{flex: 1}}

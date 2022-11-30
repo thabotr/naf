@@ -79,7 +79,7 @@ class Remote {
       handle: handle,
     };
     if (lastModified !== undefined) {
-      headers['lastmodified'] = lastModified;
+      headers['lastmodified'] = `${lastModified}`;
     }
     try {
       const res = await RNFetchBlob.fetch(
@@ -319,11 +319,12 @@ class Remote {
       if (res.status === 201) {
         return (await res.json()) as WFTType;
       }
-      console.log(await res.text());
       console.error(
         'Remote.addWaitForThem:',
         'did not get status 201. got status',
         res.status,
+        'on account of',
+        await res.text(),
       );
     } catch (e) {
       console.error('Remote.addWaitForThem:', e);

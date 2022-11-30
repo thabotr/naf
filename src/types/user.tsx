@@ -67,7 +67,7 @@ export type WFTType = {
 };
 
 export type Profile = User & {
-  lastmodified: number;
+  lastModified: number;
   connections: {[handle: string]: ConnectionType};
   waitingForYou: WFYType;
   waitingForThem: WFTType;

@@ -29,14 +29,7 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
   if (!userProfile) {
     return <>{children}</>;
   }
-  const {saveChats, chats} = useChats();
-  const [lastModified, setLastModified] = useState<number | undefined>(() =>
-    chats
-      .map(c => c.lastModified ?? 0)
-      .sort()
-      .reverse()
-      .find(_ => true),
-  );
+  const {saveChats, chats, lastModified} = useChats();
 
   useEffect(() => {
     if (userProfile.handle) {
@@ -44,7 +37,7 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
       Remote.getProfile(
         userProfile.token,
         userProfile.handle,
-        userProfile.lastmodified,
+        userProfile.lastModified,
       ).then(profile => {
         profile && updateProfile(_ => {
           profile.waitingForThem ??= {};
@@ -56,18 +49,11 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
         chats => {
           if (chats) {
             saveChats(chats);
-            setLastModified(
-              chats
-                .map(c => c.lastModified ?? 0)
-                .sort()
-                .reverse()
-                .find(_ => true) ?? 0,
-            );
           }
         },
       );
     }
-  }, [spinner]);
+  }, [spinner, lastModified]);
 
   useEffect(() => {
     const unreadMsgs = chats

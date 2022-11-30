@@ -1,4 +1,4 @@
-import {useContext, createContext, useState} from 'react';
+import {useContext, createContext, useState, useEffect} from 'react';
 import {validateContext} from '../providers/validateContext';
 import {Chat} from '../types/chat';
 import {Message, MessagePK} from '../types/message';
@@ -26,6 +26,19 @@ const ChatsProvider = ({children}: Props) => {
   const [activeChatHandle, setActiveChatHandle] = useState<
     string | undefined
   >();
+  const [lastModified, setLastModified] = useState<number | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    setLastModified(
+      chats
+        .map(c => c.lastModified)
+        .sort()
+        .reverse()
+        .find(_ => true),
+    );
+  }, [chats]);
 
   const activeChat = (): Chat => {
     const chat = chats.find(c => c.user.handle === activeChatHandle);
@@ -127,6 +140,7 @@ const ChatsProvider = ({children}: Props) => {
     addChatMessages: addChatMessages,
     deleteChatMessages: deleteChatMessages,
     updateChats: updateChats,
+    lastModified: lastModified,
   };
 
   return (
