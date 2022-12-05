@@ -1,4 +1,4 @@
-import {useState, createContext, useContext, ReactNode} from 'react';
+import React, {useState, createContext, useContext, ReactNode} from 'react';
 import {PermissionsAndroid} from 'react-native';
 import RNAudioRecorderPlayer, {
   PlayBackType,
@@ -9,7 +9,7 @@ import {FileManagerHelper} from '../services/FileManagerHelper';
 import {PermissionsManager} from '../services/PermissionsManager';
 import {validateContext} from './validateContext';
 
-enum RecordPlayState {
+export enum RecordPlayState {
   RECORDING,
   PLAYING,
   IDLE,
@@ -134,14 +134,14 @@ function AudioRecorderPlayerProvider({children}: Props) {
       .then(_ => setRecorderPlayerState(RecordPlayState.RECORDING))
       .catch(e => console.error('error resuming recorder:', e));
   };
-  const startPlayer = (uri: string, playId: string) => {
+  const startPlayer = (uri: string, pId: string) => {
     audioRecorderPlayer
       ?.startPlayer(uri)
       .then(_ => {
         audioRecorderPlayer.addPlayBackListener(onPlayerStart);
         setRecorderPlayerState(RecordPlayState.PLAYING);
         setPlayingPath(uri);
-        setPlayId(playId);
+        setPlayId(pId);
       })
       .catch(e => console.error('player error:', e));
   };
@@ -161,16 +161,16 @@ function AudioRecorderPlayerProvider({children}: Props) {
       })
       .catch(e => console.error('error stopping player:', e));
   };
-  const setVolume = (volume: number) => {
-    if (volume < 0 || volume > 1) {
+  const setVolume = (v: number) => {
+    if (v < 0 || v > 1) {
       console.error(
-        `invalid volume value [${volume}] received. expected value in range [0.0,1.0]`,
+        `invalid volume value [${v}] received. expected value in range [0.0,1.0]`,
       );
       return;
     }
     audioRecorderPlayer
-      ?.setVolume(volume)
-      .then(_ => setVolumeV(volume))
+      ?.setVolume(v)
+      .then(_ => setVolumeV(v))
       .catch(e => console.error('error changing volume:', e));
   };
   const playerSeekTo = (seconds: number) => {
@@ -222,4 +222,4 @@ const useAudioRecorderPlayer = (): AudioRecorderPlayerContextType => {
   );
 };
 
-export {useAudioRecorderPlayer, AudioRecorderPlayerProvider, RecordPlayState};
+export {useAudioRecorderPlayer, AudioRecorderPlayerProvider};

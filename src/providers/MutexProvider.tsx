@@ -1,5 +1,5 @@
-import {createContext, ReactNode, useContext, useState} from 'react';
-import { validateContext } from './validateContext';
+import React, {createContext, ReactNode, useContext, useState} from 'react';
+import {validateContext} from './validateContext';
 
 interface MutexContextType {
   slots: number;
@@ -26,9 +26,9 @@ const MutexContextProvider = ({children}: {children: ReactNode}) => {
   );
 };
 
-const useMutex = ():MutexContextType=>{
+const useMutex = (): MutexContextType => {
   const context = useContext(MutexContext);
   return validateContext(context, 'useMutex', 'MutexContextProvider');
-}
+};
 
 export {useMutex, MutexContextProvider};

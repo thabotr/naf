@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable require-await */
+import React, {useState} from 'react';
 import {Button, List, TextInput} from 'react-native-paper';
 import {StyleSheet, View, Pressable} from 'react-native';
 import {useTheme} from '../../context/theme';
@@ -7,13 +10,12 @@ import {Image} from '../Image';
 import {Show} from '../Helpers/Show';
 import {WaitAtType} from '../../types/user';
 import {verboseTime} from '../../helper';
-import {useState} from 'react';
 import {deduplicatedConcat} from '../../utils/deduplicatedConcat';
 import {useChats} from '../../context/chat';
 import {Remote} from '../../services/Remote';
 import {getColorsForUser} from '../../utils/getUserColors';
 import {useColorsForUsers} from '../../providers/UserTheme';
-import {MutexContextProvider, useMutex} from '../../providers/MutexProvider';
+import {MutexContextProvider} from '../../providers/MutexProvider';
 import {deepCopy} from '../../utils/deepCopy';
 import {AsyncIconButton} from './AsyncIconButton';
 
@@ -120,21 +122,21 @@ const WaitingForYouList = () => {
   };
   const setLocation = (location: 'A' | 'B' | 'C', value: string) => {
     const v = value.trim();
-    setWAtData(wAtData => {
+    setWAtData(newwAtData => {
       switch (location) {
         case 'A':
           return {
-            ...wAtData,
+            ...newwAtData,
             locationAliasA: v,
           };
         case 'B':
           return {
-            ...wAtData,
+            ...newwAtData,
             locationAliasB: v,
           };
         default:
           return {
-            ...wAtData,
+            ...newwAtData,
             locationAliasC: v,
           };
       }
@@ -165,6 +167,20 @@ const WaitingForYouList = () => {
       marginHorizontal: 1,
       color: theme.color.textPrimary,
     },
+    listAccord: {backgroundColor: theme.color.secondary},
+    atListAccord: {
+      width: 400,
+      padding: 0,
+      backgroundColor: theme.color.secondary,
+    },
+    wAvatar: {width: 50, height: 50, alignSelf: 'center'},
+    addWFM: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 10,
+    },
+    inputs: {flex: 1, paddingVertical: 2},
+    flex: {flex: 1},
   });
 
   const allFieldsFilled =
@@ -174,7 +190,7 @@ const WaitingForYouList = () => {
 
   return (
     <List.Accordion
-      style={{backgroundColor: theme.color.secondary}}
+      style={styles.listAccord}
       title="Waiting for you"
       titleStyle={styles.title}>
       <View>
@@ -187,11 +203,7 @@ const WaitingForYouList = () => {
                 onPress={() => deleteWFY(at)}
               />
               <List.Accordion
-                style={{
-                  width: 400,
-                  padding: 0,
-                  backgroundColor: theme.color.secondary,
-                }}
+                style={styles.atListAccord}
                 title={`@ ${at}`}
                 description={`created ${verboseTime(
                   wfy.createdAt,
@@ -208,7 +220,7 @@ const WaitingForYouList = () => {
                       left={_ => (
                         <Image
                           source={w.avatarURI}
-                          style={{width: 50, height: 50, alignSelf: 'center'}}
+                          style={styles.wAvatar}
                           viewable
                         />
                       )}
@@ -217,10 +229,10 @@ const WaitingForYouList = () => {
                       description={`arrived ${verboseTime(
                         w.arrivedAt,
                       )}\nwill leave @ 
-                ${new Date(w.leavesAt).toLocaleTimeString()}, ${new Date(
-                        w.leavesAt,
-                      ).toDateString()}
-                `}
+                      ${new Date(w.leavesAt).toLocaleTimeString()}, ${new Date(
+                      w.leavesAt,
+                    ).toDateString()}
+                      `}
                       titleStyle={styles.title}
                       descriptionStyle={styles.description}
                       right={_ => (
@@ -248,12 +260,7 @@ const WaitingForYouList = () => {
           </HorizontalView>
         ))}
         <Pressable>
-          <HorizontalView
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingHorizontal: 10,
-            }}>
+          <HorizontalView style={styles.addWFM}>
             <Show
               component={
                 <Button
@@ -275,24 +282,24 @@ const WaitingForYouList = () => {
                     style={styles.squareButton}
                     onPress={discardWFY}
                   />
-                  <HorizontalView style={{flex: 1, paddingVertical: 2}}>
+                  <HorizontalView style={styles.inputs}>
                     <TextInput
                       dense
                       label={'first place'}
                       onEndEditing={e => setLocation('A', e.nativeEvent.text)}
-                      style={{flex: 1}}
+                      style={styles.flex}
                     />
                     <TextInput
                       dense
                       label={'second place'}
                       onEndEditing={e => setLocation('B', e.nativeEvent.text)}
-                      style={{flex: 1}}
+                      style={styles.flex}
                     />
                     <TextInput
                       dense
                       label={'third place'}
                       onEndEditing={e => setLocation('C', e.nativeEvent.text)}
-                      style={{flex: 1}}
+                      style={styles.flex}
                     />
                   </HorizontalView>
                   <AsyncIconButton

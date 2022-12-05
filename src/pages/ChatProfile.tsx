@@ -1,10 +1,11 @@
-import {ScrollView} from 'react-native';
+import React from 'react';
+import {ScrollView, StyleSheet} from 'react-native';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 
 import {useChats} from '../context/chat';
 import {useTheme} from '../context/theme';
 import {ProfileHeader} from '../components/ProfileHeader';
-import { ProfilePreview } from '../components/ProfilePreview';
+import {ProfilePreview} from '../components/ProfilePreview';
 
 function ChatProfileHeader(props: NativeStackHeaderProps) {
   const {activeChat} = useChats();
@@ -24,8 +25,12 @@ function ChatProfile() {
     return <></>;
   }
 
+  const styles = StyleSheet.create({
+    scrollView: {backgroundColor: theme.color.secondary, height: '100%'},
+  });
+
   return (
-    <ScrollView style={{backgroundColor: theme.color.secondary, height: '100%'}}>
+    <ScrollView style={styles.scrollView}>
       <ProfilePreview user={user} />
     </ScrollView>
   );

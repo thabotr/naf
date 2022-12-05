@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Card, IconButton} from 'react-native-paper';
 import {FileType} from '../../types/message';

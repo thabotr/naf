@@ -1,5 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createContext, useState, ReactNode, useEffect, useContext} from 'react';
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
 import {useColorScheme} from 'react-native';
 import {ThemeSetting} from '../types/settings';
 
@@ -59,39 +66,46 @@ const lightTheme: ThemeType = {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 function ThemeProvider({children}: {children: ReactNode}) {
-  const [themeSetting, setThemeSetting] = useState<ThemeSetting>('system_default');
+  const [themeSetting, setThemeSetting] =
+    useState<ThemeSetting>('system_default');
   const isSystemDark = useColorScheme() === 'dark';
-  const [theme, setTheme] = useState<ThemeType>(()=>{
-    if(themeSetting === 'system_default' && !isSystemDark || themeSetting === 'light'){
+  const [theme, setTheme] = useState<ThemeType>(() => {
+    if (
+      (themeSetting === 'system_default' && !isSystemDark) ||
+      themeSetting === 'light'
+    ) {
       return lightTheme;
     }
     return darkTheme;
   });
 
-  const themeFromSetting = (ts: ThemeSetting) => {
-    switch (ts) {
-      case 'light':
-        return lightTheme;
-      case 'dark':
-        return darkTheme;
-      default:
-        return isSystemDark ? darkTheme : lightTheme;
-    }
-  };
+  const themeFromSetting = useCallback(
+    (ts: ThemeSetting) => {
+      switch (ts) {
+        case 'light':
+          return lightTheme;
+        case 'dark':
+          return darkTheme;
+        default:
+          return isSystemDark ? darkTheme : lightTheme;
+      }
+    },
+    [isSystemDark],
+  );
 
   useEffect(() => {
     AsyncStorage.getItem('theme_setting').then(tss => {
-      const ts = ThemeSettingFromString[tss?? ''];
+      const ts = ThemeSettingFromString[tss ?? ''];
       if (!ts) {
         setTheme(isSystemDark ? darkTheme : lightTheme);
         setThemeSetting('system_default');
         AsyncStorage.setItem('theme_setting', 'system_default');
-      }else{
+      } else {
         setTheme(themeFromSetting(ts));
         setThemeSetting(ts);
       }
     });
-  }, [isSystemDark]);
+  }, [isSystemDark, themeFromSetting]);
 
   const saveThemeFromSetting = (ts: ThemeSetting) => {
     setTheme(themeFromSetting(ts));

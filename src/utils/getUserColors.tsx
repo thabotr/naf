@@ -10,11 +10,15 @@ async function getColorsForUser(
     u.landscapeURI,
     'image/jpeg',
   );
-  if (!avatarURI || !landscapeURI) return;
+  if (!avatarURI || !landscapeURI) {
+    return;
+  }
 
   const avatarColors = await FileManager.getImageColors(avatarURI, true);
   const landscapeColors = await FileManager.getImageColors(landscapeURI, true);
-  if (!avatarColors || !landscapeColors) return;
+  if (!avatarColors || !landscapeColors) {
+    return;
+  }
 
   return {avatar: avatarColors, landscape: landscapeColors};
 }

@@ -1,6 +1,6 @@
+import React, {useState, useEffect, useCallback} from 'react';
+import {View, FlatList, StyleSheet} from 'react-native';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {useState, useEffect} from 'react';
-import {View, FlatList} from 'react-native';
 import {Appbar, IconButton} from 'react-native-paper';
 import {Image} from '../components/Image';
 
@@ -23,14 +23,20 @@ function HomeHeader(props: NativeStackHeaderProps) {
     if (!userProfile.handle) {
       props.navigation.navigate('Login');
     }
-  }, [userProfile]);
+  }, [userProfile, props.navigation]);
+
+  const styles = StyleSheet.create({
+    square: {borderRadius: 0},
+    avatarCont: {height: '100%', width: 50, marginRight: 10},
+    spanningAvatar: {height: '100%', width: '100%'},
+  });
 
   return (
     <Appbar.Header style={{backgroundColor: theme.color.primary}}>
       <IconButton
         icon="menu"
         color={theme.color.textPrimary}
-        style={{borderRadius: 0}}
+        style={styles.square}
         onPress={() => props.navigation.navigate('Settings')}
       />
       <Appbar.Content
@@ -45,11 +51,11 @@ function HomeHeader(props: NativeStackHeaderProps) {
         }}
         subtitle={`${userProfile.name} ${userProfile.surname}`}
       />
-      <View style={{height: '100%', width: 50, marginRight: 10}}>
+      <View style={styles.avatarCont}>
         <Image
           onPress={() => props.navigation.navigate('UserProfile')}
           source={userProfile.avatarURI}
-          style={{height: '100%', width: '100%'}}
+          style={styles.spanningAvatar}
         />
       </View>
     </Appbar.Header>
@@ -63,38 +69,41 @@ function Home({navigation}: {navigation: any}) {
   const {saveUserColors} = useColorsForUsers();
   const {userProfile} = useLoggedInUser();
 
-  const updateChatAndUserColors = (chats: Chat[]) => {
-    chats.forEach(c => {
-      getColorsForUser(c.user).then(
-        colors => colors && saveUserColors(c.user.handle, colors),
+  const fetchChats = useCallback(() => {
+    const updateChatAndUserColors = (newchats: Chat[]) => {
+      newchats.forEach(c => {
+        getColorsForUser(c.user).then(
+          colors => colors && saveUserColors(c.user.handle, colors),
+        );
+      });
+      getColorsForUser(userProfile).then(
+        colors => colors && saveUserColors(userProfile.handle, colors),
       );
-    });
-    getColorsForUser(userProfile).then(
-      colors => colors && saveUserColors(userProfile.handle, colors),
-    );
-  };
-
-  const fetchChats = () => {
+    };
     setFetchingChats(true);
     Remote.getChats(userProfile.token, userProfile.handle)
-      .then(chats => {
-        if (chats) {
-          saveChats(chats);
-          updateChatAndUserColors(chats);
+      .then(newchats => {
+        if (newchats) {
+          saveChats(newchats);
+          updateChatAndUserColors(newchats);
         }
       })
       .finally(() => setFetchingChats(false));
-  };
+  }, [saveChats, saveUserColors, userProfile]);
 
   useEffect(() => {
     if (userProfile.handle) {
       fetchChats();
     }
-  }, [userProfile]);
+  }, [userProfile, userProfile.handle, fetchChats]);
+
+  const styles = StyleSheet.create({
+    background: {height: '100%', backgroundColor: theme.color.secondary},
+  });
 
   return (
     <ListenWithMeContextProvider>
-      <View style={{height: '100%', backgroundColor: theme.color.secondary}}>
+      <View style={styles.background}>
         <FlatList
           ListHeaderComponent={<ListenWithMeCard />}
           refreshing={fetchingChats}

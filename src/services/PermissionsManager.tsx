@@ -5,12 +5,6 @@ import {
   ToastAndroid,
 } from 'react-native';
 
-const recordingPerms = [
-  PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-  PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-  PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-];
-
 class PermissionsManager {
   static requestPermissions(perms: Permission[]) {
     if (Platform.OS === 'android') {
@@ -46,11 +40,11 @@ class PermissionsManager {
 
   static async assertPermissionsGranted(perms: Permission[]): Promise<boolean> {
     let granted = true;
-    try{
+    try {
       for (const perm of perms) {
         granted &&= await PermissionsAndroid.check(perm);
       }
-    }catch(e){
+    } catch (e) {
       console.error('assertPermissionsGranted:', e);
     }
     return granted;

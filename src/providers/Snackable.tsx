@@ -1,4 +1,10 @@
-import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {validateContext} from './validateContext';
 
 type MsgActionType = {
@@ -28,8 +34,8 @@ function SnackableContextProvider({children}: {children: ReactNode}) {
       }, 3000);
   }, [msgAction]);
 
-  const showMsgAction = (msgAction: MsgActionType|undefined) => {
-    setMsgAction(msgAction);
+  const showMsgAction = (msgAct: MsgActionType | undefined) => {
+    setMsgAction(msgAct);
   };
 
   const providerValue = {

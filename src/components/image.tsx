@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {ImageStyle, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator, Card} from 'react-native-paper';
 import {useLoggedInUser} from '../context/user';
@@ -36,7 +36,6 @@ function Image({source, style, onURI, viewable, onPress, alt}: Props) {
       FileManager.getFileURI(link, mimeType ?? 'image/jpg', {
         token: userProfile.token,
         handle: userProfile.handle,
-        // interlocutor_handle: 
       })
         .then(uri => {
           if (uri) {
@@ -48,7 +47,7 @@ function Image({source, style, onURI, viewable, onPress, alt}: Props) {
     } else {
       setImgState(IMState.SUCCESS);
     }
-  }, [source]);
+  }, [source, onURI, userProfile.handle, userProfile.token]);
 
   if (imgState === IMState.ERROR && alt) {
     return <>{alt}</>;

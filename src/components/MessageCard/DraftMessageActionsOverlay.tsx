@@ -1,4 +1,6 @@
-import {View} from 'react-native';
+/* eslint-disable require-await */
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {useChats} from '../../context/chat';
 import {useMessageComposer} from '../../context/messageEditor';
 import {useTheme} from '../../context/theme';
@@ -6,6 +8,7 @@ import {useLoggedInUser} from '../../context/user';
 import {MutexContextProvider} from '../../providers/MutexProvider';
 import {Remote} from '../../services/Remote';
 import {Message} from '../../types/message';
+import {HorizontalView} from '../Helpers/HorizontalView';
 import {OnlyShow} from '../Helpers/OnlyShow';
 import {OverlayedView} from '../Helpers/OverlayedView';
 import {AsyncIconButton} from '../UserProfile/AsyncIconButton';
@@ -40,19 +43,20 @@ function DraftMessageActionsOverlay({msg}: {msg: Message}) {
     }
   };
 
+  const styles = StyleSheet.create({
+    overlay: {
+      backgroundColor: theme.color.userSecondary,
+      margin: 3,
+      borderRadius: 3,
+      opacity: 0.8,
+    },
+  });
+
   return (
     <OnlyShow If={msg.draft}>
-      <OverlayedView
-        style={{
-          backgroundColor: theme.color.userSecondary,
-          margin: 3,
-          borderRadius: 3,
-          opacity: 0.8,
-        }}>
-        <View
+      <OverlayedView style={styles.overlay}>
+        <HorizontalView
           style={{
-            display: 'flex',
-            flexDirection: 'row',
             backgroundColor: theme.color.primary,
           }}>
           <MutexContextProvider>
@@ -60,7 +64,7 @@ function DraftMessageActionsOverlay({msg}: {msg: Message}) {
             <AsyncIconButton icon="pencil" onPress={editDraft} />
             <AsyncIconButton icon="send" onPress={sendDraft} />
           </MutexContextProvider>
-        </View>
+        </HorizontalView>
       </OverlayedView>
     </OnlyShow>
   );

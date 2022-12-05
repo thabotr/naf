@@ -1,7 +1,7 @@
-import {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {List, TouchableRipple} from 'react-native-paper';
-import { useChats } from '../context/chat';
+import {useChats} from '../context/chat';
 import {useTheme} from '../context/theme';
 import {IncomingMessageType, useNotifier} from '../providers/Notifier';
 import {useColorsForUsers} from '../providers/UserTheme';
@@ -31,7 +31,7 @@ function NotificationAppbar() {
           setNotification(undefined);
         }, 4500);
     }
-  }, [incomingMessages]);
+  }, [incomingMessages, acknowledgeIncomingMsg]);
 
   useEffect(() => {
     if (nofication) {
@@ -43,16 +43,38 @@ function NotificationAppbar() {
             : userColors.avatar.lightSecondary) ?? theme.color.secondary,
         );
     }
-  }, [nofication, theme]);
+  }, [nofication, theme, getUserColors]);
 
   if (!nofication) {
     return <></>;
   }
 
   const openChatFromNotification = () => {
-    const chat = chats.find(c=>c.user.handle === nofication.intelocutor.handle)
+    const chat = chats.find(
+      c => c.user.handle === nofication.intelocutor.handle,
+    );
     chat && saveActiveChat(chat);
   };
+
+  const styles = StyleSheet.create({
+    fullWidth: {width: '100%'},
+    avatar: {width: 40, height: 40, marginRight: 10},
+    title: {
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+      fontWeight: 'bold',
+    },
+    description: {
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+    notificationBackground: {
+      width: '100%',
+      height: '100%',
+      opacity: 0.95,
+      backgroundColor: color,
+    },
+  });
 
   function NotificationContent() {
     if (!nofication) {
@@ -61,44 +83,28 @@ function NotificationAppbar() {
 
     return (
       <List.Item
-        title={`^message/sent media/<reaction>`}
+        title={'^message/sent media/<reaction>'}
         description={`${nofication.intelocutor.handle}`}
-        style={{width: '100%'}}
+        style={styles.fullWidth}
         right={_ => (
           <Image
-          style={{width: 40, height: 40, marginRight: 10}}
-          source={nofication.intelocutor.avatarURI}
+            source={nofication.intelocutor.avatarURI}
+            style={styles.avatar}
           />
-          )}
-        titleStyle={{
-          color: theme.color.textPrimary,
-          shadowColor: theme.color.textSecondary,
-          fontWeight: 'bold',
-        }}
-        descriptionStyle={{
-          color: theme.color.textPrimary,
-          shadowColor: theme.color.textSecondary,
-        }}
+        )}
+        titleStyle={styles.title}
+        descriptionStyle={styles.description}
       />
     );
   }
 
   return (
     <OverlayedView>
-      <SlideInView reverseAfter={4000} style={{width: '100%'}}>
+      <SlideInView reverseAfter={4000} style={styles.fullWidth}>
         <TouchableRipple onPress={openChatFromNotification}>
           <Lay
             component={<NotificationContent />}
-            over={
-              <View
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  opacity: 0.95,
-                  backgroundColor: color,
-                }}
-              />
-            }
+            over={<View style={styles.notificationBackground} />}
           />
         </TouchableRipple>
       </SlideInView>

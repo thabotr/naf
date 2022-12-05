@@ -36,7 +36,9 @@ class FileManager {
         try {
           await mkdirDirPromises[ind];
         } catch (e) {
-          if (!`${e}`.includes('already exists')) throw e;
+          if (!`${e}`.includes('already exists')) {
+            throw e;
+          }
         }
       }
     } catch (e) {
@@ -156,8 +158,12 @@ class FileManager {
         includeExtra: true,
       });
 
-      if (cameraRes.didCancel) return;
-      if (cameraRes.errorCode) throw new Error(cameraRes.errorMessage);
+      if (cameraRes.didCancel) {
+        return;
+      }
+      if (cameraRes.errorCode) {
+        throw new Error(cameraRes.errorMessage);
+      }
 
       const resultAsset: {
         id?: string;
@@ -187,7 +193,7 @@ class FileManager {
     }
   }
 
-  static #handleError = (err: unknown) => {
+  static #handleError = (err: any) => {
     if (DocumentPicker.isCancel(err)) {
       // User cancelled the picker, exit any dialogs or menus and move on
     } else if (isInProgress(err)) {

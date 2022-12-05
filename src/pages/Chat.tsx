@@ -1,5 +1,5 @@
-import {useEffect, useState} from 'react';
-import {SafeAreaView, View, ScrollView, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, View, ScrollView, StyleSheet} from 'react-native';
 
 import {useTheme} from '../context/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
@@ -17,16 +17,13 @@ import {useColorsForUsers} from '../providers/UserTheme';
 export function MessageListing() {
   const {theme} = useTheme();
   const {activeChat} = useChats();
-
+  const styles = StyleSheet.create({
+    scrollView: {height: '100%', backgroundColor: theme.color.secondary},
+  });
   return (
-    <ScrollView
-      style={{height: '100%', backgroundColor: theme.color.secondary}}
-      overScrollMode="auto">
+    <ScrollView style={styles.scrollView} overScrollMode="auto">
       {activeChat()?.messages.map(m => (
-        <MessageCard
-          msg={m}
-          key={[m.from, m.to,m.id].join('|')}
-        />
+        <MessageCard msg={m} key={[m.from, m.to, m.id].join('|')} />
       ))}
       <MessageEditorCard />
     </ScrollView>
@@ -44,9 +41,6 @@ function ChatHeader(props: NativeStackHeaderProps) {
       secondary: theme.color.secondary,
     };
   });
-  if (!user) {
-    return <></>;
-  }
 
   useEffect(() => {
     const userColors = colorsForUsers.get(user.handle);
@@ -61,14 +55,24 @@ function ChatHeader(props: NativeStackHeaderProps) {
             ? userColors.landscape.darkSecondary
             : userColors.landscape.lightSecondary) ?? theme.color.secondary,
       });
-  }, [theme, colorsForUsers]);
+  }, [theme, colorsForUsers, user.handle]);
+
+  if (!user) {
+    return <></>;
+  }
+
+  const styles = StyleSheet.create({
+    square: {borderRadius: 0},
+    avatarContainer: {height: '100%', width: 50, marginRight: 10},
+    spanningAvatar: {height: '100%', width: '100%'},
+  });
 
   return (
     <Appbar.Header style={{backgroundColor: colors.primary}}>
       <OnlyShow If={!!props.back}>
         <Appbar.BackAction
           color={theme.color.textPrimary}
-          style={{borderRadius: 0}}
+          style={styles.square}
           onPress={() => {
             props.navigation.goBack();
           }}
@@ -86,11 +90,11 @@ function ChatHeader(props: NativeStackHeaderProps) {
         }}
         subtitle={`${user?.name} ${user?.surname}`}
       />
-      <View style={{height: '100%', width: 50, marginRight: 10}}>
+      <View style={styles.avatarContainer}>
         <Image
           onPress={() => props.navigation.navigate('ChatProfile')}
           source={user?.avatarURI}
-          style={{height: '100%', width: '100%'}}
+          style={styles.spanningAvatar}
         />
       </View>
     </Appbar.Header>
@@ -99,10 +103,12 @@ function ChatHeader(props: NativeStackHeaderProps) {
 
 function Chat() {
   const {theme} = useTheme();
+  const styles = StyleSheet.create({
+    background: {backgroundColor: theme.color.secondary, height: '100%'},
+  });
   return (
     <MessageComposerProvider>
-      <SafeAreaView
-        style={{backgroundColor: theme.color.secondary, height: '100%'}}>
+      <SafeAreaView style={styles.background}>
         <MessageListing />
         <VoiceRecorderCard />
         <ComposeFloatingActions />

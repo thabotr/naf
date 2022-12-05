@@ -1,4 +1,4 @@
-import {useContext, createContext, useState, useEffect} from 'react';
+import React, {useContext, createContext, useState, useEffect} from 'react';
 import {validateContext} from '../providers/validateContext';
 import {Chat} from '../types/chat';
 import {Message, MessagePK} from '../types/message';
@@ -9,7 +9,6 @@ export type ChatsContextType = {
   saveChats: (chats: Chat[]) => void;
   activeChat: () => Chat;
   saveActiveChat: (chat: Chat) => void;
-  updateChatMessages: (messages: Message[]) => void;
   addChatMessages: (messages: Message[]) => void;
   deleteChatMessages: (idsOfMessages: MessagePK[]) => void;
   updateChats: (mutator: (chats: Chat[]) => Chat[]) => void;
@@ -53,56 +52,30 @@ const ChatsProvider = ({children}: Props) => {
   const saveActiveChat = (chat?: Chat): void => {
     setActiveChatHandle(chat?.user.handle);
   };
-  const updateChatMessages = (messages: Message[]): void => {
-    setChats(chats => {
-      const chatIndex = chats.findIndex(
-        c => c.user.handle === activeChat()?.user.handle,
-      );
-      if (chatIndex >= 0) {
-        const activeChat = chats[chatIndex];
-        const updatedMessages = activeChat.messages.map(m => {
-          const updatedM = messages.find(
-            mToUpdate =>
-              m.id === mToUpdate.id &&
-              m.from === mToUpdate.from &&
-              m.to === mToUpdate.to,
-          );
-          if (updatedM) return updatedM;
-          else return m;
-        });
-        return [
-          ...chats.slice(0, chatIndex),
-          {...activeChat, messages: updatedMessages},
-          ...chats.slice(chatIndex + 1),
-        ];
-      }
-      return chats;
-    });
-  };
   const addChatMessages = (messages: Message[]): void => {
-    setChats(chats => {
-      const chatIndex = chats.findIndex(
+    setChats(nchats => {
+      const chatIndex = nchats.findIndex(
         c => c.user.handle === activeChat()?.user.handle,
       );
       if (chatIndex >= 0) {
-        const activeChat = chats[chatIndex];
+        const currChat = nchats[chatIndex];
         return [
-          ...chats.slice(0, chatIndex),
-          {...activeChat, messages: activeChat.messages.concat(messages)},
-          ...chats.slice(chatIndex + 1),
+          ...nchats.slice(0, chatIndex),
+          {...currChat, messages: currChat.messages.concat(messages)},
+          ...nchats.slice(chatIndex + 1),
         ];
       }
       return chats;
     });
   };
   const deleteChatMessages = (pksOfMessages: MessagePK[]): void => {
-    setChats(chats => {
-      const chatIndex = chats.findIndex(
+    setChats(nchats => {
+      const chatIndex = nchats.findIndex(
         c => c.user.handle === activeChat()?.user.handle,
       );
       if (chatIndex >= 0) {
-        const activeChat = chats[chatIndex];
-        const updatedMessages = activeChat.messages.filter(
+        const currChat = chats[chatIndex];
+        const updatedMessages = currChat.messages.filter(
           m =>
             !pksOfMessages.find(pkOfM => {
               const mPK: MessagePK = {
@@ -118,17 +91,17 @@ const ChatsProvider = ({children}: Props) => {
             }),
         );
         return [
-          ...chats.slice(0, chatIndex),
-          {...activeChat, messages: updatedMessages},
-          ...chats.slice(chatIndex + 1),
+          ...nchats.slice(0, chatIndex),
+          {...currChat, messages: updatedMessages},
+          ...nchats.slice(chatIndex + 1),
         ];
       }
-      return chats;
+      return nchats;
     });
   };
 
   const updateChats = (mutator: (cs: Chat[]) => Chat[]) => {
-    setChats(chats => mutator(chats));
+    setChats(newchats => mutator(newchats));
   };
 
   const providerValue = {
@@ -136,7 +109,6 @@ const ChatsProvider = ({children}: Props) => {
     saveChats: saveChats,
     activeChat: activeChat,
     saveActiveChat: saveActiveChat,
-    updateChatMessages: updateChatMessages,
     addChatMessages: addChatMessages,
     deleteChatMessages: deleteChatMessages,
     updateChats: updateChats,

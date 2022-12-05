@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState} from 'react';
+import React, {useState} from 'react';
+import {StyleSheet} from 'react-native';
 import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
@@ -14,7 +15,7 @@ export function Login() {
   const {theme} = useTheme();
   const [loginError, setLoginError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {useProfile} = useLoggedInUser();
+  const {saveProfile} = useLoggedInUser();
   const {saveUserColors} = useColorsForUsers();
   const [credentials, setCredentials] = useState<UserCredentials>({
     handle: '',
@@ -34,10 +35,10 @@ export function Login() {
   //         ).then(profile => {
   //           if (profile) {
   //             AsyncStorage.setItem('profile', JSON.stringify(profile));
-  //             useProfile(profile);
+  //             saveProfile(profile);
   //           }
   //         });
-  //         useProfile({...profile, credentials: profile.credentials});
+  //         saveProfile({...profile, credentials: profile.credentials});
   //       }
   //     })
   //     .finally(() => setLoading(false));
@@ -50,7 +51,7 @@ export function Login() {
       .then(profile => {
         if (profile) {
           setLoginError(false);
-          useProfile(profile);
+          saveProfile(profile);
           AsyncStorage.setItem('profile', JSON.stringify(profile));
           getColorsForUser(profile).then(
             colors => colors && saveUserColors(profile.handle, colors),
@@ -79,49 +80,56 @@ export function Login() {
     });
   };
 
+  const styles = StyleSheet.create({
+    page: {
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      backgroundColor: theme.color.secondary,
+    },
+    textInput: {marginHorizontal: 20},
+    loginErrorText: {color: 'red', textAlign: 'center'},
+    loginButton: {
+      backgroundColor: theme.color.primary,
+      marginHorizontal: 50,
+      marginVertical: 10,
+    },
+  });
+
   return (
-    <Surface
-      style={{
-        width: '100%',
-        height: '100%',
-        justifyContent: 'center',
-        backgroundColor: theme.color.secondary,
-      }}>
+    <Surface style={styles.page}>
       <TextInput
         secureTextEntry
         label="your access token"
+        accessibilityLabel="your access token"
         error={loginError}
         mode="outlined"
         onChangeText={text => setFieldValue(text, 'token')}
-        style={{
-          marginHorizontal: 20,
-        }}
+        style={styles.textInput}
         disabled={loading}
       />
       <TextInput
         label="your handle"
+        accessibilityLabel="your handle"
         error={loginError}
         mode="outlined"
         onChangeText={text => setFieldValue(text, 'handle')}
-        style={{
-          marginHorizontal: 20,
-        }}
+        style={styles.textInput}
         disabled={loading}
       />
       <OnlyShow If={loginError}>
-        <Paragraph style={{color: 'red', textAlign: 'center'}}>
+        <Paragraph
+          accessibilityLabel="login status"
+          style={styles.loginErrorText}>
           Login failed!
         </Paragraph>
       </OnlyShow>
       <Button
+        onPress={login}
         loading={loading}
         disabled={!credentials?.handle || !credentials.token || loading}
-        style={{
-          backgroundColor: theme.color.primary,
-          marginHorizontal: 50,
-          marginVertical: 10,
-        }}
-        onPress={login}>
+        accessibilityLabel="login"
+        style={styles.loginButton}>
         Login
       </Button>
     </Surface>

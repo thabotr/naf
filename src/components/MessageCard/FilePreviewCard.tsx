@@ -1,3 +1,4 @@
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Card, List, Paragraph} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -24,7 +25,9 @@ const FilePreviewCard = ({file, user}: {file: FileType; user?: boolean}) => {
         token: userProfile.token,
       });
       path && openFile(path);
-    } else openFile(file.uri);
+    } else {
+      openFile(file.uri);
+    }
   };
 
   const styles = StyleSheet.create({

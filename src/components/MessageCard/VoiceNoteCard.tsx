@@ -1,4 +1,5 @@
-import {useState, useEffect} from 'react';
+/* eslint-disable require-await */
+import React, {useState, useEffect, ReactNode} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ProgressBar, Paragraph as RNPParagraph, Card} from 'react-native-paper';
 
@@ -16,7 +17,7 @@ import {useLoggedInUser} from '../../context/user';
 import {MutexContextProvider} from '../../providers/MutexProvider';
 import {AsyncIconButton} from '../UserProfile/AsyncIconButton';
 
-const enum PlayState {
+enum PlayState {
   PAUSED,
   PLAYING,
   STOPPED,
@@ -43,16 +44,15 @@ export function VoiceNoteCard({
     playerPosition,
     playerDuration,
   } = useAudioRecorderPlayer();
-  
   const [playerValues, setPlayerValues] = useState({
     positionSec: 0,
     durationSec: file.duration,
   });
   const [playState, setPlayState] = useState<PlayState>(() => {
     if (RPPlayId === playId) {
-      if (recorderPlayerState === RecordPlayState.PLAYING)
+      if (recorderPlayerState === RecordPlayState.PLAYING) {
         return PlayState.PLAYING;
-      else {
+      } else {
         return PlayState.PAUSED;
       }
     }
@@ -65,9 +65,9 @@ export function VoiceNoteCard({
     FileManager.getFileURI(file.uri, file.type, {
       handle: userProfile.handle,
       token: userProfile.token,
-    }).then(uri => uri && setURI(uri));
+    }).then(newuri => newuri && setURI(uri));
     setURI(file.uri);
-  }, []);
+  }, [file.uri, file.type, uri, userProfile.handle, userProfile.token]);
 
   useEffect(() => {
     if (playId === RPPlayId) {
@@ -83,7 +83,7 @@ export function VoiceNoteCard({
     } else if (playState === PlayState.PLAYING) {
       setPlayState(PlayState.PAUSED);
     }
-  }, [playerPosition]);
+  }, [playerPosition, RPPlayId, playId, playState, playerDuration]);
 
   const onResumePlay = async () => {
     startPlayer(uri, playId);
@@ -108,9 +108,9 @@ export function VoiceNoteCard({
       stopPlayer();
     }
     setPlayState(PlayState.STOPPED);
-    setPlayerValues(playerValues => {
+    setPlayerValues(newplayerValues => {
       return {
-        ...playerValues,
+        ...newplayerValues,
         positionSec: 0,
       };
     });
@@ -139,20 +139,20 @@ export function VoiceNoteCard({
     },
     progressBarContainer: {flex: 1, justifyContent: 'center'},
     squareButton: {borderRadius: 0},
+    flex: {flex: 1},
   });
 
-  const Paragraph = ({children}: {children: React.ReactNode}) => {
+  const Paragraph = ({children}: {children: ReactNode}) => {
     return <RNPParagraph style={styles.paragraph}>{children}</RNPParagraph>;
   };
 
   const recordingInProgress =
     recorderPlayerState === RecordPlayState.RECORDING ||
     recorderPlayerState === RecordPlayState.RECORDING_PAUSED;
-
   return (
     <Card style={styles.container}>
       <HorizontalView>
-        <View style={{flex: 1}}>
+        <View style={styles.flex}>
           <HorizontalView style={styles.matadataHeader}>
             <Paragraph>{verboseDuration(playerValues.positionSec)}</Paragraph>
             <Paragraph>{verboseSize(file.size)}</Paragraph>

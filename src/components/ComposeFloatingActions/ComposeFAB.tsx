@@ -1,3 +1,5 @@
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {FAB} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
 
@@ -9,14 +11,16 @@ function ComposeFAB({
   onPress: () => void;
 }) {
   const {theme} = useTheme();
-
+  const styles = StyleSheet.create({
+    fab: {
+      margin: 3,
+      borderRadius: 0,
+      backgroundColor: theme.color.userSecondary,
+    },
+  });
   return (
     <FAB
-      style={{
-        margin: 3,
-        borderRadius: 0,
-        backgroundColor: theme.color.userSecondary,
-      }}
+      style={styles.fab}
       icon="pencil"
       onLongPress={onLongPress}
       onPress={onPress}

@@ -1,6 +1,6 @@
+import React, {useEffect, useRef, useState} from 'react';
 import {IconButton} from 'react-native-paper';
 import {Animated, StyleSheet, StyleProp, ViewStyle} from 'react-native';
-import {useEffect, useRef, useState} from 'react';
 import {useMutex} from '../../providers/MutexProvider';
 import {useTheme} from '../../context/theme';
 
@@ -40,16 +40,11 @@ const AsyncIconButton = ({
     squareButton: {
       borderRadius: 0,
     },
-    errorButton:
-      state === 'error'
-        ? {
-            borderWidth: 1,
-            borderColor: 'red',
-          }
-        : {},
+    errorButton: state === 'error' ? {borderWidth: 1, borderColor: 'red'} : {},
   });
 
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <Animated.View style={{opacity: state === 'loading' ? fadePulse : 1}}>
       <IconButton
         icon={icon}

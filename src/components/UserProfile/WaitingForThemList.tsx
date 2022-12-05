@@ -1,3 +1,5 @@
+/* eslint-disable require-await */
+import React, {useState} from 'react';
 import {Button, List, Paragraph, TextInput} from 'react-native-paper';
 import {StyleSheet, ScrollView} from 'react-native';
 import {useTheme} from '../../context/theme';
@@ -6,7 +8,6 @@ import {HorizontalView} from '../Helpers/HorizontalView';
 import {Show} from '../Helpers/Show';
 import {verboseTime} from '../../helper';
 import {WaitingForThemType} from '../../types/user';
-import {useState} from 'react';
 import {MutexContextProvider} from '../../providers/MutexProvider';
 import {AsyncIconButton} from './AsyncIconButton';
 import {Remote} from '../../services/Remote';
@@ -44,9 +45,9 @@ const WaitingForThemList = () => {
   };
 
   const setUser = (handle: string) => {
-    setWftData(wftData => {
+    setWftData(newwftData => {
       return {
-        ...wftData,
+        ...newwftData,
         handleForAwaited: handle,
       };
     });
@@ -59,21 +60,21 @@ const WaitingForThemList = () => {
 
   const setLocation = (location: 'A' | 'B' | 'C', value: string) => {
     const v = value.trim();
-    setWftData(wftData => {
+    setWftData(newwftData => {
       switch (location) {
         case 'A':
           return {
-            ...wftData,
+            ...newwftData,
             locationAliasA: v,
           };
         case 'B':
           return {
-            ...wftData,
+            ...newwftData,
             locationAliasB: v,
           };
         default:
           return {
-            ...wftData,
+            ...newwftData,
             locationAliasC: v,
           };
       }
@@ -132,6 +133,27 @@ const WaitingForThemList = () => {
       width: '33%',
       marginHorizontal: 1,
     },
+    list: {
+      margin: 0,
+      padding: 0,
+      backgroundColor: theme.color.secondary,
+      marginHorizontal: '5%',
+    },
+    center: {alignSelf: 'center'},
+    waitForThem: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 5,
+      backgroundColor: theme.color.secondary,
+    },
+    waitFor: {width: '83%', paddingVertical: 2},
+    waitForTxtInput: {width: 150},
+    atSymbol: {
+      alignSelf: 'center',
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+    atInput: {width: 150, marginHorizontal: 1},
   });
 
   return (
@@ -142,12 +164,7 @@ const WaitingForThemList = () => {
         titleStyle={styles.title}>
         {Object.entries(userProfile.waitingForThem).map(([userHandle, wft]) => (
           <List.Item
-            style={{
-              margin: 0,
-              padding: 0,
-              backgroundColor: theme.color.secondary,
-              marginHorizontal: '5%',
-            }}
+            style={styles.list}
             title={`waiting for ${userHandle} @ ${wft.at}`}
             description={`created @ ${verboseTime(
               wft.createdAt,
@@ -160,7 +177,7 @@ const WaitingForThemList = () => {
                 style={[
                   styles.squareButton,
                   styles.minimalButton,
-                  {alignSelf: 'center'},
+                  styles.center,
                 ]}
                 onPress={() => deleteWFT(userHandle)}
               />
@@ -170,13 +187,7 @@ const WaitingForThemList = () => {
             key={userHandle}
           />
         ))}
-        <HorizontalView
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 5,
-            backgroundColor: theme.color.secondary,
-          }}>
+        <HorizontalView style={styles.waitForThem}>
           <Show
             component={
               <Button
@@ -198,40 +209,33 @@ const WaitingForThemList = () => {
                   style={styles.squareButton}
                   onPress={discardWFT}
                 />
-                <HorizontalView style={{width: '83%', paddingVertical: 2}}>
+                <HorizontalView style={styles.waitFor}>
                   <ScrollView horizontal fadingEdgeLength={10}>
                     <TextInput
                       label={'wait for...'}
-                      style={{width: 150}}
+                      style={styles.waitForTxtInput}
                       onEndEditing={e => {
                         setUser(e.nativeEvent.text);
                       }}
                       dense
                     />
-                    <Paragraph
-                      style={{
-                        alignSelf: 'center',
-                        color: theme.color.textPrimary,
-                        shadowColor: theme.color.textSecondary,
-                      }}>
-                      @
-                    </Paragraph>
+                    <Paragraph style={styles.atSymbol}>@</Paragraph>
                     <TextInput
                       label={'first place'}
                       onEndEditing={e => setLocation('A', e.nativeEvent.text)}
-                      style={{width: 150, marginHorizontal: 1}}
+                      style={styles.atInput}
                       dense
                     />
                     <TextInput
                       label={'second place'}
                       onEndEditing={e => setLocation('B', e.nativeEvent.text)}
-                      style={{width: 150, marginHorizontal: 1}}
+                      style={styles.atInput}
                       dense
                     />
                     <TextInput
                       label={'third place'}
                       onEndEditing={e => setLocation('C', e.nativeEvent.text)}
-                      style={{width: 150, marginHorizontal: 1}}
+                      style={styles.atInput}
                       dense
                     />
                   </ScrollView>

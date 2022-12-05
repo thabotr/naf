@@ -50,7 +50,7 @@ class Remote {
         body: messageForm,
       });
       if (res.status === 201) {
-        const msgResult = (await res.json()) as Message;
+        const msgResult: Message = await res.json();
         msgResult.files ??= [];
         msgResult.voiceRecordings ??= [];
         return msgResult;
@@ -79,7 +79,7 @@ class Remote {
       handle: handle,
     };
     if (lastModified !== undefined) {
-      headers['lastmodified'] = `${lastModified}`;
+      headers.lastmodified = `${lastModified}`;
     }
     try {
       const res = await RNFetchBlob.fetch(
@@ -88,10 +88,11 @@ class Remote {
         headers,
       );
       if (res.info().status === 200) {
-        return {
+        const profile: Profile = {
           ...res.json(),
           token: token,
-        } as Profile;
+        };
+        return profile;
       } else if (res.info().status === 204) {
         return;
       }
@@ -124,12 +125,12 @@ class Remote {
       });
 
       if (res.status === 200) {
-        const chat = await res.json();
-        return {
-          ...chat,
+        const chat: Chat = {
+          ...(await res.json()),
           messages: [],
           messageThreads: [],
-        } as Chat;
+        };
+        return chat;
       }
     } catch (e) {
       console.error('Remote.acceptConnection:', e);
@@ -176,7 +177,7 @@ class Remote {
       handle: handle,
     };
     if (lastModified !== undefined) {
-      headers['lastmodified'] = `${lastModified}`;
+      headers.lastmodified = `${lastModified}`;
     }
     try {
       const res = await RNFetchBlob.fetch(
@@ -185,7 +186,7 @@ class Remote {
         headers,
       );
       if (res.info().status === 200) {
-        const chats = res.json() as Chat[];
+        const chats: Chat[] = res.json();
         chats.forEach(c => {
           c.messages ??= [];
           c.messageThreads ??= [];
@@ -317,7 +318,8 @@ class Remote {
         body: JSON.stringify({at: at, to: userHandle}),
       });
       if (res.status === 201) {
-        return (await res.json()) as WFTType;
+        const wft: WFTType = await res.json();
+        return wft;
       }
       console.error(
         'Remote.addWaitForThem:',
@@ -347,7 +349,7 @@ class Remote {
         body: JSON.stringify({at: at}),
       });
       if (res.status === 200) {
-        const wfy = (await res.json()) as WFYType;
+        const wfy: WFYType = await res.json();
         if (!wfy[at].waiters) {
           wfy[at].waiters = {};
         }

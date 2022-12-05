@@ -1,6 +1,7 @@
-import {ToastAndroid} from 'react-native';
+import React from 'react';
+import {ToastAndroid, StyleSheet} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import { useTheme } from '../../context/theme';
+import {useTheme} from '../../context/theme';
 import {Message} from '../../types/message';
 
 const deliveryStatusDetails = {
@@ -15,11 +16,14 @@ const deliveryStatusDetails = {
 function DeliveryStatus({msg}: {msg: Message}) {
   const {theme} = useTheme();
   const details =
-    deliveryStatusDetails[msg.status ?? 'NONE'] ??
-    deliveryStatusDetails['NONE'];
+    deliveryStatusDetails[msg.status ?? 'NONE'] ?? deliveryStatusDetails.NONE;
   const displayMessageStatus = () => {
     details && ToastAndroid.show(details.message, 3000);
   };
+
+  const styles = StyleSheet.create({
+    button: {padding: 0, margin: 0, borderRadius: 0},
+  });
 
   return (
     <IconButton
@@ -28,7 +32,7 @@ function DeliveryStatus({msg}: {msg: Message}) {
       onLongPress={displayMessageStatus}
       color={theme.color.textPrimary}
       icon={details.icon}
-      style={{padding: 0, margin: 0, borderRadius: 0}}
+      style={styles.button}
     />
   );
 }

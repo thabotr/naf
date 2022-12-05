@@ -1,4 +1,10 @@
-import {useState, createContext, useEffect, useContext, ReactNode} from 'react';
+import React, {
+  useState,
+  createContext,
+  useEffect,
+  useContext,
+  ReactNode,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/user';
 import {Chat} from '../types/chat';
@@ -26,7 +32,7 @@ export type AppStateContextType = {
   saveAppLoggedInUser: (user: User) => void;
   saveAppSettings: (settings: SettingsType) => void;
   saveAppChats: (chats: Chat[]) => void;
-  clearAppState: ()=>void;
+  clearAppState: () => void;
 };
 const logError = (ac: AppStateConstants, e: any) =>
   console.log('failed to save', ac, e);
@@ -63,9 +69,13 @@ const AppStateProvider = ({children}: Props) => {
     );
   };
 
-  const clearAppState = ()=>{
-    AsyncStorage.multiRemove([AppStateConstants.CHATS, AppStateConstants.SETTINGS, AppStateConstants.USER]);
-  }
+  const clearAppState = () => {
+    AsyncStorage.multiRemove([
+      AppStateConstants.CHATS,
+      AppStateConstants.SETTINGS,
+      AppStateConstants.USER,
+    ]);
+  };
 
   useEffect(() => {
     AsyncStorage.multiGet(['loggedInUser', 'settings', 'chats'])

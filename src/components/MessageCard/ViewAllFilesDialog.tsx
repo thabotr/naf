@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {Dialog, IconButton, Portal} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -28,7 +28,7 @@ function ViewAllFilesDialog({
 
   useEffect(() => {
     setFiles(msg.files);
-  }, [visible]);
+  }, [visible, msg.files]);
 
   const styles = StyleSheet.create({
     dialogContainer: {
@@ -51,7 +51,7 @@ function ViewAllFilesDialog({
         <Dialog.Title>all attachments</Dialog.Title>
         <Dialog.Content style={styles.dialogBody}>
           <FlatList
-            data={files.map((f, i) => {
+            data={files.map(f => {
               return {
                 id: f.uri,
                 title: f.uri,
@@ -81,8 +81,8 @@ function ViewAllFilesDialog({
                     <IconButton
                       icon="delete"
                       onPress={() =>
-                        setFiles(files =>
-                          files.filter(fs => fs.uri !== item.title),
+                        setFiles(sfiles =>
+                          sfiles.filter(fs => fs.uri !== item.title),
                         )
                       }
                       style={styles.squareButton}

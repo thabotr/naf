@@ -1,6 +1,6 @@
-import {NativeStackHeaderProps} from '@react-navigation/native-stack';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, ScrollView, ToastAndroid} from 'react-native';
+import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Button, IconButton, Paragraph, TextInput} from 'react-native-paper';
 import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
@@ -114,12 +114,14 @@ const EditableProfilePreview = () => {
           return user.surname;
       }
     })();
+    // const btnStyle: StyleProp<ViewStyle> = ;
     return (
       <IconButton
         icon="restore"
         disabled={userValue === loggedInUserValue}
         onPress={() => restoreProfile(field)}
         style={[
+          // eslint-disable-next-line react-native/no-inline-styles
           {backgroundColor: theme.color.primary, alignSelf: 'center'},
           styles.squareButton,
           styles.minimalButton,
@@ -145,12 +147,35 @@ const EditableProfilePreview = () => {
     });
   };
 
+  const profileStyles = StyleSheet.create({
+    img: {width: '100%', opacity: editing ? 0.6 : 1},
+    horView: {
+      width: '100%',
+      alignItems: 'center',
+      padding: 10,
+      backgroundColor: theme.color.secondary,
+    },
+    avatar: {width: 120, height: 120, opacity: editing ? 0.6 : 1},
+    background: {
+      flex: 1,
+      flexDirection: editing ? 'row' : 'column',
+      backgroundColor: theme.color.secondary,
+      padding: 10,
+    },
+    flex: {flex: 1},
+    handle: {
+      fontWeight: 'bold',
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+  });
+
   return (
     <>
       <View>
         <Image
           source={user.landscapeURI}
-          style={{width: '100%', opacity: editing ? 0.6 : 1}}
+          style={profileStyles.img}
           viewable={!editing}
         />
         <OnlyShow If={editing}>
@@ -170,17 +195,11 @@ const EditableProfilePreview = () => {
           </OverlayedView>
         </OnlyShow>
       </View>
-      <HorizontalView
-        style={{
-          width: '100%',
-          alignItems: 'center',
-          padding: 10,
-          backgroundColor: theme.color.secondary,
-        }}>
+      <HorizontalView style={profileStyles.horView}>
         <View>
           <Image
             source={user.avatarURI}
-            style={{width: 120, height: 120, opacity: editing ? 0.6 : 1}}
+            style={profileStyles.avatar}
             viewable={!editing}
           />
           <OnlyShow If={editing}>
@@ -200,13 +219,7 @@ const EditableProfilePreview = () => {
             </OverlayedView>
           </OnlyShow>
         </View>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: editing ? 'row' : 'column',
-            backgroundColor: theme.color.secondary,
-            padding: 10,
-          }}>
+        <View style={profileStyles.background}>
           <Show
             component={
               <Paragraph
@@ -219,7 +232,7 @@ const EditableProfilePreview = () => {
             }
             If={!editing}
             ElseShow={
-              <View style={{flex: 1}}>
+              <View style={profileStyles.flex}>
                 <RestoreButton field="name" />
                 <TextInput
                   label="new name"
@@ -233,18 +246,11 @@ const EditableProfilePreview = () => {
           />
           <Show
             component={
-              <Paragraph
-                style={{
-                  fontWeight: 'bold',
-                  color: theme.color.textPrimary,
-                  shadowColor: theme.color.textSecondary,
-                }}>
-                {user.handle}
-              </Paragraph>
+              <Paragraph style={profileStyles.handle}>{user.handle}</Paragraph>
             }
             If={!editing}
             ElseShow={
-              <View style={{flex: 1}}>
+              <View style={profileStyles.flex}>
                 <RestoreButton field="surname" />
                 <TextInput
                   label="new surname"
@@ -265,6 +271,7 @@ const EditableProfilePreview = () => {
             ToastAndroid.show('hold to logout', 3_000);
           }}
           onLongPress={logOut}
+          // eslint-disable-next-line react-native/no-inline-styles
           style={[styles.squareButton, {margin: 10}]}
         />
       </HorizontalView>
@@ -302,7 +309,7 @@ function UserProfileHeader(props: NativeStackHeaderProps) {
             : colors.landscape.lightPrimary,
         ),
     );
-  }, []);
+  }, [theme.dark, userProfile]);
   return <GenericHeader name="Your profile" props={props} bgColor={color} />;
 }
 
@@ -310,6 +317,7 @@ function UserProfile() {
   const {theme} = useTheme();
   return (
     <ScrollView
+      // eslint-disable-next-line react-native/no-inline-styles
       style={{backgroundColor: theme.color.secondary, height: '100%'}}>
       <EditableProfilePreview />
       <WaitingForYouList />

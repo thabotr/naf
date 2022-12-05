@@ -1,8 +1,9 @@
-import {useEffect} from 'react';
+/* eslint-disable require-await */
+import React, {useEffect} from 'react';
 import {BackHandler} from 'react-native';
 import {useMessageComposer} from '../../context/messageEditor';
 import {useAudioRecorderPlayer} from '../../providers/AudioRecorderPlayer';
-import { AsyncIconButton } from '../UserProfile/AsyncIconButton';
+import {AsyncIconButton} from '../UserProfile/AsyncIconButton';
 
 const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
   const {saveComposeMsg, addAttachments, recordVisual} = useMessageComposer();
@@ -30,26 +31,26 @@ const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
     });
   };
 
-  const backAction = () => {
-    onBack();
-    return true;
-  };
-
   useEffect(() => {
+    const backAction = () => {
+      onBack();
+      return true;
+    };
     BackHandler.addEventListener('hardwareBackPress', backAction);
     return () =>
       BackHandler.removeEventListener('hardwareBackPress', backAction);
-  }, []);
+  }, [onBack]);
 
   return (
     <>
       {actions.map(ab => (
         <AsyncIconButton
           key={ab.icon}
+          // eslint-disable-next-line react-native/no-inline-styles
           style={{margin: 1, borderRadius: 0, backgroundColor: ab.color}}
           size={40}
           icon={ab.icon}
-          onLongPress={async() => {
+          onLongPress={async () => {
             switch (ab.icon) {
               case 'camera':
                 recordVisual('video');
@@ -58,7 +59,7 @@ const ExtendedComposeFABs = ({onBack}: {onBack: () => void}) => {
               default:
             }
           }}
-          onPress={async() => {
+          onPress={async () => {
             switch (ab.icon) {
               case 'microphone':
                 startRecorder();

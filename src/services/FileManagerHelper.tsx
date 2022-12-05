@@ -9,19 +9,21 @@ export class FileManagerHelper {
     'image/png': this.imageDir,
     'audio/mpeg': this.audioDir,
     'video/mp4': this.videosDir,
+    'application/zip': this.filesDir,
   };
 
   static ExtForMimetypes: {[key: string]: string} = {
-    "video/mp4" : '.mp4',
-    "image/jpeg" : '.jpg',
-    "image/jpg" : '.jpg',
-    "image/png" : '.png',
-    "audio/mpeg" : '.mp3',
-    "video/mpeg" : '.mpeg'
+    'video/mp4': '.mp4',
+    'image/jpeg': '.jpg',
+    'image/jpg': '.jpg',
+    'image/png': '.png',
+    'audio/mpeg': '.mp3',
+    'video/mpeg': '.mpeg',
+    'application/zip': '.zip',
   };
 
   rootDir = '';
-  constructor(rootDir: string){
+  constructor(rootDir: string) {
     this.rootDir = rootDir;
   }
 
@@ -33,16 +35,22 @@ export class FileManagerHelper {
   }
 
   getExtForMimetype(mimeType?: string) {
-    if (!mimeType) return '';
+    if (!mimeType) {
+      return '';
+    }
     const extForMime = FileManagerHelper.ExtForMimetypes[mimeType];
     return extForMime ?? '';
   }
 
   getDirForMimetype(mimeType?: string): string {
-    if (!mimeType) return `${this.rootDir}/${FileManagerHelper.filesDir}`;
+    if (!mimeType) {
+      return `${this.rootDir}/${FileManagerHelper.filesDir}`;
+    }
 
     const mimeDir = FileManagerHelper.DirsForMimetypes[mimeType];
-    if (mimeDir) return `${this.rootDir}/${mimeDir}`;
+    if (mimeDir) {
+      return `${this.rootDir}/${mimeDir}`;
+    }
 
     return `${this.rootDir}/${FileManagerHelper.filesDir}`;
   }

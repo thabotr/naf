@@ -1,12 +1,13 @@
-import { Badge } from "react-native-paper";
-import { useTheme } from "../../context/theme";
-import { OnlyShow } from "../Helpers/OnlyShow";
+import React from 'react';
+import {StyleSheet} from 'react-native';
+import {Badge} from 'react-native-paper';
+import {useTheme} from '../../context/theme';
+import {OnlyShow} from '../Helpers/OnlyShow';
 
-function UnreadMessageCountBadge({count}:{count: number}){
+function UnreadMessageCountBadge({count}: {count: number}) {
   const {theme} = useTheme();
-  return <OnlyShow If={!!count}>
-    <Badge
-    style={{
+  const styles = StyleSheet.create({
+    badge: {
       position: 'absolute',
       bottom: -1,
       right: -1,
@@ -15,11 +16,15 @@ function UnreadMessageCountBadge({count}:{count: number}){
       borderWidth: 1,
       borderColor: theme.color.friendPrimary,
       borderStyle: 'solid',
-    }}
-    size={33}>
-    {count}
-    </Badge>
-  </OnlyShow>
+    },
+  });
+  return (
+    <OnlyShow If={!!count}>
+      <Badge style={styles.badge} size={33}>
+        {count}
+      </Badge>
+    </OnlyShow>
+  );
 }
 
 export {UnreadMessageCountBadge};

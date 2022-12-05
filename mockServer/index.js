@@ -11,34 +11,36 @@ const users = {
     initials: 'UE',
     avatarURI: 'https://picsum.photos/113',
     landscapeURI: 'https://picsum.photos/1113',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
+    listenWithMeURI:
+      'https://up.fakazaweb.com/wp-content/uploads/2022' +
+      '/10/Sir_Trill_ft_Nkosazana_Daughter_Zaba_-_Busisa_Intro__Fakaza.Me.com.mp3',
     lastModified: 0,
     connections: {
-      "w/maybeBlackPen" : { metOn: 1669031624575, },
+      'w/maybeBlackPen': {metOn: 1669031624575},
     },
     waitingForYou: {
-      "argentina|maine|iran":{
+      'argentina|maine|iran': {
         createdAt: 1669031624575,
         expiresAt: 1669042924575,
       },
-      "germany|italy|netherlands" : {
+      'germany|italy|netherlands': {
         createdAt: 1669037824575,
-        expiresAt: 1669037824575+1000*60*60*7,
+        expiresAt: 1669037824575 + 1000 * 60 * 60 * 7,
         waiters: {
           'w/hudson-odoi': {
             avatarURI: 'https://picsum.photos/413',
             arrivedAt: 1669037824575,
-            leavesAt: 1669037824575+1000*60*60*7,
+            leavesAt: 1669037824575 + 1000 * 60 * 60 * 7,
           },
-        }
-      }
+        },
+      },
     },
     waitingForThem: {
       'w/kMondy': {
         at: 'germany|italy|netherlands',
         createdAt: 1669037724575,
         expiresAt: 1669138724575,
-      }
+      },
     },
   },
   'w/maybeBlackPen': {
@@ -48,10 +50,12 @@ const users = {
     initials: 'PM',
     avatarURI: 'https://picsum.photos/213',
     landscapeURI: 'https://picsum.photos/1213',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Disciples_of_House_-_Wena_Fakaza.Me.com.mp3',
+    listenWithMeURI:
+      'https://up.fakazaweb.com/wp-content/uploads/2022' +
+      '/10/Sir_Trill_ft_Disciples_of_House_-_Wena_Fakaza.Me.com.mp3',
     connections: {
-      'w/unodosthreenfour' : { metOn: 1669031624575, },
-    }
+      'w/unodosthreenfour': {metOn: 1669031624575},
+    },
   },
   'w/hudson-odoi': {
     name: 'Calum',
@@ -60,14 +64,16 @@ const users = {
     initials: 'CHO',
     avatarURI: 'https://picsum.photos/413',
     landscapeURI: 'https://picsum.photos/1413',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2021/08/Sir_Trill_Jessica_LM_ft_ThackzinDJ_Tee_Jay_-_Lwandle_Xiluva__Fakaza.Me.com.mp3',
+    listenWithMeURI:
+      'https://up.fakazaweb.com/wp-content/uploads/2021' +
+      '/08/Sir_Trill_Jessica_LM_ft_ThackzinDJ_Tee_Jay_-_Lwandle_Xiluva__Fakaza.Me.com.mp3',
     waitingForThem: {
-      'w/unodosthreenfour' : {
+      'w/unodosthreenfour': {
         at: 'germany|italy|netherlands',
         createdAt: 1669037824575,
-        expiresAt: 1669037824575+1000*60*60*7,
-      }
-    }
+        expiresAt: 1669037824575 + 1000 * 60 * 60 * 7,
+      },
+    },
   },
   'w/kMondy': {
     name: 'King',
@@ -76,80 +82,85 @@ const users = {
     initials: 'MK',
     avatarURI: 'https://picsum.photos/513',
     landscapeURI: 'https://picsum.photos/1513',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Bailey_DJ_Givy_Baby_Emjaykeyz_-_Staring_Fakaza.Me.com.mp3',
-    lastModified: 0, 
+    listenWithMeURI:
+      'https://up.fakazaweb.com/wp-content/uploads/2022' +
+      '/10/Sir_Trill_ft_Bailey_DJ_Givy_Baby_Emjaykeyz_-_Staring_Fakaza.Me.com.mp3',
+    lastModified: 0,
   },
-  'w/sgd' : {
+  'w/sgd': {
     name: 'Sergino',
     surname: 'Dest',
     handle: 'w/sgd',
     initials: 'SD',
     avatarURI: 'https://picsum.photos/313',
     landscapeURI: 'https://picsum.photos/1313',
-    listenWithMeURI: 'https://up.fakazaweb.com/wp-content/uploads/2022/10/Sir_Trill_ft_Soa_Mattrix_-_Why_Ninga_Lali_Emakhaya_Fakaza.Me.com.mp3',  
+    listenWithMeURI:
+      'https://up.fakazaweb.com/wp-content/uploads/2022' +
+      '/10/Sir_Trill_ft_Soa_Mattrix_-_Why_Ninga_Lali_Emakhaya_Fakaza.Me.com.mp3',
   },
-}
+};
 
 const AuthTokensForUsers = {
-  'token1': 'w/unodosthreenfour',
-  'token2': 'w/maybeBlackPen',
-  'token3': 'w/sgd',
-  'token4': 'w/hudson-odoi',
-  'token5': 'w/kMondy',
-}
+  token1: 'w/unodosthreenfour',
+  token2: 'w/maybeBlackPen',
+  token3: 'w/sgd',
+  token4: 'w/hudson-odoi',
+  token5: 'w/kMondy',
+};
 
-const sevenHrs = 12*60*60*1000;
+const sevenHrs = 12 * 60 * 60 * 1000;
 
 const chats = {
-  "w/maybeBlackPen|w/unodosthreenfour" : {
-    messages: [
-    ],
+  'w/maybeBlackPen|w/unodosthreenfour': {
+    messages: [],
     lastModified: 0,
-  }
-}
+  },
+};
 
-const touchUser = (handle, timestamp)=>{
-  const user = users[handle]
-  if(user){
+const touchUser = (handle, timestamp) => {
+  const user = users[handle];
+  if (user) {
     users[handle] = {
       ...user,
       lastModified: timestamp ?? new Date().getTime(),
-    }
+    };
   }
-}
+};
 
-app.post('/user', (req, resp)=>{
+app.post('/user', (req, resp) => {
   const {name, surname, handle, initials, token} = req.body;
-  if(!validateHandle(handle)){
-    return resp.status(400)
-    .send("'handle' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  if (!validateHandle(handle)) {
+    return resp
+      .status(400)
+      .send("'handle' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$");
   }
 
-  for(const h in users){
-    if(h === handle){
-      return resp.status(400)
-      .send(`handle ${handle} already taken`);
+  for (const h in users) {
+    if (h === handle) {
+      return resp.status(400).send(`handle ${handle} already taken`);
     }
   }
 
-  if( token.trim().length < 8){
-    return resp.status(400)
-    .send("'token' parameter should be greater than 8 characters");
+  if (token.trim().length < 8) {
+    return resp
+      .status(400)
+      .send("'token' parameter should be greater than 8 characters");
   }
 
-  for(const n of [name, surname, initials]){
-    if( n.trim().length === 0){
-      return resp.status(400)
-      .send("'name', 'surname', 'initials' should not be empty")
+  for (const n of [name, surname, initials]) {
+    if (n.trim().length === 0) {
+      return resp
+        .status(400)
+        .send("'name', 'surname', 'initials' should not be empty");
     }
   }
 });
 
-const authenticate = (req, resp, next)=>{
+const authenticate = (req, resp, next) => {
   const {token, handle} = req.headers;
   const validHandle = AuthTokensForUsers[token];
   const user = users[handle];
-  if( !handle || handle !== validHandle || !user){
+  if (!handle || handle !== validHandle || !user) {
     return resp.status(403).send('Unauthorized');
   }
   next();
@@ -161,8 +172,7 @@ app.use(authenticate);
 app.get('/profile', (req, resp) => {
   const {handle, lastmodified} = req.headers;
   const user = users[handle];
-  
-  if(lastmodified >= user.lastModified){
+  if (lastmodified >= user.lastModified) {
     return resp.status(204).send();
   }
 
@@ -175,61 +185,72 @@ app.get('/chats', (req, resp) => {
 
   const resChats = [];
 
-  for( const interlocutorHandle in user.connections){
-    const interlocutorChat = chats[[handle, interlocutorHandle].sort().join('|')];
+  for (const interlocutorHandle in user.connections) {
+    const interlocutorChat =
+      chats[[handle, interlocutorHandle].sort().join('|')];
     const interlocutorUser = users[interlocutorHandle];
-    interlocutorChat && interlocutorUser &&
-    resChats.push({
-      user: {
-        name: interlocutorUser.name,
-        surname: interlocutorUser.surname,
-        initials: interlocutorUser.initials,
-        handle: interlocutorUser.handle,
-        avatarURI: interlocutorUser.avatarURI,
-        landscapeURI: interlocutorUser.landscapeURI,
-      },
-      ...interlocutorChat,
-    });
+    interlocutorChat &&
+      interlocutorUser &&
+      resChats.push({
+        user: {
+          name: interlocutorUser.name,
+          surname: interlocutorUser.surname,
+          initials: interlocutorUser.initials,
+          handle: interlocutorUser.handle,
+          avatarURI: interlocutorUser.avatarURI,
+          landscapeURI: interlocutorUser.landscapeURI,
+        },
+        ...interlocutorChat,
+      });
   }
 
-  const lastModified = resChats.map(c=>c.lastModified).sort().reverse().find(_=>true) ?? 0;
+  const lastModified =
+    resChats
+      .map(c => c.lastModified)
+      .sort()
+      .reverse()
+      .find(_ => true) ?? 0;
 
-  if( lastmodified >= lastModified){
+  if (lastmodified >= lastModified) {
     return resp.status(204).send();
   }
 
   resp.send(resChats);
 });
 
-const validateHandle = (handle)=>{
-  if(!handle){
+const validateHandle = handle => {
+  if (!handle) {
     return false;
   }
-  return !!handle.match('^w/[a-zA-Z0-9\-\_]{1,32}$');
-}
+  return !!handle.match('^w/[a-zA-Z0-9-_]{1,32}$');
+};
 
-const validateLocations = (at)=>{
+const validateLocations = at => {
   const locations = at.split('|');
   let locationsValid = true;
-  locationsValid &&= (locations.length === 3);
-  for(const loc of locations){
+  locationsValid &&= locations.length === 3;
+  for (const loc of locations) {
     locationsValid &&= !!loc.match('^[a-zA-Z]{1,32}$');
   }
   return locationsValid;
-}
+};
 
-app.post('/waitforyou', (req, resp)=>{
+app.post('/waitforyou', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {at} = req.body;
-  if( !validateLocations(at)){
-    return resp.status(400)
-    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  if (!validateLocations(at)) {
+    return resp
+      .status(400)
+      .send(
+        "'at' parameter should be a string of three alphabetic " +
+          'location names of length in range (1,32) seperated by | character',
+      );
   }
 
   const timestamp = new Date().getTime();
-  if( user.waitingForYou && user.waitingForYou[at]){
+  if (user.waitingForYou && user.waitingForYou[at]) {
     const res = {};
     res[at] = user.waitingForYou[at];
     return resp.send(res);
@@ -238,10 +259,10 @@ app.post('/waitforyou', (req, resp)=>{
   user.waitingForYou ??= {};
   user.waitingForYou[at] = {
     createdAt: timestamp,
-    expiresAt: timestamp+sevenHrs,
-  }
+    expiresAt: timestamp + sevenHrs,
+  };
 
-  if(user.danglingWFY && user.danglingWFY[at]){
+  if (user.danglingWFY && user.danglingWFY[at]) {
     user.waitingForYou[at].waiters = user.danglingWFY[at].waiters;
     delete user.danglingWFY[at];
   }
@@ -252,73 +273,85 @@ app.post('/waitforyou', (req, resp)=>{
   return resp.send(res);
 });
 
-app.delete('/waitforyou', (req, resp)=>{
+app.delete('/waitforyou', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {at} = req.body;
-  if( !validateLocations(at)){
-    return resp.status(400)
-    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  if (!validateLocations(at)) {
+    return resp
+      .status(400)
+      .send(
+        "'at' parameter should be a string of three alphabetic " +
+          'location names of length in range (1,32) seperated by | character',
+      );
   }
 
-  if(user.waitingForYou && user.waitingForYou[at]){
+  if (user.waitingForYou && user.waitingForYou[at]) {
     delete user.waitingForYou[at];
     touchUser(user.handle);
   }
   resp.status(200).send();
-})
+});
 
-app.delete('/waitforyou/user', (req, resp)=>{
+app.delete('/waitforyou/user', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {at, waiterHandle} = req.body;
-  if( !validateLocations(at)){
-    return resp.status(400)
-    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  if (!validateLocations(at)) {
+    return resp
+      .status(400)
+      .send(
+        "'at' parameter should be a string of three alphabetic " +
+          'location names of length in range (1,32) seperated by | character',
+      );
   }
 
-  if(!validateHandle(waiterHandle)){
-    return resp.status(400)
-    .send("'to' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  if (!validateHandle(waiterHandle)) {
+    return resp
+      .status(400)
+      .send("'to' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$");
   }
 
-  if(user.waitingForYou && user.waitingForYou[at]){
-    user.waitingForYou[at].waiters[waiterHandle] &&
-    touchUser(user.handle);
+  if (user.waitingForYou && user.waitingForYou[at]) {
+    user.waitingForYou[at].waiters[waiterHandle] && touchUser(user.handle);
     delete user.waitingForYou[at].waiters[waiterHandle];
   }
   resp.status(200).send();
-})
+});
 
-app.post('/waitforthem', (req, resp)=>{
+app.post('/waitforthem', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {at, to} = req.body;
-  if(to === handle){
-    return resp.status(400)
-    .send('cannot wait for yourself...yet')
+  if (to === handle) {
+    return resp.status(400).send('cannot wait for yourself...yet');
   }
-  if(!validateHandle(to)){
-    return resp.status(400)
-    .send("'to' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
-  }
-
-  if( !validateLocations(at)){
-    return resp.status(400)
-    .send("'at' parameter should be a string of three alphabetic location names of length in range (1,32) seperated by | character");
+  if (!validateHandle(to)) {
+    return resp
+      .status(400)
+      .send("'to' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$");
   }
 
-  if(user.connections[to]){
+  if (!validateLocations(at)) {
+    return resp
+      .status(400)
+      .send(
+        "'at' parameter should be a string of three alphabetic" +
+          ' location names of length in range (1,32) seperated by | character',
+      );
+  }
+
+  if (user.connections[to]) {
     return resp.status(400).send(`already connected to ${to}`);
   }
 
   const timestamp = new Date().getTime();
 
   const interlocutor = users[to];
-  if(!interlocutor){
+  if (!interlocutor) {
     return resp.status(400).send(`user ${to} not found`);
   }
 
@@ -326,20 +359,20 @@ app.post('/waitforthem', (req, resp)=>{
   user.waitingForThem[to] = {
     at: at,
     createdAt: timestamp,
-    expiresAt: timestamp+sevenHrs,
-  }
+    expiresAt: timestamp + sevenHrs,
+  };
   touchUser(user.handle, timestamp);
 
   interlocutor.waitingForYou ??= {};
 
-  if(interlocutor.waitingForYou[at]){
+  if (interlocutor.waitingForYou[at]) {
     interlocutor.waitingForYou[at].waiters ??= {};
     interlocutor.waitingForYou[at].waiters[handle] = {
       arrivedAt: timestamp,
-      leavesAt: timestamp+sevenHrs,
-    }
+      leavesAt: timestamp + sevenHrs,
+    };
     touchUser(interlocutor.handle, timestamp);
-  }else {
+  } else {
     interlocutor.danglingWFY ??= {};
     interlocutor.danglingWFY[at] ??= {
       createdAt: 0,
@@ -349,38 +382,49 @@ app.post('/waitforthem', (req, resp)=>{
     interlocutor.danglingWFY[at].waiters[handle] = {
       at: at,
       createdAt: timestamp,
-      expiresAt: timestamp+sevenHrs,
+      expiresAt: timestamp + sevenHrs,
     };
   }
 
-  const res={};
+  const res = {};
   res[to] = {
     at: at,
     createdAt: timestamp,
-    expiresAt: timestamp+sevenHrs,
+    expiresAt: timestamp + sevenHrs,
   };
 
   resp.status(201).send(res);
 });
 
-app.delete('/waitforthem', (req, resp)=>{
+app.delete('/waitforthem', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {to} = req.body;
-  if(!validateHandle(to)){
-    return resp.status(400)
-    .send("'to' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  if (!validateHandle(to)) {
+    return resp
+      .status(400)
+      .send("'to' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$");
   }
   const wft = {
     ...user.waitingForThem[to],
-  }
+  };
 
   const them = users[to];
-  if(them.waitingForYou && them.waitingForYou[wft.at] && them.waitingForYou[wft.at].waiters && them.waitingForYou[wft.at].waiters[to]){
+  if (
+    them.waitingForYou &&
+    them.waitingForYou[wft.at] &&
+    them.waitingForYou[wft.at].waiters &&
+    them.waitingForYou[wft.at].waiters[to]
+  ) {
     delete them.waitingForYou[wft.at].waiters[to];
     touchUser(them.handle);
-  }else if( them.danglingWFY && them.danglingWFY[wft.at] && them.danglingWFY[wft.at].waiters && them.danglingWFY[wft.at].waiters[to]){
+  } else if (
+    them.danglingWFY &&
+    them.danglingWFY[wft.at] &&
+    them.danglingWFY[wft.at].waiters &&
+    them.danglingWFY[wft.at].waiters[to]
+  ) {
     delete them.danglingWFY[wft.at].waiters[to];
   }
 
@@ -389,17 +433,18 @@ app.delete('/waitforthem', (req, resp)=>{
   return resp.send(wft);
 });
 
-app.delete('/connection', (req, resp)=>{
+app.delete('/connection', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {interlocutorHandle} = req.body;
-  if(!validateHandle(interlocutorHandle)){
-    return resp.status(400)
-    .send("'to' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  if (!validateHandle(interlocutorHandle)) {
+    return resp
+      .status(400)
+      .send("'to' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$");
   }
 
-  if(user.connections[interlocutorHandle]){
+  if (user.connections[interlocutorHandle]) {
     delete user.connections[interlocutorHandle];
     delete users[interlocutorHandle].connections[user.handle];
     delete chats[[interlocutorHandle, handle].sort().join('|')];
@@ -407,19 +452,22 @@ app.delete('/connection', (req, resp)=>{
   }
 
   return resp.send(`disconnected from ${interlocutorHandle}`);
-})
+});
 
-app.post('/connection', (req, resp)=>{
+app.post('/connection', (req, resp) => {
   const {handle} = req.headers;
   const user = users[handle];
 
   const {at, waiterHandle} = req.body;
-  if(!validateHandle(waiterHandle)){
-    return resp.status(400)
-    .send("'waiterHandle' parameter should match regexp ^w/[a-zA-Z0-9\-\_]{1,32}$");
+  if (!validateHandle(waiterHandle)) {
+    return resp
+      .status(400)
+      .send(
+        "'waiterHandle' parameter should match regexp ^w/[a-zA-Z0-9-_]{1,32}$",
+      );
   }
 
-  if(user.connections[waiterHandle]){
+  if (user.connections[waiterHandle]) {
     return resp.send({
       user: {
         name: users[waiterHandle].name,
@@ -429,31 +477,27 @@ app.post('/connection', (req, resp)=>{
         avatarURI: users[waiterHandle].avatarURI,
         landscapeURI: users[waiterHandle].landscapeURI,
       },
-    })
+    });
   }
 
-  if(!user.waitingForYou[at]){
-    return resp.status(400)
-    .send(`location '${at}' not found`);
+  if (!user.waitingForYou[at]) {
+    return resp.status(400).send(`location '${at}' not found`);
   }
 
-  if(!user.waitingForYou[at].waiters[waiterHandle]){
-    return resp.status(400)
-    .send(`${waiterHandle} is not waiting for you`);
+  if (!user.waitingForYou[at].waiters[waiterHandle]) {
+    return resp.status(400).send(`${waiterHandle} is not waiting for you`);
   }
 
   const interlocutorUser = users[waiterHandle];
-  if(!interlocutorUser){
-    return resp.status(400)
-    .send(`user ${waiterHandle} not found`);
-  }  
+  if (!interlocutorUser) {
+    return resp.status(400).send(`user ${waiterHandle} not found`);
+  }
   //add connection
   const timestamp = new Date().getTime();
   user.connections ??= {};
-  
-  user.connections[waiterHandle] = {metOn: timestamp,};
+  user.connections[waiterHandle] = {metOn: timestamp};
   interlocutorUser.connections ??= {};
-  interlocutorUser.connections[user.handle] = {metOn: timestamp,};
+  interlocutorUser.connections[user.handle] = {metOn: timestamp};
   // remove waiting for you
   delete user.waitingForYou[at].waiters[waiterHandle];
   delete interlocutorUser.waitingForThem[user.handle];
@@ -475,7 +519,7 @@ app.post('/connection', (req, resp)=>{
       landscapeURI: interlocutorUser.landscapeURI,
       listenWithMeURI: interlocutorUser.listenWithMeURI,
     },
-  })
+  });
 });
 
 // const filesAuthenticate = (req, resp, next)=>{
@@ -519,58 +563,54 @@ app.use('/files', express.static('uploads'));
 const upload = multer({dest: 'uploads/'});
 
 app.post(
-  '/message', 
+  '/message',
   upload.fields([
-    { name: 'files', maxCount: 5}, 
-    { name: 'voiceRecordings', maxCount: 5},
+    {name: 'files', maxCount: 5},
+    {name: 'voiceRecordings', maxCount: 5},
   ]),
-(req, resp)=>{
-  const {handle} = req.headers;
-  const {to, text, durationsForVoiceRecordings} = req.body;
+  (req, resp) => {
+    const {handle} = req.headers;
+    const {to, text, durationsForVoiceRecordings} = req.body;
+    if (!users[handle].connections[to]) {
+      return resp.status(400).send(`not connected to user ${to}`);
+    }
+    const {files: aFiles, voiceRecordings: voiceRs} = req.files;
+    const files = aFiles ?? [];
+    const voiceRecordings = voiceRs ?? [];
+    const timestamp = new Date().getTime();
+    const message = {
+      to: to,
+      from: handle,
+      id: timestamp,
+      text: text,
+      files: files.map(f => {
+        return {
+          name: f.originalname,
+          type: f.mimetype,
+          size: f.size,
+          uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
+        };
+      }),
+      voiceRecordings: voiceRecordings.map(f => {
+        return {
+          name: f.originalname,
+          type: f.mimetype,
+          size: f.size,
+          uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
+          duration: durationsForVoiceRecordings[f.originalname] ?? 0,
+        };
+      }),
+      status: 'SENT', // DELIVERED, READ
+    };
+    const chatKey = [to, handle].sort().join('|');
+    chats[chatKey] ??= {};
+    chats[chatKey].messages ??= [];
+    chats[chatKey].lastModified = timestamp;
+    chats[chatKey].messages.push(message);
 
-  
-  if(!users[handle].connections[to]){
-    return resp.status(400)
-    .send(`not connected to user ${to}`);
-  }
-  
-  const {files: aFiles, voiceRecordings: voiceRs} = req.files;
-  const files = aFiles ?? [];
-  const voiceRecordings = voiceRs ?? [];
-  const timestamp = new Date().getTime();
-  message = {
-    to: to,
-    from: handle,
-    id: timestamp,
-    text: text, 
-    files: files.map(f=>{
-      return {
-        name: f.originalname,
-        type: f.mimetype,
-        size: f.size,
-        uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
-      }
-    }),
-    voiceRecordings: voiceRecordings.map(f=>{
-      return {
-        name: f.originalname,
-        type: f.mimetype,
-        size: f.size,
-        uri: 'http://10.0.2.2:3000/files/'.concat(f.filename),
-        duration: durationsForVoiceRecordings[f.originalname] ?? 0,
-      }
-    }),
-    status: 'SENT' // DELIVERED, READ
-  }
-  
-  const chatKey = [to, handle].sort().join('|');
-  chats[chatKey] ??= {};
-  chats[chatKey].messages ??= [];
-  chats[chatKey].lastModified = timestamp;
-  chats[chatKey].messages.push(message);
-
-  resp.status(201).send(message);
-});
+    resp.status(201).send(message);
+  },
+);
 
 app.listen(port, () => {
   console.log(`Naf mock server listening at http://localhost:${port}`);

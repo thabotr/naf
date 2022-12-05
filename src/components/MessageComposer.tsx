@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Card, TextInput} from 'react-native-paper';
@@ -89,6 +90,7 @@ const EditorActions = () => {
   };
 
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <HorizontalView style={{justifyContent: 'space-between'}}>
       <HorizontalView>
         <AsyncIconButton
@@ -160,7 +162,6 @@ const EditorActions = () => {
 };
 
 export const MessageEditorCard = () => {
-  const {userProfile} = useLoggedInUser();
   const {theme} = useTheme();
   const {activeChat} = useChats();
 
@@ -171,6 +172,16 @@ export const MessageEditorCard = () => {
   if (!interlocutor) {
     return <></>;
   }
+
+  const styles = StyleSheet.create({
+    editorContainer: {
+      backgroundColor: theme.color.userPrimary,
+      margin: 2,
+      paddingBottom: 5,
+    },
+    editorBody: {padding: 10},
+    fullWidth: {width: '100%'},
+  });
 
   const saveMessageTxt = (text: string) => {
     saveComposeMsg(msg => {
@@ -193,21 +204,12 @@ export const MessageEditorCard = () => {
           disabled={!slots}
           multiline
           numberOfLines={6}
-          style={{width: '100%'}}
+          style={styles.fullWidth}
           label="message body"
         />
       </OnlyShow>
     );
   };
-
-  const styles = StyleSheet.create({
-    editorContainer: {
-      backgroundColor: theme.color.userPrimary,
-      margin: 2,
-      paddingBottom: 5,
-    },
-    editorBody: {padding: 10},
-  });
 
   return (
     <OnlyShow If={!!composeMsg}>

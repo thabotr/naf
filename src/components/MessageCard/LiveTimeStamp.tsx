@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Paragraph} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -16,28 +16,32 @@ const LiveTimeStamp = ({
   const [ticker, setTicker] = useState(true);
 
   useEffect(() => {
-    if (!timestamp) return;
+    if (!timestamp) {
+      return;
+    }
 
     const min = 1000 * 60;
     const hour = min * 60;
     const day = hour * 24;
     const timeDiff = new Date().getTime() - timestamp;
 
-    if (timeDiff > 7 * day) return;
+    if (timeDiff > 7 * day) {
+      return;
+    }
 
     let refreshInterval = min;
-    if(timeDiff < hour){
-      refreshInterval = timeDiff%min;
-    }else if( timeDiff < day){
-      refreshInterval = timeDiff%hour;
-    }else{
-      refreshInterval = timeDiff%day;
+    if (timeDiff < hour) {
+      refreshInterval = timeDiff % min;
+    } else if (timeDiff < day) {
+      refreshInterval = timeDiff % hour;
+    } else {
+      refreshInterval = timeDiff % day;
     }
 
     setTimeout(() => {
-      setTicker(ticker=>!ticker);
+      setTicker(tcker => !tcker);
     }, refreshInterval);
-  }, [ticker]);
+  }, [ticker, timestamp]);
 
   const styles = StyleSheet.create({
     paragraph: {

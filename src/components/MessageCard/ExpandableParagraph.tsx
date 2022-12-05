@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
 import {useTheme} from '../../context/theme';
@@ -39,7 +39,11 @@ const ExpandableParagraph = ({text}: {text?: string}) => {
           </>
         }
         If={(text?.length ?? 0) > 150}
-        ElseShow={<Paragraph numberOfLines={1} style={styles.paragraph}>{text}</Paragraph>}
+        ElseShow={
+          <Paragraph numberOfLines={1} style={styles.paragraph}>
+            {text}
+          </Paragraph>
+        }
       />
     </OnlyShow>
   );

@@ -1,4 +1,10 @@
-import {createContext, ReactNode, useContext, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {useChats} from '../context/chat';
 import {useLoggedInUser} from '../context/user';
 import {Remote} from '../services/Remote';
@@ -7,7 +13,7 @@ import {User} from '../types/user';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
 import {validateContext} from './validateContext';
 
-interface IncomingMessageType {
+export interface IncomingMessageType {
   intelocutor: User;
   message: Message;
 }
@@ -26,9 +32,6 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
 
   const [spinner, setSpinner] = useState(true);
   const {userProfile, updateProfile} = useLoggedInUser();
-  if (!userProfile) {
-    return <>{children}</>;
-  }
   const {saveChats, chats, lastModified} = useChats();
 
   useEffect(() => {
@@ -39,21 +42,29 @@ function NotifierContextProvider({children}: {children: ReactNode}) {
         userProfile.handle,
         userProfile.lastModified,
       ).then(profile => {
-        profile && updateProfile(_ => {
-          profile.waitingForThem ??= {};
-          profile.waitingForYou ??= {};
-          return profile;
-        });
+        profile &&
+          updateProfile(_ => {
+            profile.waitingForThem ??= {};
+            profile.waitingForYou ??= {};
+            return profile;
+          });
       });
       Remote.getChats(userProfile.token, userProfile.handle, lastModified).then(
-        chats => {
-          if (chats) {
-            saveChats(chats);
-          }
+        newChats => {
+          newChats && saveChats(chats);
         },
       );
     }
-  }, [spinner, lastModified]);
+  }, [
+    spinner,
+    lastModified,
+    chats,
+    saveChats,
+    updateProfile,
+    userProfile.handle,
+    userProfile.lastModified,
+    userProfile.token,
+  ]);
 
   useEffect(() => {
     const unreadMsgs = chats
@@ -108,4 +119,4 @@ function useNotifier(): NofierContextType {
   return validateContext(context, 'useNotifier', 'NotifierContextProvider');
 }
 
-export {useNotifier, NotifierContextProvider, type IncomingMessageType};
+export {useNotifier, NotifierContextProvider};

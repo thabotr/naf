@@ -1,12 +1,13 @@
-import {createContext, ReactNode, useState, useContext} from 'react';
+import React, {createContext, ReactNode, useState, useContext} from 'react';
+import {validateContext} from '../providers/validateContext';
 import {FileManager} from '../services/FileManager';
 
 import {Message} from '../types/message';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
 
-const MessageComposerContext = createContext<MessageComposerContextType | null>(
-  null,
-);
+const MessageComposerContext = createContext<
+  MessageComposerContextType | undefined
+>(undefined);
 
 type ComposeStateType = {inputTextEnabled: boolean};
 
@@ -47,7 +48,9 @@ const MessageComposerProvider = ({children}: Props) => {
 
   const addAttachments = () => {
     FileManager.pickFiles().then(files => {
-      if (!files) return;
+      if (!files) {
+        return;
+      }
       saveComposeMsg(msg => {
         if (msg) {
           return {
@@ -113,11 +116,11 @@ const MessageComposerProvider = ({children}: Props) => {
 
 const useMessageComposer = (): MessageComposerContextType => {
   const context = useContext(MessageComposerContext);
-  if (!context)
-    throw new Error(
-      'Encapsulate useMessageComposer with MessageComposerProvider',
-    );
-  return context;
+  return validateContext(
+    context,
+    'useMessageComposer',
+    'MessageComposerProvider',
+  );
 };
 
 export {MessageComposerProvider, useMessageComposer};

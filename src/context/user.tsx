@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState, ReactNode, createContext, useContext} from 'react';
+import React, {useState, ReactNode, createContext, useContext} from 'react';
 import {validateContext} from '../providers/validateContext';
 import {Profile} from '../types/user';
 
 export type LoggedInUserContextType = {
   userProfile: Profile;
   logOut: () => void;
-  useProfile: (profile: Profile) => void;
+  saveProfile: (profile: Profile) => void;
   updateProfile: (mutator: (profile: Profile) => Profile) => void;
 };
 
@@ -49,7 +49,7 @@ const LoggedInUserProvider = ({children}: Props) => {
     setUserProfile(p => mutator(p));
   };
 
-  const useProfile = (p: Profile) => {
+  const saveProfile = (p: Profile) => {
     p.connections ??= {};
     p.waitingForThem ??= {};
     p.waitingForYou ??= {};
@@ -59,7 +59,7 @@ const LoggedInUserProvider = ({children}: Props) => {
   const providerValue = {
     userProfile: userProfile,
     logOut: logOut,
-    useProfile: useProfile,
+    saveProfile: saveProfile,
     updateProfile: updateProfile,
   };
 

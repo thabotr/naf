@@ -1,4 +1,6 @@
-import {TouchableOpacity, View} from 'react-native';
+/* eslint-disable prettier/prettier */
+import React from 'react';
+import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import {List, Paragraph} from 'react-native-paper';
 import {useChats} from '../../context/chat';
 import {useTheme} from '../../context/theme';
@@ -17,12 +19,22 @@ function MessagePreviewSection({
   const {saveActiveChat} = useChats();
   const latestMessage = chat.messages.slice(-1).find(_ => true);
 
+  const styles = StyleSheet.create({
+    touchOp: {
+      width: '100%',
+      height: '100%',
+    },
+    fullWidth: {width: '100%'},
+    background: {
+      width: '100%',
+      height: '100%',
+      backgroundColor: theme.color.secondary,
+      opacity: 0.5,
+    },
+  });
   return (
     <TouchableOpacity
-      style={{
-        width: '100%',
-        height: '100%',
-      }}
+      style={styles.touchOp}
       onPress={() => {
         saveActiveChat(chat);
         navigation.push('Chat');
@@ -44,7 +56,7 @@ function MessagePreviewSection({
             If={!latestMessage}
             ElseShow={
               <List.Item
-                style={{width: '100%'}}
+                style={styles.fullWidth}
                 titleStyle={{
                   color: theme.color.textPrimary,
                   shadowColor: theme.color.textSecondary,
@@ -57,9 +69,7 @@ function MessagePreviewSection({
                     icon={
                       latestMessage?.draft
                         ? 'content-save-edit'
-                        : latestMessage?.text
-                        ? 'message-text'
-                        : 'attachment'
+                        : latestMessage?.text ? 'message-text' : 'attachment'
                     }
                     color={theme.color.textPrimary}
                   />
@@ -69,14 +79,7 @@ function MessagePreviewSection({
           />
         }
         over={
-          <View
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: theme.color.secondary,
-              opacity: 0.5,
-            }}
-          />
+          <View style={styles.background} />
         }
       />
     </TouchableOpacity>

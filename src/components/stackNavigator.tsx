@@ -2,7 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackHeaderProps,
 } from '@react-navigation/native-stack';
-import {View} from 'react-native';
+import React, {StyleSheet, View} from 'react-native';
 
 import {useTheme} from '../context/theme';
 import {ChatHeader, Chat} from '../pages/Chat';
@@ -15,7 +15,6 @@ import {NotificationAppbar} from './NotificationAppbar';
 import {useEffect} from 'react';
 import {useLoggedInUser} from '../context/user';
 import {Login} from '../pages/Login';
-import {OnlyShow} from './Helpers/OnlyShow';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,12 +25,21 @@ const LoginHeader = ({props}: {props: NativeStackHeaderProps}) => {
     if (userProfile.handle) {
       props.navigation.navigate('Home', {});
     }
-  }, [userProfile]);
+  }, [userProfile, props.navigation]);
   return <></>;
 };
 
 function StackNavigator() {
   const {theme} = useTheme();
+
+  const styles = StyleSheet.create({
+    header: {
+      width: '100%',
+      height: 56,
+      opacity: 1,
+      backgroundColor: theme.color.secondary,
+    },
+  });
 
   return (
     <Stack.Navigator
@@ -39,13 +47,7 @@ function StackNavigator() {
       screenOptions={{
         header: props => {
           return (
-            <View
-              style={{
-                width: '100%',
-                height: 56,
-                opacity: 1,
-                backgroundColor: theme.color.secondary,
-              }}>
+            <View style={styles.header}>
               {(() => {
                 switch (props.route.name) {
                   case 'ChatProfile':
@@ -62,7 +64,7 @@ function StackNavigator() {
                     return <LoginHeader props={props} />;
                 }
               })()}
-              <NotificationAppbar/>
+              <NotificationAppbar />
             </View>
           );
         },

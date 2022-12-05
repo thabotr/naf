@@ -71,5 +71,5 @@ export type Profile = User & {
   connections: {[handle: string]: ConnectionType};
   waitingForYou: WFYType;
   waitingForThem: WFTType;
-  token: string,
+  token: string;
 };

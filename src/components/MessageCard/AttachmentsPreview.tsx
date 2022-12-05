@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Chip, Paragraph} from 'react-native-paper';
 import {useMessageComposer} from '../../context/messageEditor';
@@ -51,10 +51,10 @@ function AttachmentsPreview({
 
   const onExpandedViewDismiss = (files: FileType[]) => {
     if (composing) {
-      saveComposeMsg(msg => {
-        if (msg) {
+      saveComposeMsg(newmsg => {
+        if (newmsg) {
           return {
-            ...msg,
+            ...newmsg,
             files: files,
           };
         }
@@ -64,10 +64,10 @@ function AttachmentsPreview({
   };
 
   const onDeleteRecording = (vr: VoiceNoteType) => {
-    saveComposeMsg(msg => {
-      if (msg) {
+    saveComposeMsg(newmsg => {
+      if (newmsg) {
         return {
-          ...msg,
+          ...newmsg,
           voiceRecordings: msg.voiceRecordings.filter(v => v.uri !== vr.uri),
         };
       }

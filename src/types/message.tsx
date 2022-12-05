@@ -20,7 +20,7 @@ export type Message = {
   text?: string;
   voiceRecordings: VoiceNoteType[];
   files: FileType[];
-  status?: "NONE" | "SENT" | "DELIVERED" | "SEEN" | "REPLIED" | "ERROR";
+  status?: 'NONE' | 'SENT' | 'DELIVERED' | 'SEEN' | 'REPLIED' | 'ERROR';
   unread?: boolean;
   draft?: boolean;
 };

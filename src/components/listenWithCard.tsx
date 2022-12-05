@@ -1,5 +1,6 @@
-import {useEffect, useState, useContext} from 'react';
-import {ScrollView, View, ViewStyle} from 'react-native';
+/* eslint-disable prettier/prettier */
+import React, {useEffect, useState, useContext} from 'react';
+import {ScrollView, StyleSheet, View, ViewStyle} from 'react-native';
 import {
   Card,
   IconButton as RNPIconButton,
@@ -38,7 +39,7 @@ function IconButton({
   style?: ViewStyle;
 }) {
   const {theme} = useTheme();
-  if (If === undefined || If)
+  if (If === undefined || If) {
     return (
       <RNPIconButton
         icon={icon}
@@ -47,6 +48,7 @@ function IconButton({
         color={theme.color.textPrimary}
       />
     );
+  }
   return null;
 }
 
@@ -55,7 +57,7 @@ export function ListenWithMeCard() {
   const [expanded, setExpanded] = useState(true);
   const [repeatMode, setRepeatMode] = useState(RepeatMode.Off);
   const {listeningWith, currentTrack, playState, stopPlayer, colors} =
-    useContext(ListenWithMeContext) as ListenWithMeContextType;
+    useContext<ListenWithMeContextType>(ListenWithMeContext);
   const {chats} = useChats();
   const [currentTrackInd, setCurrentTrackInd] = useState(0);
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -66,7 +68,9 @@ export function ListenWithMeCard() {
   const updateCurrentTrack = () =>
     TrackPlayer.getCurrentTrack()
       .then(i => {
-        if (i !== null) setCurrentTrackInd(i);
+        if (i !== null) {
+          setCurrentTrackInd(i);
+        }
       })
       .catch(e => console.log('failed to update current track', e));
 
@@ -79,12 +83,12 @@ export function ListenWithMeCard() {
     TrackPlayer.setRepeatMode(repeatMode);
     updateCurrentTrack();
     updateTracks();
-  }, [listeningWith]);
+  }, [listeningWith, repeatMode]);
 
   const {position, duration} = useProgress(1000);
 
   useEffect(() => {
-    if (!!listeningWith) {
+    if (listeningWith) {
       const chat = chats.find(c => listeningWith === c.user.handle);
       chat &&
         TrackPlayer.reset().then(_ => {
@@ -103,39 +107,80 @@ export function ListenWithMeCard() {
             .catch(e => console.log('on get audio metadata', e));
         });
     }
-  }, [listeningWith]);
+  }, [listeningWith, chats]);
+
+  const styles = StyleSheet.create({
+    card: {
+      backgroundColor: colors.primary,
+      marginHorizontal: 3,
+      marginBottom: 3,
+      paddingHorizontal: 5,
+      borderBottomEndRadius: 3,
+      borderBottomLeftRadius: 3,
+    },
+    namedActivity: {
+      textAlign: 'center',
+      opacity: 0.5,
+      textShadowColor: theme.color.textSecondary,
+      color: theme.color.textPrimary,
+    },
+    queue: {
+      flex: 1,
+      height: 150,
+      elevation: 3,
+      width: '40%',
+      backgroundColor: colors.secondary,
+    },
+    queueTrack: {
+      borderWidth: 1,
+      borderRadius: 3,
+      margin: 5,
+      backgroundColor: colors.secondary,
+    },
+    playingCard: {
+      flex: 1,
+      padding: 5,
+      width: '100%',
+      height: '100%',
+      backgroundColor: colors.secondary,
+    },
+    flex: {flex: 1},
+    trackPosition: {
+      flex: 1,
+      textShadowColor: theme.color.textSecondary,
+      color: theme.color.textPrimary,
+    },
+    trackDuration: {
+      flex: 1,
+      textAlign: 'right',
+      textShadowColor: theme.color.textSecondary,
+      color: theme.color.textPrimary,
+    },
+    lwmSummary: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      marginLeft: 5,
+    },
+    artist: {
+      textShadowColor: theme.color.textSecondary,
+      color: theme.color.textPrimary,
+    },
+    cardActions: {flex: 1, justifyContent: 'center'},
+    repeatModeButton: {opacity: repeatMode === RepeatMode.Off ? 0.5 : 1},
+    expandButton: {borderRadius: 0, alignSelf: 'center'},
+  });
 
   return (
     <OnlyShow If={!!listeningWith}>
-      <Card
-        style={{
-          backgroundColor: colors.primary,
-          marginHorizontal: 3,
-          marginBottom: 3,
-          paddingHorizontal: 5,
-          borderBottomEndRadius: 3,
-          borderBottomLeftRadius: 3,
-        }}>
-        <Paragraph
-          style={{
-            textAlign: 'center',
-            opacity: 0.5,
-            textShadowColor: theme.color.textSecondary,
-            color: theme.color.textPrimary,
-          }}>
+      <Card style={styles.card}>
+        <Paragraph style={styles.namedActivity}>
           Enjoying the bangers {listeningWith}
         </Paragraph>
         <OnlyShow If={expanded}>
           <Card.Content>
             <HorizontalView>
-              <Surface
-                style={{
-                  flex: 1,
-                  height: 150,
-                  elevation: 3,
-                  width: '40%',
-                  backgroundColor: colors.secondary,
-                }}>
+              <Surface style={styles.queue}>
                 <ScrollView>
                   {tracks.map((t, i) => (
                     <List.Item
@@ -143,12 +188,7 @@ export function ListenWithMeCard() {
                         textShadowColor: theme.color.textSecondary,
                         color: theme.color.textPrimary,
                       }}
-                      style={{
-                        borderWidth: 1,
-                        borderRadius: 3,
-                        margin: 5,
-                        backgroundColor: colors.secondary,
-                      }}
+                      style={styles.queueTrack}
                       descriptionStyle={{
                         color: theme.color.textSecondary,
                       }}
@@ -166,16 +206,9 @@ export function ListenWithMeCard() {
                   ))}
                 </ScrollView>
               </Surface>
-              <View style={{flex: 1}}>
+              <View style={styles.flex}>
                 <OverlayedView>
-                  <Card
-                    style={{
-                      flex: 1,
-                      padding: 5,
-                      width: '100%',
-                      height: '100%',
-                      backgroundColor: colors.secondary,
-                    }}>
+                  <Card style={styles.playingCard}>
                     <List.Item
                       titleStyle={{
                         textShadowColor: theme.color.textSecondary,
@@ -191,23 +224,12 @@ export function ListenWithMeCard() {
                         currentTrack?.album ?? ''
                       }`}
                     />
-                    <View style={{flex: 1}}></View>
+                    <View style={styles.flex} />
                     <HorizontalView>
-                      <Paragraph
-                        style={{
-                          flex: 1,
-                          textShadowColor: theme.color.textSecondary,
-                          color: theme.color.textPrimary,
-                        }}>
+                      <Paragraph style={styles.trackPosition}>
                         {verboseDuration(position)}
                       </Paragraph>
-                      <Paragraph
-                        style={{
-                          flex: 1,
-                          textAlign: 'right',
-                          textShadowColor: theme.color.textSecondary,
-                          color: theme.color.textPrimary,
-                        }}>
+                      <Paragraph style={styles.trackDuration}>
                         {verboseDuration(duration)}
                       </Paragraph>
                     </HorizontalView>
@@ -219,20 +241,11 @@ export function ListenWithMeCard() {
         </OnlyShow>
         <HorizontalView>
           <OnlyShow If={!expanded}>
-            <HorizontalView
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginLeft: 5,
-              }}>
+            <HorizontalView style={styles.lwmSummary}>
               <View>
                 <OnlyShow If={!!currentTrack?.artist}>
                   <Paragraph
-                    style={{
-                      textShadowColor: theme.color.textSecondary,
-                      color: theme.color.textPrimary,
-                    }}>
+                    style={styles.artist}>
                     {currentTrack?.artist}
                   </Paragraph>
                 </OnlyShow>
@@ -254,7 +267,7 @@ export function ListenWithMeCard() {
               </Paragraph>
             </HorizontalView>
           </OnlyShow>
-          <Card.Actions style={{flex: 1, justifyContent: 'center'}}>
+          <Card.Actions style={styles.cardActions}>
             <IconButton
               icon="skip-previous-circle-outline"
               onPress={() => {
@@ -292,19 +305,18 @@ export function ListenWithMeCard() {
             />
             <IconButton
               If={expanded}
-              style={{opacity: repeatMode === RepeatMode.Off ? 0.5 : 1}}
+              style={styles.repeatModeButton}
               icon={
                 repeatMode === RepeatMode.Queue
                   ? 'repeat'
                   : repeatMode === RepeatMode.Track
-                  ? 'repeat-once'
-                  : 'repeat-off'
+                    ? 'repeat-once' : 'repeat-off'
               }
               onPress={toggleRepeatMode}
             />
           </Card.Actions>
           <IconButton
-            style={{borderRadius: 0, alignSelf: 'center'}}
+            style={styles.expandButton}
             icon={expanded ? 'chevron-up' : 'chevron-down'}
             onPress={() => setExpanded(!expanded)}
           />

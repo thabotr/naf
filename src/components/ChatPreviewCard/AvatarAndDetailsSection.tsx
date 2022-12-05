@@ -1,4 +1,5 @@
-import {TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import {Avatar, Paragraph} from 'react-native-paper';
 import {useChats} from '../../context/chat';
 import {useTheme} from '../../context/theme';
@@ -19,58 +20,66 @@ function AvatarAndDetailsSection({
 }) {
   const {saveActiveChat} = useChats();
   const {theme} = useTheme();
+  const styles = StyleSheet.create({
+    touchOp: {height: '100%', width: '25%'},
+    view: {height: '50%', width: '100%'},
+    img: {width: '100%', height: '100%'},
+    avatarTxt: {
+      borderRadius: 0,
+      width: '100%',
+      height: '100%',
+      backgroundColor: contextualTheme.primary,
+    },
+    overView: {
+      height: '100%',
+      width: '100%',
+      backgroundColor: contextualTheme.primary,
+      opacity: 1,
+    },
+    coverView: {height: '50%', width: '100%', alignItems: 'center'},
+    handle: {
+      fontWeight: 'bold',
+      color: theme.color.textPrimary,
+      textShadowColor: theme.color.textSecondary,
+    },
+    names: {
+      height: '100%',
+      width: '100%',
+      backgroundColor: contextualTheme.secondary,
+      opacity: 1,
+    },
+  });
   return (
     <TouchableOpacity
-      style={{height: '100%', width: '25%'}}
+      style={styles.touchOp}
       onPress={() => {
         saveActiveChat(chat);
         navigation.navigate('ChatProfile');
       }}
       activeOpacity={0.8}>
-      <View style={{height: '50%', width: '100%'}}>
+      <View style={styles.view}>
         <Lay
           component={
             <Image
-              style={{width: '100%', height: '100%'}}
+              style={styles.img}
               source={chat.user.avatarURI}
               onURI={uri => setAvatarURI(uri)}
               alt={
                 <Avatar.Text
-                  style={{
-                    borderRadius: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: contextualTheme.primary,
-                  }}
+                  style={styles.avatarTxt}
                   label={chat.user.initials}
                 />
               }
             />
           }
-          over={
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                backgroundColor: contextualTheme.primary,
-                opacity: 1,
-              }}
-            />
-          }
+          over={<View style={styles.overView} />}
         />
       </View>
-      <View style={{height: '50%', width: '100%', alignItems: 'center'}}>
+      <View style={styles.coverView}>
         <Lay
           component={
             <>
-              <Paragraph
-                style={{
-                  fontWeight: 'bold',
-                  color: theme.color.textPrimary,
-                  textShadowColor: theme.color.textSecondary,
-                }}>
-                {chat.user.handle}
-              </Paragraph>
+              <Paragraph style={styles.handle}>{chat.user.handle}</Paragraph>
               <Paragraph
                 style={{
                   color: theme.color.textPrimary,
@@ -80,16 +89,7 @@ function AvatarAndDetailsSection({
               </Paragraph>
             </>
           }
-          over={
-            <View
-              style={{
-                height: '100%',
-                width: '100%',
-                backgroundColor: contextualTheme.secondary,
-                opacity: 1,
-              }}
-            />
-          }
+          over={<View style={styles.names} />}
         />
       </View>
     </TouchableOpacity>

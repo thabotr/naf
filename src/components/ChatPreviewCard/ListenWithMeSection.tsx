@@ -1,41 +1,46 @@
-import {useContext} from 'react';
-import {TouchableOpacity, View, ActivityIndicator} from 'react-native';
+import React from 'react';
+import {
+  TouchableOpacity,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
 import TrackPlayer, {State as PlayState} from 'react-native-track-player';
 import {getAudioMetadata} from '../../audio';
 
-import {
-  ListenWithMeContext,
-  ListenWithMeContextType,
-} from '../../context/listenWithMe';
+import {useListenWithMe} from '../../context/listenWithMe';
 import {useTheme} from '../../context/theme';
 import {Chat} from '../../types/chat';
 import {OverlayedView} from '../Helpers/OverlayedView';
 
 function ListenWithMeSection({chat}: {chat: Chat}) {
   const {theme} = useTheme();
-  const {listeningWith, currentTrack, playUserTrack, playState} = useContext(
-    ListenWithMeContext,
-  ) as ListenWithMeContextType;
+  const {listeningWith, currentTrack, playUserTrack, playState} =
+    useListenWithMe();
+
+  const styles = StyleSheet.create({
+    touchOp: {
+      flex: 1,
+      height: '100%',
+      backgroundColor: theme.color.secondary,
+      opacity: 0.5,
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
   return (
     <TouchableOpacity
-      style={{
-        flex: 1,
-        height: '100%',
-        backgroundColor: theme.color.secondary,
-        opacity: 0.5,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
+      style={styles.touchOp}
       onPress={() => {
         if (
           listeningWith === chat.user.handle &&
-          playState == PlayState.Playing
-        )
+          playState === PlayState.Playing
+        ) {
           TrackPlayer.pause().catch(e => console.log(e));
-        else
+        } else {
           getAudioMetadata(
             `http://10.0.2.2:3000/listenwithme/${chat.user.handle.replace(
               '->',
@@ -44,6 +49,7 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
           )
             .then(track => track && playUserTrack(chat.user.handle, track))
             .catch(e => console.log(e));
+        }
       }}>
       <IconButton icon="account-music" color={theme.color.textPrimary} />
       <Paragraph
@@ -56,7 +62,8 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
       <View>
         <IconButton
           icon={
-            listeningWith === chat.user.handle && playState == PlayState.Playing
+            listeningWith === chat.user.handle &&
+            playState === PlayState.Playing
               ? 'pause'
               : 'play'
           }
@@ -67,7 +74,7 @@ function ListenWithMeSection({chat}: {chat: Chat}) {
             size={35}
             animating={
               listeningWith === chat.user.handle &&
-              playState == PlayState.Playing
+              playState === PlayState.Playing
             }
             color={theme.color.secondary}
           />

@@ -1,7 +1,7 @@
-it("Works", ()=>{
+it('Works', () => {
   expect(1).toBe(1);
-})
+});
 
-it("Doesnt work", ()=>{
+it('Doesnt work', () => {
   expect(1).toBe(1);
 });

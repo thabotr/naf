@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders child elements horizontally 1`] = `
+<View
+  style={
+    {
+      "display": "flex",
+      "flexDirection": "row",
+    }
+  }
+>
+  <Text>
+    column one
+  </Text>
+  <Text>
+    column two
+  </Text>
+</View>
+`;

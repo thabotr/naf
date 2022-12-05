@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import {useEffect} from 'react';
+import React, {useEffect, ReactNode} from 'react';
 import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -26,7 +26,7 @@ import {Snackbar} from './src/components/Snackbar';
 import {SnackableContextProvider} from './src/providers/Snackable';
 
 type Props = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 function SuperContextProvider({children}: Props) {
@@ -54,10 +54,12 @@ function AppSetup() {
 
     initFilePaths
       .then(b => {
-        if (!b) console.error('failed to create file structure');
+        if (!b) {
+          console.error('failed to create file structure');
+        }
       })
       .catch(e => console.error('failed to create file structure', e));
-  }, []);
+  }, [initAudioRecorderPlayer]);
 
   return (
     <NotifierContextProvider>

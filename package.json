@@ -44,12 +44,19 @@
     "@types/react-native-canvas": "^0.1.9",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.0.0",
+    "detox": "^20.0.3",
     "eslint": "^7.32.0",
-    "jest": "^29.0.0",
+    "eslint-config-codingitwrong": "^0.1.4",
+    "eslint-plugin-detox": "^1.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "29.3",
     "metro-react-native-babel-preset": "0.72.3",
     "react-native-lorem-ipsum": "^0.1.0",
     "react-test-renderer": "18.1.0",
     "ts-jest": "^29.0.3",
     "typescript": "^4.8.4"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }

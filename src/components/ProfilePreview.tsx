@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {View, ToastAndroid, StyleSheet} from 'react-native';
 import {Button, Paragraph} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
@@ -6,7 +7,6 @@ import {useTheme} from '../context/theme';
 import {User} from '../types/user';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {Image} from './Image';
-import {useState} from 'react';
 import {Remote} from '../services/Remote';
 import {useLoggedInUser} from '../context/user';
 
@@ -37,42 +37,38 @@ const ProfilePreview = ({user}: {user: User}) => {
       borderWidth: state === 'error' ? 1 : 0,
       borderColor: 'red',
     },
+    landscape: {width: '100%'},
+    avatarArea: {
+      width: '100%',
+      alignItems: 'center',
+      padding: 10,
+      backgroundColor: theme.color.secondary,
+    },
+    avatar: {width: 120, height: 120},
+    profileNames: {
+      backgroundColor: theme.color.secondary,
+      width: 340,
+      padding: 10,
+    },
+    handle: {
+      fontWeight: 'bold',
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
+    names: {
+      color: theme.color.textPrimary,
+      shadowColor: theme.color.textSecondary,
+    },
   });
 
   return (
     <>
-      <Image viewable source={user?.landscapeURI} style={{width: '100%'}} />
-      <HorizontalView
-        style={{
-          width: '100%',
-          alignItems: 'center',
-          padding: 10,
-          backgroundColor: theme.color.secondary,
-        }}>
-        <Image
-          viewable
-          source={user.avatarURI}
-          style={{width: 120, height: 120}}
-        />
-        <View
-          style={{
-            backgroundColor: theme.color.secondary,
-            width: 340,
-            padding: 10,
-          }}>
-          <Paragraph
-            style={{
-              fontWeight: 'bold',
-              color: theme.color.textPrimary,
-              shadowColor: theme.color.textSecondary,
-            }}>
-            {user.handle}
-          </Paragraph>
-          <Paragraph
-            style={{
-              color: theme.color.textPrimary,
-              shadowColor: theme.color.textSecondary,
-            }}>
+      <Image viewable source={user?.landscapeURI} style={styles.landscape} />
+      <HorizontalView style={styles.avatarArea}>
+        <Image viewable source={user.avatarURI} style={styles.avatar} />
+        <View style={styles.profileNames}>
+          <Paragraph style={styles.handle}>{user.handle}</Paragraph>
+          <Paragraph style={styles.names}>
             {user.name} {user.surname} [{user.initials}]
           </Paragraph>
         </View>
@@ -86,7 +82,7 @@ const ProfilePreview = ({user}: {user: User}) => {
           );
         }}
         onLongPress={disconnectFromUser}
-        color={state === 'idle'? 'red' : theme.color.textPrimary}
+        color={state === 'idle' ? 'red' : theme.color.textPrimary}
         uppercase={false}
         loading={state === 'loading'}
         disabled={state === 'loading'}

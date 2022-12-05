@@ -24,41 +24,41 @@ describe(FileManagerHelper, () => {
       expect(fmHelper.getDirForMimetype(mimetype)).toBe(filesDir);
     });
   });
-  describe(fmHelper.getExtForMimetype, ()=>{
-    test('given audio/mpeg mimetype it should return the .mp3 extension', ()=>{
-      const mimetype = "audio/mpeg";
+  describe(fmHelper.getExtForMimetype, () => {
+    test('given audio/mpeg mimetype it should return the .mp3 extension', () => {
+      const mimetype = 'audio/mpeg';
       const extension = '.mp3';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given image/jpeg mimetype it should return the .jpg extension', ()=>{
-      const mimetype = "image/jpeg";
+    });
+    test('given image/jpeg mimetype it should return the .jpg extension', () => {
+      const mimetype = 'image/jpeg';
       const extension = '.jpg';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given image/jpg mimetype it should return the .jpg extension', ()=>{
-      const mimetype = "image/jpg";
+    });
+    test('given image/jpg mimetype it should return the .jpg extension', () => {
+      const mimetype = 'image/jpg';
       const extension = '.jpg';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given image/png mimetype it should return the .png extension', ()=>{
-      const mimetype = "image/png";
+    });
+    test('given image/png mimetype it should return the .png extension', () => {
+      const mimetype = 'image/png';
       const extension = '.png';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given video/mp4 mimetype it should return the .mp4 extension', ()=>{
-      const mimetype = "video/mp4";
+    });
+    test('given video/mp4 mimetype it should return the .mp4 extension', () => {
+      const mimetype = 'video/mp4';
       const extension = '.mp4';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given an unsupported mimetype it should return no extension', ()=>{
-      const mimetype = "unsupported/mimetype";
+    });
+    test('given an unsupported mimetype it should return no extension', () => {
+      const mimetype = 'unsupported/mimetype';
       const extension = '';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-    test('given video/mpeg mimetype it should return the .mpeg extension', ()=>{
-      const mimetype = "video/mpeg";
+    });
+    test('given video/mpeg mimetype it should return the .mpeg extension', () => {
+      const mimetype = 'video/mpeg';
       const extension = '.mpeg';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
-    })
-  })
+    });
+  });
 });

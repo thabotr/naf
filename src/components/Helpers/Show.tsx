@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function Show({
   component,
   If,
@@ -6,6 +8,6 @@ export function Show({
   component: React.ReactNode;
   If: boolean;
   ElseShow: React.ReactNode;
-}): JSX.Element {
-  return <>{If ? component : ElseShow}</>;
+}) {
+  return <>{If ? component ?? null : ElseShow ?? null}</>;
 }

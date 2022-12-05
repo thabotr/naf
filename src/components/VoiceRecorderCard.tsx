@@ -1,3 +1,4 @@
+/* eslint-disable require-await */
 import React from 'react';
 import {View, ToastAndroid, StyleSheet, Platform} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
@@ -48,7 +49,6 @@ function VoiceRecorderCard() {
   const onDoneRecording = async () => {
     const recordingFileStat = await RNFetchBlob.fs.stat(recordingPath);
     const recPos = recordingPosition;
-    
     stopRecorder();
     if (recordingPath === '') {
       ToastAndroid.show('Ooops! Something went wrong.', 3000);
