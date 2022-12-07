@@ -1,13 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
   useState,
   ReactNode,
-  useEffect,
   useContext,
   useCallback,
 } from 'react';
 import {useColorScheme} from 'react-native';
+import {validateContext} from '../providers/validateContext';
 import {ThemeSetting} from '../types/settings';
 
 export type ThemeType = {
@@ -63,7 +62,7 @@ const lightTheme: ThemeType = {
   },
 };
 
-const ThemeContext = createContext<ThemeContextType | null>(null);
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function ThemeProvider({children}: {children: ReactNode}) {
   const [themeSetting, setThemeSetting] =
@@ -93,24 +92,9 @@ function ThemeProvider({children}: {children: ReactNode}) {
     [isSystemDark],
   );
 
-  useEffect(() => {
-    AsyncStorage.getItem('theme_setting').then(tss => {
-      const ts = ThemeSettingFromString[tss ?? ''];
-      if (!ts) {
-        setTheme(isSystemDark ? darkTheme : lightTheme);
-        setThemeSetting('system_default');
-        AsyncStorage.setItem('theme_setting', 'system_default');
-      } else {
-        setTheme(themeFromSetting(ts));
-        setThemeSetting(ts);
-      }
-    });
-  }, [isSystemDark, themeFromSetting]);
-
   const saveThemeFromSetting = (ts: ThemeSetting) => {
     setTheme(themeFromSetting(ts));
     setThemeSetting(ts);
-    AsyncStorage.setItem('theme_setting', ts);
   };
 
   const providerValue = {
@@ -128,10 +112,12 @@ function ThemeProvider({children}: {children: ReactNode}) {
 
 const useTheme = (): ThemeContextType => {
   const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error('Encapsulate useTheme in ThemeProvider');
-  }
-  return context;
+  return validateContext(context, 'useTheme', 'ThemeProvider');
 };
 
-export {useTheme, ThemeProvider};
+const useThemedStyles = (styles: (theme: ThemeType) => any) => {
+  const {theme} = useTheme();
+  return styles(theme);
+};
+
+export {useTheme, ThemeProvider, useThemedStyles};
