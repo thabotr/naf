@@ -6,4 +6,5 @@ module.exports = {
   verbose: true,
   setupFiles: ['<rootDir>/__tests__/jest-setup.js'],
   testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
 };
