@@ -38,3 +38,5 @@ describe('Login Page', () => {
     await element(by.label('login')).tap();
   });
 });
+// should disable login when handle input is empty
+// should display error when login fails

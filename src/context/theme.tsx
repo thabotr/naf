@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useState,
-  ReactNode,
-  useContext,
-  useCallback,
-} from 'react';
+import React, {createContext, useState, ReactNode, useContext} from 'react';
 import {useColorScheme} from 'react-native';
 import {validateContext} from '../providers/validateContext';
 import {ThemeSetting} from '../types/settings';
@@ -78,19 +72,16 @@ function ThemeProvider({children}: {children: ReactNode}) {
     return darkTheme;
   });
 
-  const themeFromSetting = useCallback(
-    (ts: ThemeSetting) => {
-      switch (ts) {
-        case 'light':
-          return lightTheme;
-        case 'dark':
-          return darkTheme;
-        default:
-          return isSystemDark ? darkTheme : lightTheme;
-      }
-    },
-    [isSystemDark],
-  );
+  const themeFromSetting = (ts: ThemeSetting) => {
+    switch (ts) {
+      case 'light':
+        return lightTheme;
+      case 'dark':
+        return darkTheme;
+      default:
+        return isSystemDark ? darkTheme : lightTheme;
+    }
+  };
 
   const saveThemeFromSetting = (ts: ThemeSetting) => {
     setTheme(themeFromSetting(ts));

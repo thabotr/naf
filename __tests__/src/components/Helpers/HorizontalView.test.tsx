@@ -1,7 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import {Text} from 'react-native';
-
 import {HorizontalView} from '../../../../src/components/Helpers/HorizontalView';
 
 test('renders child elements horizontally', () => {
