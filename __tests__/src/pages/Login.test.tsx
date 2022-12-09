@@ -48,6 +48,18 @@ describe('Login page', () => {
       expect(networkErrorTextComponent).not.toBeNull();
     },
   );
+  test("hides 'Login failed!' text field when the prop 'loginError' is undefined", () => {
+    render(
+      themed(
+        <Login
+          userCredentials={{handle: '', token: ''}}
+          onPressLoginBtn={_ => {}}
+        />,
+      ),
+    );
+    const loginFailedTextComponent = screen.queryByText('Login failed!');
+    expect(loginFailedTextComponent).toBeNull();
+  });
   test('disables the login button when the handle input field is empty or the token input field is empty', () => {
     render(
       themed(
