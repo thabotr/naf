@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {List, TouchableRipple} from 'react-native-paper';
 import {useChats} from '../context/chat';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {IncomingMessageType, useNotifier} from '../providers/Notifier';
 import {useColorsForUsers} from '../providers/UserTheme';
 import {Lay} from './Helpers/Lay';

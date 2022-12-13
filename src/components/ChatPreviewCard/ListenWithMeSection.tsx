@@ -10,7 +10,7 @@ import TrackPlayer, {State as PlayState} from 'react-native-track-player';
 import {getAudioMetadata} from '../../audio';
 
 import {useListenWithMe} from '../../context/listenWithMe';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {Chat} from '../../types/chat';
 import {OverlayedView} from '../Helpers/OverlayedView';
 

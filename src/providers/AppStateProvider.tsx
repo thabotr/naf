@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {User} from '../types/user';
 import {Chat} from '../types/chat';
 import {ThemeSetting} from '../types/settings';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 type Props = {
   children: ReactNode;

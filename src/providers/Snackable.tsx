@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 type MsgActionType = {
   message: string;

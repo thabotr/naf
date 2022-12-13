@@ -7,7 +7,7 @@ import RNAudioRecorderPlayer, {
 import {FileManager} from '../services/FileManager';
 import {FileManagerHelper} from '../services/FileManagerHelper';
 import {PermissionsManager} from '../services/PermissionsManager';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 export enum RecordPlayState {
   RECORDING,

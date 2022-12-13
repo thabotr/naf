@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {Card} from 'react-native-paper';
 import {useListenWithMe} from '../context/listenWithMe';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {Chat} from '../types/chat';
 import {Image} from './Image';
 import {HorizontalView} from './Helpers/HorizontalView';

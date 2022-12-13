@@ -1,5 +1,5 @@
 import React, {createContext, ReactNode, useContext, useState} from 'react';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 interface MutexContextType {
   slots: number;

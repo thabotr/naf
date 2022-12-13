@@ -1,6 +1,6 @@
 import React, {createContext, ReactNode, useContext, useState} from 'react';
 import {Colors} from '../services/FileManager';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 export interface ColorPerUserField {
   avatar: Colors;

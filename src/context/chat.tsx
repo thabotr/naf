@@ -1,5 +1,5 @@
 import React, {useContext, createContext, useState, useEffect} from 'react';
-import {validateContext} from '../providers/validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 import {Chat} from '../types/chat';
 import {Message, MessagePK} from '../types/message';
 

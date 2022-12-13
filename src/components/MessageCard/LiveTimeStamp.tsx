@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Paragraph} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {verboseTime} from '../../helper';
 import {OnlyShow} from '../Helpers/OnlyShow';
 

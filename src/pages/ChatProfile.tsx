@@ -3,7 +3,7 @@ import {ScrollView, StyleSheet} from 'react-native';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 
 import {useChats} from '../context/chat';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {ProfileHeader} from '../components/ProfileHeader';
 import {ProfilePreview} from '../components/ProfilePreview';
 

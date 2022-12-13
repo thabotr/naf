@@ -4,7 +4,7 @@ import {StyleSheet, View} from 'react-native';
 import {Card, TextInput} from 'react-native-paper';
 
 import {useMessageComposer} from '../context/messageEditor';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {useLoggedInUser} from '../context/user';
 import {useChats} from '../context/chat';
 import {HorizontalView} from './Helpers/HorizontalView';

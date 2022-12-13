@@ -5,9 +5,9 @@ import TrackPlayer, {
   useTrackPlayerEvents,
   Event as PlayerEvent,
 } from 'react-native-track-player';
-import {validateContext} from '../providers/validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 import {Colors} from '../services/FileManager';
-import {useTheme} from './theme';
+import {useTheme} from '../shared/providers/theme';
 
 type LWMColors = {primary: string; secondary: string};
 

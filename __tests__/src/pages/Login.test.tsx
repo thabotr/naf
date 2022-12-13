@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
-import {ThemeProvider} from '../../../src/context/theme';
+import {ThemeProvider} from '../../../src/shared/providers/theme';
 import {Login} from '../../../src/pages/LoginPage';
 
 const themed = (child: ReactNode) => <ThemeProvider>{child}</ThemeProvider>;
@@ -106,14 +106,23 @@ describe('Login page', () => {
     'should call props.onPressLoginBtn with user credentials object having' +
       "token and handle from corresponding text input fields when 'login' button is pressed",
     () => {
+      const userHandle = 'someHandle';
+      const userToken = 'someToken';
+      const onPressLoginMock = jest.fn().mockName('onPressLoginMock');
       render(
         themed(
           <Login
-            userCredentials={{handle: '', token: ''}}
-            onPressLoginBtn={_ => {}}
+            userCredentials={{handle: userHandle, token: userToken}}
+            onPressLoginBtn={onPressLoginMock}
           />,
         ),
       );
+      const loginButton = screen.getByLabelText('login');
+      fireEvent.press(loginButton);
+      expect(onPressLoginMock).toBeCalledWith({
+        token: userToken,
+        handle: userHandle,
+      });
     },
   );
 });

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, ReactNode, createContext, useContext} from 'react';
-import {validateContext} from '../providers/validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 import {Profile} from '../types/user';
 
 export type LoggedInUserContextType = {

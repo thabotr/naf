@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {FAB} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 
 function ComposeFAB({
   onLongPress,

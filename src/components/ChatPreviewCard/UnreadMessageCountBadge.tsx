@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {OnlyShow} from '../Helpers/OnlyShow';
 
 function UnreadMessageCountBadge({count}: {count: number}) {

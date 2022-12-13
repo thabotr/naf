@@ -1,7 +1,7 @@
 import React, {createContext, useState, ReactNode, useContext} from 'react';
 import {useColorScheme} from 'react-native';
-import {validateContext} from '../providers/validateContext';
-import {ThemeSetting} from '../types/settings';
+import {validateContext} from '../utils/validateContext';
+import {ThemeSetting} from '../../types/settings';
 
 export type ThemeType = {
   dark: boolean;
@@ -59,20 +59,9 @@ const lightTheme: ThemeType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 function ThemeProvider({children}: {children: ReactNode}) {
-  const [themeSetting, setThemeSetting] =
-    useState<ThemeSetting>('system_default');
-  const isSystemDark = useColorScheme() === 'dark';
-  const [theme, setTheme] = useState<ThemeType>(() => {
-    if (
-      (themeSetting === 'system_default' && !isSystemDark) ||
-      themeSetting === 'light'
-    ) {
-      return lightTheme;
-    }
-    return darkTheme;
-  });
-
-  const themeFromSetting = (ts: ThemeSetting) => {
+  const systemTheme = useColorScheme();
+  const isSystemDark = systemTheme === 'dark';
+  const themeForSetting = (ts: ThemeSetting) => {
     switch (ts) {
       case 'light':
         return lightTheme;
@@ -82,14 +71,14 @@ function ThemeProvider({children}: {children: ReactNode}) {
         return isSystemDark ? darkTheme : lightTheme;
     }
   };
-
+  const [themeSetting, setThemeSetting] =
+    useState<ThemeSetting>('system_default');
   const saveThemeFromSetting = (ts: ThemeSetting) => {
-    setTheme(themeFromSetting(ts));
     setThemeSetting(ts);
   };
 
   const providerValue = {
-    theme: theme,
+    theme: themeForSetting(themeSetting),
     saveThemeFromSetting: saveThemeFromSetting,
     themeSetting: themeSetting,
   };

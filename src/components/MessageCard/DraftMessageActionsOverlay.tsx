@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {useChats} from '../../context/chat';
 import {useMessageComposer} from '../../context/messageEditor';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {useLoggedInUser} from '../../context/user';
 import {MutexContextProvider} from '../../providers/MutexProvider';
 import {Remote} from '../../services/Remote';

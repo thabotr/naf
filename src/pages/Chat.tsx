@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, View, ScrollView, StyleSheet} from 'react-native';
 
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {MessageComposerProvider} from '../context/messageEditor';
 import {VoiceRecorderCard} from '../components/VoiceRecorderCard';
 import {MessageCard} from '../components/MessageCard';

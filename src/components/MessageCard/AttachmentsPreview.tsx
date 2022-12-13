@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {Chip, Paragraph} from 'react-native-paper';
 import {useMessageComposer} from '../../context/messageEditor';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {useLoggedInUser} from '../../context/user';
 import {FileType, Message, VoiceNoteType} from '../../types/message';
 import {LRFilter} from '../../utils/lrFilter';

@@ -8,7 +8,7 @@ import {ChatPreviewCard} from '../components/ChatPreviewCard';
 import {ListenWithMeCard} from '../components/listenWithCard';
 import {useChats} from '../context/chat';
 import {ListenWithMeContextProvider} from '../context/listenWithMe';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {useLoggedInUser} from '../context/user';
 import {getColorsForUser} from '../utils/getUserColors';
 import {useColorsForUsers} from '../providers/UserTheme';

@@ -3,7 +3,7 @@ import React, {useState, useEffect, ReactNode} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {ProgressBar, Paragraph as RNPParagraph, Card} from 'react-native-paper';
 
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {verboseDuration, verboseSize} from '../../helper';
 import {
   RecordPlayState,

@@ -4,7 +4,7 @@ import {StyleSheet} from 'react-native';
 import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 
 import {OnlyShow} from '../components/Helpers/OnlyShow';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {useLoggedInUser} from '../context/user';
 import {useColorsForUsers} from '../providers/UserTheme';
 import {Remote} from '../services/Remote';

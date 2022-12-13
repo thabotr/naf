@@ -10,7 +10,7 @@ import React, {useEffect, ReactNode} from 'react';
 import {Provider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {ThemeProvider} from './src/context/theme';
+import {ThemeProvider} from './src/shared/providers/theme';
 import {LoggedInUserProvider} from './src/context/user';
 import {StackNavigator} from './src/components/StackNavigator';
 import {ChatsProvider} from './src/context/chat';

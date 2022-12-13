@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Appbar} from 'react-native-paper';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {User} from '../types/user';
 import {Image} from './Image';
 import {OnlyShow} from './Helpers/OnlyShow';

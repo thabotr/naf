@@ -6,7 +6,7 @@ import {Image} from '../components/Image';
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 import {OverlayedView} from '../components/Helpers/OverlayedView';
 import {HorizontalView} from '../components/Helpers/HorizontalView';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {useLoggedInUser} from '../context/user';
 import {WaitingForYouList} from '../components/UserProfile/WaitingForYouList';
 import {WaitingForThemList} from '../components/UserProfile/WaitingForThemList';

@@ -19,9 +19,13 @@ describe(FileManagerHelper, () => {
       expect(fmHelper.getDirForMimetype(mimetype)).toBe(imgsDir);
     });
     test('given any other mimetype it should return the files directory', () => {
-      const mimetype = 'application/zip';
+      const mimetype = 'any/mimetype';
       const filesDir = fmHelper.rootDir.concat('/').concat('files');
       expect(fmHelper.getDirForMimetype(mimetype)).toBe(filesDir);
+    });
+    test('when mimetype is undefined it should return the files direcoty', () => {
+      const filesDir = fmHelper.rootDir.concat('/').concat('files');
+      expect(fmHelper.getDirForMimetype(undefined)).toBe(filesDir);
     });
   });
   describe(fmHelper.getExtForMimetype, () => {
@@ -59,6 +63,10 @@ describe(FileManagerHelper, () => {
       const mimetype = 'video/mpeg';
       const extension = '.mpeg';
       expect(fmHelper.getExtForMimetype(mimetype)).toBe(extension);
+    });
+    test('when mimetype is undefined it should return no extension', () => {
+      const noExtension = '';
+      expect(fmHelper.getExtForMimetype(undefined)).toBe(noExtension);
     });
   });
 });

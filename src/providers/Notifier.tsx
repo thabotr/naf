@@ -11,7 +11,7 @@ import {Remote} from '../services/Remote';
 import {Message} from '../types/message';
 import {User} from '../types/user';
 import {deduplicatedConcat} from '../utils/deduplicatedConcat';
-import {validateContext} from './validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 
 export interface IncomingMessageType {
   intelocutor: User;

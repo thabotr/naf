@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {Message, VoiceNoteType} from '../../types/message';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {OnlyShow} from '../Helpers/OnlyShow';

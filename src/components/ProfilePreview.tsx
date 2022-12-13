@@ -3,7 +3,7 @@ import {View, ToastAndroid, StyleSheet} from 'react-native';
 import {Button, Paragraph} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {useChats} from '../context/chat';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {User} from '../types/user';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {Image} from './Image';

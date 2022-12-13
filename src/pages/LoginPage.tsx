@@ -4,7 +4,7 @@ import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 
 import {OnlyShow} from '../components/Helpers/OnlyShow';
 
-import {ThemeType, useThemedStyles} from '../context/theme';
+import {ThemeType, useThemedStyles} from '../shared/providers/theme';
 
 type Props = {
   userCredentials: {

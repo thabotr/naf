@@ -25,7 +25,7 @@ import {verboseDuration} from '../helper';
 import {HorizontalView} from './Helpers/HorizontalView';
 import {OnlyShow} from './Helpers/OnlyShow';
 import {OverlayedView} from './Helpers/OverlayedView';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 
 function IconButton({
   If,

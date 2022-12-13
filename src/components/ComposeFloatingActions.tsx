@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {useMessageComposer} from '../context/messageEditor';
 import {
   RecordPlayState,

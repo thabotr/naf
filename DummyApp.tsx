@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {ThemeProvider} from './src/context/theme';
+import {ThemeProvider} from './src/shared/providers/theme';
 import {Login} from './src/pages/LoginPage';
 
 export default () => {

@@ -1,5 +1,5 @@
 import React, {createContext, ReactNode, useState, useContext} from 'react';
-import {validateContext} from '../providers/validateContext';
+import {validateContext} from '../shared/utils/validateContext';
 import {FileManager} from '../services/FileManager';
 
 import {Message} from '../types/message';

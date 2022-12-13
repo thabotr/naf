@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Card, List, Paragraph} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {useLoggedInUser} from '../../context/user';
 import {openFile} from '../../fileViewer';
 import {verboseSize} from '../../helper';

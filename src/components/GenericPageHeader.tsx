@@ -2,7 +2,7 @@ import React from 'react';
 import {NativeStackHeaderProps} from '@react-navigation/native-stack';
 import {Appbar} from 'react-native-paper';
 import {StyleSheet} from 'react-native';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {OnlyShow} from './Helpers/OnlyShow';
 
 function GenericHeader({

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
 import {Dialog, IconButton, Portal} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {useLoggedInUser} from '../../context/user';
 import {FileType, Message} from '../../types/message';
 import {FilePreviewCard} from './FilePreviewCard';

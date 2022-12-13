@@ -3,7 +3,7 @@ import React from 'react';
 import {TouchableOpacity, View, StyleSheet} from 'react-native';
 import {List, Paragraph} from 'react-native-paper';
 import {useChats} from '../../context/chat';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {Chat} from '../../types/chat';
 import {Lay} from '../Helpers/Lay';
 import {Show} from '../Helpers/Show';

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {IconButton} from 'react-native-paper';
 import {Animated, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import {useMutex} from '../../providers/MutexProvider';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 
 const AsyncIconButton = ({
   icon,

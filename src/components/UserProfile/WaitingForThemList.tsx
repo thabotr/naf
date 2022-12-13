@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import {Button, List, Paragraph, TextInput} from 'react-native-paper';
 import {StyleSheet, ScrollView} from 'react-native';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {useLoggedInUser} from '../../context/user';
 import {HorizontalView} from '../Helpers/HorizontalView';
 import {Show} from '../Helpers/Show';

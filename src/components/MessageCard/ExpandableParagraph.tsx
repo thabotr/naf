@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton, Paragraph} from 'react-native-paper';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {OnlyShow} from '../Helpers/OnlyShow';
 import {Show} from '../Helpers/Show';
 

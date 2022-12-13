@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import {IconButton, List} from 'react-native-paper';
 import {HorizontalView} from '../components/Helpers/HorizontalView';
 
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {ThemeSetting} from '../types/settings';
 
 function ThemeController() {

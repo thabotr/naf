@@ -5,7 +5,7 @@ import {FileType} from '../../types/message';
 import {Image} from '../Image';
 import {OverlayedView} from '../Helpers/OverlayedView';
 import {Show} from '../Helpers/Show';
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 
 const VisualPreview = ({mFile}: {mFile: FileType}) => {
   const {theme} = useTheme();

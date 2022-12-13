@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/native-stack';
 import React, {StyleSheet, View} from 'react-native';
 
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {ChatHeader, Chat} from '../pages/Chat';
 import {Home, HomeHeader} from '../pages/Home';
 import {Settings} from '../pages/Settings';

@@ -2,7 +2,7 @@ import React from 'react';
 import {TouchableOpacity, ToastAndroid, StyleSheet} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
-import {useTheme} from '../../context/theme';
+import {useTheme} from '../../shared/providers/theme';
 import {Chat} from '../../types/chat';
 
 function ReadWithMeSection({chat}: {chat: Chat}) {

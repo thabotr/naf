@@ -5,7 +5,7 @@ import {IconButton, Paragraph} from 'react-native-paper';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import {useMessageComposer} from '../context/messageEditor';
-import {useTheme} from '../context/theme';
+import {useTheme} from '../shared/providers/theme';
 import {verboseDuration} from '../helper';
 import {
   RecordPlayState,
