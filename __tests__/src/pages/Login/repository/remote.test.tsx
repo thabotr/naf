@@ -1,10 +1,11 @@
-import {LoginRepository} from '../../../../src/pages/Login/repository';
-import {Profile} from '../../../../src/types/user';
+import {RemoteLoginRepository} from '../../../../../src/pages/Login/repository/remote';
+import {Profile} from '../../../../../src/types/user';
 
 jest.useRealTimers();
 
-describe(LoginRepository, () => {
-  describe(LoginRepository.getUserProfile, () => {
+describe(RemoteLoginRepository, () => {
+  const repo = new RemoteLoginRepository();
+  describe('getUserProfile', () => {
     test(
       'should include lastmodified header in the fetch request if ' +
         'and only if the profileLastModified argument is specified',
@@ -16,7 +17,7 @@ describe(LoginRepository, () => {
           .mockName('mockFetch');
         global.fetch = mockFetch;
 
-        await LoginRepository.getUserProfile('', '');
+        await repo.getUserProfile('', '');
         const fetchConfigWithoutLastModified = {
           method: 'GET',
           headers: [
@@ -39,7 +40,7 @@ describe(LoginRepository, () => {
             ['lastmodified', `${profileLastModified}`],
           ],
         };
-        await LoginRepository.getUserProfile('', '', profileLastModified);
+        await repo.getUserProfile('', '', profileLastModified);
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringMatching(expectedFetchURL),
           fetchConfigWithLastModified,
@@ -57,7 +58,7 @@ describe(LoginRepository, () => {
           .mockResolvedValue({status: 204})
           .mockName('mockFetch');
         global.fetch = mockFetch;
-        const profileResult = await LoginRepository.getUserProfile(
+        const profileResult = await repo.getUserProfile(
           'someToken',
           'someHandle',
           profileLastModified,
@@ -90,7 +91,7 @@ describe(LoginRepository, () => {
           .mockRejectedValueOnce('an error')
           .mockName('mockFetch');
         global.fetch = mockFetch;
-        const profileResult = await LoginRepository.getUserProfile(
+        const profileResult = await repo.getUserProfile(
           'someToken',
           'someHandle',
           profileLastModified,
@@ -109,7 +110,7 @@ describe(LoginRepository, () => {
           expectedFetchConfig,
         );
         expect(profileResult).toBeUndefined();
-        const profileResult2 = await LoginRepository.getUserProfile(
+        const profileResult2 = await repo.getUserProfile(
           'someToken',
           'someHandle',
           profileLastModified,
@@ -145,7 +146,7 @@ describe(LoginRepository, () => {
         })
         .mockName('mockFetch');
       global.fetch = mockFetch;
-      const profileResult = await LoginRepository.getUserProfile(
+      const profileResult = await repo.getUserProfile(
         expectedUserProfile.token,
         expectedUserProfile.handle,
       );

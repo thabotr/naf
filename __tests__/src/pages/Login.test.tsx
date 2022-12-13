@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
 import {ThemeProvider} from '../../../src/shared/providers/theme';
-import {Login} from '../../../src/pages/LoginPage';
+import {Login} from '../../../src/pages/Login/Login';
 
 const themed = (child: ReactNode) => <ThemeProvider>{child}</ThemeProvider>;
 

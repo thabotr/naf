@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
 
-import {OnlyShow} from '../components/Helpers/OnlyShow';
+import {OnlyShow} from '../../components/Helpers/OnlyShow';
 
-import {ThemeType, useThemedStyles} from '../shared/providers/theme';
+import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 
 type Props = {
   userCredentials: {

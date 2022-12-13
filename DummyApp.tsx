@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {ThemeProvider} from './src/shared/providers/theme';
-import {Login} from './src/pages/LoginPage';
+import {Login} from './src/pages/Login/Login';
 
 export default () => {
   const [err, setErr] = useState(undefined);
