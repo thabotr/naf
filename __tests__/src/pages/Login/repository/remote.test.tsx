@@ -79,49 +79,58 @@ describe(RemoteLoginRepository, () => {
         expect(profileResult).toBeUndefined();
       },
     );
-    test(
-      'returns an undefined profile result when there ' +
-        "is an error or fetch response status is neither 'OK' nor 'No Content'",
-      async () => {
-        expect.assertions(4);
-        const profileLastModified = 10;
-        const mockFetch = jest
-          .fn()
-          .mockResolvedValueOnce({status: 403})
-          .mockRejectedValueOnce('an error')
-          .mockName('mockFetch');
-        global.fetch = mockFetch;
-        const profileResult = await repo.getUserProfile(
-          'someToken',
-          'someHandle',
-          profileLastModified,
-        );
-        const expectedFetchURL = /.+/;
-        const expectedFetchConfig = {
-          method: 'GET',
-          headers: [
-            ['token', 'someToken'],
-            ['handle', 'someHandle'],
-            ['lastmodified', `${profileLastModified}`],
-          ],
-        };
-        expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringMatching(expectedFetchURL),
-          expectedFetchConfig,
-        );
-        expect(profileResult).toBeUndefined();
-        const profileResult2 = await repo.getUserProfile(
-          'someToken',
-          'someHandle',
-          profileLastModified,
-        );
-        expect(mockFetch).toHaveBeenCalledWith(
-          expect.stringMatching(expectedFetchURL),
-          expectedFetchConfig,
-        );
-        expect(profileResult2).toBeUndefined();
-      },
-    );
+    // eslint-disable-next-line require-await
+    test("throws login error 'AUTH_ERROR' when server returns a client error", async () => {
+      expect.assertions(2);
+      const profileLastModified = 10;
+      const mockFetch = jest
+        .fn()
+        .mockResolvedValueOnce({status: 403})
+        .mockName('mockFetch');
+      global.fetch = mockFetch;
+      expect(
+        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
+      ).rejects.toThrow('AUTH_ERROR');
+      const expectedFetchURL = /.+/;
+      const expectedFetchConfig = {
+        method: 'GET',
+        headers: [
+          ['token', 'someToken'],
+          ['handle', 'someHandle'],
+          ['lastmodified', `${profileLastModified}`],
+        ],
+      };
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(expectedFetchURL),
+        expectedFetchConfig,
+      );
+    });
+    // eslint-disable-next-line require-await
+    test("throws login error 'SERVER_ERROR' when server returns a server error", async () => {
+      expect.assertions(2);
+      const profileLastModified = 10;
+      const mockFetch = jest
+        .fn()
+        .mockResolvedValueOnce({status: 500})
+        .mockName('mockFetch');
+      global.fetch = mockFetch;
+      expect(
+        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
+      ).rejects.toThrow('SERVER_ERROR');
+      const expectedFetchURL = /.+/;
+      const expectedFetchConfig = {
+        method: 'GET',
+        headers: [
+          ['token', 'someToken'],
+          ['handle', 'someHandle'],
+          ['lastmodified', `${profileLastModified}`],
+        ],
+      };
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(expectedFetchURL),
+        expectedFetchConfig,
+      );
+    });
     test("returns a valid user profile result when the fetch response status is 'OK'", async () => {
       expect.assertions(2);
       const expectedUserProfile: Profile = {

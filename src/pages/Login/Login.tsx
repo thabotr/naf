@@ -1,18 +1,40 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button, Paragraph, Surface, TextInput} from 'react-native-paper';
+import {Button, Paragraph, TextInput} from 'react-native-paper';
 
 import {OnlyShow} from '../../components/Helpers/OnlyShow';
+import PageBackground from '../../shared/components/PageBackground';
 
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 
+type LoginErrorType =
+  | 'NET_ERROR'
+  | 'AUTH_ERROR'
+  | 'APP_ERROR'
+  | 'SERVER_ERROR'
+  | undefined;
 type Props = {
   userCredentials: {
     token: string;
     handle: string;
   };
-  loginError?: 'NET_ERROR' | 'AUTH_ERROR';
+  loginError?: LoginErrorType;
   onPressLoginBtn: (userCredentials: {token: string; handle: string}) => void;
+};
+
+const verboseLoginError = (err: LoginErrorType) => {
+  switch (err) {
+    case 'APP_ERROR':
+      return 'unknown error encountered. Please resart application';
+    case 'AUTH_ERROR':
+      return 'please check credentials and try again';
+    case 'NET_ERROR':
+      return 'please check network connection and try again';
+    case 'SERVER_ERROR':
+      return 'something went wrong on our side. Please give us a moment to look into this issue';
+    default:
+      return '';
+  }
 };
 
 export function Login(props: Props) {
@@ -31,13 +53,6 @@ export function Login(props: Props) {
     }
   }, [handle, token, loading]);
 
-  useEffect(() => {
-    if (props.loginError) {
-      setLoginError(props.loginError);
-      setLoading(false);
-    }
-  }, [props.loginError]);
-
   const onClickLogin = () => {
     setLoading(true);
     setLoginError(undefined);
@@ -48,27 +63,21 @@ export function Login(props: Props) {
   };
 
   return (
-    <Surface style={styles.page}>
-      <TextInput
+    <PageBackground>
+      <MemoedTextInput
         label="your access token"
-        secureTextEntry
-        onChangeText={text => setToken(text)}
-        disabled={loading}
-        error={!!loginError}
+        setText={setToken}
+        loading={loading}
         defaultValue={props.userCredentials.token}
-        mode="outlined"
-        style={styles.textInput}
-        accessibilityLabel="your access token"
+        loginError={props.loginError}
+        secureTextEntry
       />
-      <TextInput
+      <MemoedTextInput
         label="your handle"
-        onChangeText={text => setHandle(text)}
-        disabled={loading}
-        error={!!loginError}
+        setText={setHandle}
+        loading={loading}
         defaultValue={props.userCredentials.handle}
-        mode="outlined"
-        style={styles.textInput}
-        accessibilityLabel="your handle"
+        loginError={props.loginError}
       />
       <OnlyShow If={!!loginError}>
         <View>
@@ -80,9 +89,7 @@ export function Login(props: Props) {
           <Paragraph
             accessibilityLabel="login sub-status"
             style={[styles.loginErrorText, styles.loginErrorSubText]}>
-            please check{' '}
-            {loginError === 'AUTH_ERROR' ? 'credentials' : 'network connection'}{' '}
-            and try again
+            {verboseLoginError(props.loginError)}
           </Paragraph>
         </View>
       </OnlyShow>
@@ -94,18 +101,38 @@ export function Login(props: Props) {
         style={styles.loginButton}>
         Login
       </Button>
-    </Surface>
+    </PageBackground>
   );
 }
 
+const CustomTextInput = (props: {
+  loading: boolean;
+  loginError?: any;
+  defaultValue: string;
+  setText: (token: string) => void;
+  label: string;
+  secureTextEntry?: boolean;
+}) => {
+  const styles = useThemedStyles(styleSheet);
+  return (
+    <TextInput
+      label={props.label}
+      secureTextEntry={props.secureTextEntry}
+      onChangeText={text => props.setText(text)}
+      disabled={props.loading}
+      error={!!props.loginError}
+      defaultValue={props.defaultValue}
+      mode="outlined"
+      style={styles.textInput}
+      accessibilityLabel={props.label}
+    />
+  );
+};
+
+const MemoedTextInput = React.memo(CustomTextInput);
+
 const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
-    page: {
-      width: '100%',
-      height: '100%',
-      justifyContent: 'center',
-      backgroundColor: theme.color.secondary,
-    },
     textInput: {marginHorizontal: 20},
     loginErrorText: {color: 'red', textAlign: 'center'},
     loginErrorSubText: {fontStyle: 'italic'},

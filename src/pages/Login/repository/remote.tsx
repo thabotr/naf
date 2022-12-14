@@ -14,8 +14,9 @@ class RemoteLoginRepository implements LoginRepository {
     ];
     profileLastModified &&
       headers.push(['lastmodified', `${profileLastModified}`]);
+    let response;
     try {
-      const response = await fetch('http://10.0.2.2:3000/profile', {
+      response = await fetch('http://10.0.2.2:3000/profile', {
         method: 'GET',
         headers: headers,
       });
@@ -29,11 +30,18 @@ class RemoteLoginRepository implements LoginRepository {
       } else if (response.status === 204) {
         return;
       }
-      log('INFO', 'RemoteLoginRepository', 'did not get status 200/204');
     } catch (e) {
       log('ERROR', 'RemoteLoginRepository', e);
+      if (`${e}`.includes('timeout')) {
+        throw new Error('NET_ERROR');
+      } else {
+        throw new Error('APP_ERROR');
+      }
     }
-    return;
+    if (response.status >= 500) {
+      throw new Error('SERVER_ERROR');
+    }
+    throw new Error('AUTH_ERROR');
   }
 }
 
