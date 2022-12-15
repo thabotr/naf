@@ -5,7 +5,7 @@ function log(
   functionName: string,
   message: any,
 ) {
-  logData.debug(message);
+  logData.debug(functionName, message);
 }
 
 export {log};

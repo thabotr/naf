@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import {Text} from 'react-native-paper';
 import {Login, LoginErrorType} from '../pages/Login/Login';
 import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
+import PageBackground from './components/PageBackground';
 import {ThemeProvider} from './providers/theme';
 
 const remoteRepo = new RemoteLoginRepository();
@@ -44,5 +44,9 @@ export default function Router() {
       </ThemeProvider>
     );
   }
-  return <Text>TODO navigate to home page</Text>;
+  return (
+    <ThemeProvider>
+      <PageBackground pageLabel="home page" />
+    </ThemeProvider>
+  );
 }

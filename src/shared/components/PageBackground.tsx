@@ -4,7 +4,7 @@ import {Surface} from 'react-native-paper';
 import {useThemedStyles} from '../providers/theme';
 
 type Props = {
-  children: ReactNode;
+  children?: ReactNode;
   pageLabel?: string;
 };
 

@@ -22,6 +22,7 @@ class RemoteLoginRepository implements LoginRepository {
     try {
       response = await axios.get('http://10.0.2.2:3000/profile', {
         headers: headers,
+        validateStatus: status => status >= 200 && status < 600,
       });
       if (response.status === 200) {
         const body = response.data;
