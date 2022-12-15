@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {log} from '../../../shared/utils/logger';
 import {Profile} from '../../../types/user';
 import {LoginRepository} from '../repository';
@@ -8,20 +9,22 @@ class RemoteLoginRepository implements LoginRepository {
     userHandle: string,
     profileLastModified?: number,
   ): Promise<Profile | undefined> {
-    const headers: string[][] = [
-      ['token', userToken],
-      ['handle', userHandle],
-    ];
-    profileLastModified &&
-      headers.push(['lastmodified', `${profileLastModified}`]);
+    const headers: any = {
+      token: userToken,
+      handle: userHandle,
+    };
+
+    if (profileLastModified !== undefined) {
+      headers.lastmodified = profileLastModified;
+    }
+
     let response;
     try {
-      response = await fetch('http://10.0.2.2:3000/profile', {
-        method: 'GET',
+      response = await axios.get('http://10.0.2.2:3000/profile', {
         headers: headers,
       });
       if (response.status === 200) {
-        const body = await response.json();
+        const body = response.data;
         const profile: Profile = {
           ...body,
           token: userToken,
@@ -32,12 +35,20 @@ class RemoteLoginRepository implements LoginRepository {
       }
     } catch (e) {
       log('ERROR', 'RemoteLoginRepository', e);
-      if (`${e}`.includes('timeout')) {
+      if (`${e}`.includes('timedout')) {
         throw new Error('NET_ERROR');
       } else {
         throw new Error('APP_ERROR');
       }
     }
+    log(
+      'ERROR',
+      'RemoteLoginRepository',
+      'server response status: '
+        .concat(response.status.toString())
+        .concat('. Reason: ')
+        .concat(response.data),
+    );
     if (response.status >= 500) {
       throw new Error('SERVER_ERROR');
     }

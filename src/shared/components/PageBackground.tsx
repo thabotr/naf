@@ -5,11 +5,16 @@ import {useThemedStyles} from '../providers/theme';
 
 type Props = {
   children: ReactNode;
+  pageLabel?: string;
 };
 
-export default function PageBackground({children}: Props) {
+export default function PageBackground({children, pageLabel}: Props) {
   const styles = useThemedStyles(styleSheet);
-  return <Surface style={styles.background}>{children}</Surface>;
+  return (
+    <Surface accessibilityLabel={pageLabel} style={styles.background}>
+      {children}
+    </Surface>
+  );
 }
 
 const styleSheet = (theme: any) =>

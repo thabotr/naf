@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Text} from 'react-native-paper';
-import {Login} from '../pages/Login/Login';
+import {Login, LoginErrorType} from '../pages/Login/Login';
 import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
 import {ThemeProvider} from './providers/theme';
@@ -11,9 +11,7 @@ export default function Router() {
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(
     undefined,
   );
-  const [loginError, setLoginError] = useState<
-    'AUTH_ERROR' | 'NET_ERROR' | 'APP_ERROR' | undefined
-  >(undefined);
+  const [loginError, setLoginError] = useState<LoginErrorType>(undefined);
   const [userCredentials, setUserCredentials] = useState({
     handle: '',
     token: '',
@@ -31,7 +29,7 @@ export default function Router() {
       })
       .catch(e => {
         setUserCredentials(credentials);
-        setLoginError(e);
+        setLoginError(e.message);
       });
   }
 

@@ -7,7 +7,7 @@ import PageBackground from '../../shared/components/PageBackground';
 
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 
-type LoginErrorType =
+export type LoginErrorType =
   | 'NET_ERROR'
   | 'AUTH_ERROR'
   | 'APP_ERROR'
@@ -39,10 +39,10 @@ const verboseLoginError = (err: LoginErrorType) => {
 
 export function Login(props: Props) {
   const styles = useThemedStyles(styleSheet);
-  const [loginError, setLoginError] = useState(() => props.loginError);
+  const [loginError, setLoginError] = useState<LoginErrorType>(undefined);
   const [loading, setLoading] = useState(false);
-  const [handle, setHandle] = useState(props.userCredentials.handle);
-  const [token, setToken] = useState(props.userCredentials.token);
+  const [handle, setHandle] = useState('');
+  const [token, setToken] = useState('');
   const [loginBtnDisabled, disableLoginBtn] = useState(true);
 
   useEffect(() => {
@@ -52,6 +52,16 @@ export function Login(props: Props) {
       disableLoginBtn(false);
     }
   }, [handle, token, loading]);
+
+  useEffect(() => {
+    setLoginError(props.loginError);
+    setLoading(false);
+  }, [props.loginError]);
+
+  useEffect(() => {
+    setHandle(props.userCredentials.handle);
+    setToken(props.userCredentials.token);
+  }, [props.userCredentials.handle, props.userCredentials.token]);
 
   const onClickLogin = () => {
     setLoading(true);
@@ -63,7 +73,7 @@ export function Login(props: Props) {
   };
 
   return (
-    <PageBackground>
+    <PageBackground pageLabel="login page">
       <MemoedTextInput
         label="your access token"
         setText={setToken}
