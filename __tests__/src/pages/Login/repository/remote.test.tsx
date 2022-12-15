@@ -131,6 +131,58 @@ describe(RemoteLoginRepository, () => {
         expectedFetchConfig,
       );
     });
+    // eslint-disable-next-line require-await
+    test("throws login error 'NET_ERROR' when connection times out", async () => {
+      expect.assertions(2);
+      const profileLastModified = 10;
+      const mockFetch = jest
+        .fn()
+        .mockRejectedValue('network error: connection timeout')
+        .mockName('mockFetch');
+      global.fetch = mockFetch;
+      expect(
+        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
+      ).rejects.toThrow('NET_ERROR');
+      const expectedFetchURL = /.+/;
+      const expectedFetchConfig = {
+        method: 'GET',
+        headers: [
+          ['token', 'someToken'],
+          ['handle', 'someHandle'],
+          ['lastmodified', `${profileLastModified}`],
+        ],
+      };
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(expectedFetchURL),
+        expectedFetchConfig,
+      );
+    });
+    // eslint-disable-next-line require-await
+    test("throws login error 'APP_ERROR' when fetch encounters an unknown error", async () => {
+      expect.assertions(2);
+      const profileLastModified = 10;
+      const mockFetch = jest
+        .fn()
+        .mockRejectedValue('some error')
+        .mockName('mockFetch');
+      global.fetch = mockFetch;
+      expect(
+        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
+      ).rejects.toThrow('APP_ERROR');
+      const expectedFetchURL = /.+/;
+      const expectedFetchConfig = {
+        method: 'GET',
+        headers: [
+          ['token', 'someToken'],
+          ['handle', 'someHandle'],
+          ['lastmodified', `${profileLastModified}`],
+        ],
+      };
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringMatching(expectedFetchURL),
+        expectedFetchConfig,
+      );
+    });
     test("returns a valid user profile result when the fetch response status is 'OK'", async () => {
       expect.assertions(2);
       const expectedUserProfile: Profile = {

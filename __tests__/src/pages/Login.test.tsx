@@ -28,6 +28,48 @@ describe('Login page', () => {
     },
   );
   test(
+    "displays texts 'Login failed!' and 'unknown error encountered. Please resart application' when " +
+      "the prop 'loginError' is set to 'APP_ERROR'",
+    () => {
+      render(
+        themed(
+          <Login
+            userCredentials={{handle: '', token: ''}}
+            onPressLoginBtn={_ => {}}
+            loginError="APP_ERROR"
+          />,
+        ),
+      );
+      const loginFailedTextComponent = screen.queryByText('Login failed!');
+      expect(loginFailedTextComponent).not.toBeNull();
+      const appErrorTextComponent = screen.queryByText(
+        'unknown error encountered. Please resart application',
+      );
+      expect(appErrorTextComponent).not.toBeNull();
+    },
+  );
+  test(
+    "displays texts 'Login failed!' and 'something went wrong on our side. Please give " +
+      "us a moment to look into this issue' when the prop 'loginError' is set to 'SERVER_ERROR'",
+    () => {
+      render(
+        themed(
+          <Login
+            userCredentials={{handle: '', token: ''}}
+            onPressLoginBtn={_ => {}}
+            loginError="SERVER_ERROR"
+          />,
+        ),
+      );
+      const loginFailedTextComponent = screen.queryByText('Login failed!');
+      expect(loginFailedTextComponent).not.toBeNull();
+      const serverErrorTextComponent = screen.queryByText(
+        'something went wrong on our side. Please give us a moment to look into this issue',
+      );
+      expect(serverErrorTextComponent).not.toBeNull();
+    },
+  );
+  test(
     "displays texts 'Login failed!' and 'please check network connection and try again' when " +
       "the prop 'loginError' is set to 'NET_ERROR'",
     () => {
