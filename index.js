@@ -3,33 +3,7 @@
  */
 
 import {AppRegistry} from 'react-native';
-// import TrackPlayer, {
-//   AppKilledPlaybackBehavior,
-//   Capability,
-// } from 'react-native-track-player';
-
-// import App from './App';
-// import DummyApp from './DummyApp';
 import {name as appName} from './app.json';
-import Router from './src/shared/Router';
-// import {PlaybackService} from './src/services';
+import App from './App';
 
-// // Set up the player
-// TrackPlayer.setupPlayer({
-//   android: {
-//     appKilledPlaybackBehavior:
-//       AppKilledPlaybackBehavior.StopPlaybackAndRemoveNotification,
-//   },
-//   capabilities: [
-//     Capability.Play,
-//     Capability.Pause,
-//     Capability.SkipToNext,
-//     Capability.SkipToPrevious,
-//     Capability.Stop,
-//   ],
-//   compactCapabilities: [Capability.Pause, Capability.Stop],
-// }).catch(e => console.error('Error on trackplayer setup', e));
-
-AppRegistry.registerComponent(appName, () => Router);
-// AppRegistry.registerComponent(appName, () => DummyApp);
-// TrackPlayer.registerPlaybackService(() => PlaybackService);
+AppRegistry.registerComponent(appName, () => App);

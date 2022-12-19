@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Paragraph, TextInput} from 'react-native-paper';
 
-import {OnlyShow} from '../../components/Helpers/OnlyShow';
+import {OnlyShow} from '../../shared/components/OnlyShow';
 import PageBackground from '../../shared/components/PageBackground';
 
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
