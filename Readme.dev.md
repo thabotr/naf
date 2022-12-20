@@ -1,13 +1,13 @@
 ## Testing
 ### Unit testing
-    `npm run test -- --detectOpenHandles --collectCoverage`
+    npm run test -- --detectOpenHandles --collectCoverage
 ### End-2-End testing
 #### 1. Start Metro
-    `npx react-native start`
+    npx react-native start
 #### 2. Build debug APK
-    `cd android ; ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug ; cd -`
+    cd android ; ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug ; cd -
 #### 3. Run the tests
-    `detox test --configuration android.emu.debug`
+    detox test --configuration android.emu.debug
 
 ## Design
 ### Screens
