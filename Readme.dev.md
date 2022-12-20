@@ -12,7 +12,7 @@
 ## Design
 ### Screens
 
-<div style="display: flex;">
+<div style="display: flex; flex-direction: row;">
     <div
         width="33%"
         style="display: flex; flex-direction: column; align-items: center;"
@@ -35,7 +35,7 @@
         <image src="./design/screens/Chat Page.jpg"/>
     </div>
 </div>
-<div style="display: flex;">
+<div style="display: flex; flex-direction: row;">
     <div
         width="33%"
         style="display: flex; flex-direction: column; align-items: center;"
