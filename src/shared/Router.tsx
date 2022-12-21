@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {Login, LoginErrorType} from '../pages/Login/Login';
 import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
-import PageBackground from './components/PageBackground';
 import {ThemeProvider} from './providers/theme';
+import Home from '../pages/Home';
 
 const remoteRepo = new RemoteLoginRepository();
 
@@ -46,7 +46,11 @@ export default function Router() {
   }
   return (
     <ThemeProvider>
-      <PageBackground pageLabel="home page" />
+      <Home
+        chats={[]}
+        onOpenPreferences={() => {}}
+        onOpenUserProfile={() => {}}
+      />
     </ThemeProvider>
   );
 }

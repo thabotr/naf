@@ -1,4 +1,5 @@
 import {device, element, expect} from 'detox';
+import {PROFILE} from '../mockdata/profile';
 describe('Login Page', () => {
   beforeAll(async () => {
     await device.launchApp({newInstance: true});
@@ -22,11 +23,11 @@ describe('Login Page', () => {
     ).toExist();
   });
   it('as a registered user I should be able to log into the application', async () => {
-    const registeredAccessToken = 'token1';
+    const registeredAccessToken = PROFILE.token;
     await element(by.label('your access token')).typeText(
       registeredAccessToken,
     );
-    const registeredUserHandle = 'w/unodosthreenfour';
+    const registeredUserHandle = PROFILE.handle;
     await element(by.label('your handle')).typeText(registeredUserHandle);
     await element(by.label('login')).tap();
     await expect(element(by.label('home page'))).toExist();

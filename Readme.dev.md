@@ -1,12 +1,14 @@
 ## Testing
 ### Unit testing
-    npm run test -- --detectOpenHandles --collectCoverage
+    npm run unitTest -- --detectOpenHandles --collectCoverage
 ### End-2-End testing
 #### 1. Start Metro
     npx react-native start
 #### 2. Build debug APK
     cd android ; ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug ; cd -
-#### 3. Run the tests
+#### 3. Start mock data server
+    cd __tests__/e2e/mockserver ; npx json-server ./data.js --middlewares ./middleware.js ; cd -
+#### 4. Run the tests
     detox test --configuration android.emu.debug
 
 ## Design
