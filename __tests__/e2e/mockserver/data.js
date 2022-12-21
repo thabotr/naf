@@ -1,8 +1,10 @@
+const {CHATS} = require('../../mockdata/chat');
 const {PROFILE} = require('../../mockdata/profile');
 
 module.exports = () => {
-  const profile = {
+  const data = {
     profile: PROFILE,
+    chats: CHATS,
   };
-  return profile;
+  return data;
 };

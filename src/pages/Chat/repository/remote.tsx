@@ -4,37 +4,28 @@ import {
   handleFetchError,
   handleUnsuccessfulResponse,
 } from '../../../shared/utils/remoteRepository';
-import {Profile} from '../../../types/user';
-import {LoginRepository} from '../repository';
+import {Chat} from '../../../types/chat';
+import {ChatRepository} from '../repository';
 
-class RemoteLoginRepository implements LoginRepository {
-  async getUserProfile(
+class RemoteChatRepository implements ChatRepository {
+  async getChats(
     userToken: string,
     userHandle: string,
-    profileLastModified?: number,
-  ): Promise<Profile | null> {
+  ): Promise<Chat[] | null> {
     const headers: any = {
       token: userToken,
       handle: userHandle,
     };
 
-    if (profileLastModified !== undefined) {
-      headers.lastmodified = profileLastModified;
-    }
-
     let response;
     try {
-      response = await axios.get(`${SERVER_URL}/profile`, {
+      response = await axios.get(`${SERVER_URL}/chats`, {
         headers: headers,
         validateStatus: status => status >= 200 && status < 600,
       });
       if (response.status === 200) {
-        const body = response.data;
-        const profile: Profile = {
-          ...body,
-          token: userToken,
-        };
-        return profile;
+        const chats: Chat[] = response.data;
+        return chats;
       } else if (response.status === 204) {
         return null;
       }
@@ -46,4 +37,4 @@ class RemoteLoginRepository implements LoginRepository {
   }
 }
 
-export {RemoteLoginRepository};
+export {RemoteChatRepository};

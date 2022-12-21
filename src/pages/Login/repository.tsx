@@ -5,5 +5,5 @@ export interface LoginRepository {
     userToken: string,
     userHandle: string,
     profileLastModified?: number,
-  ) => Promise<Profile | undefined>;
+  ) => Promise<Profile | null>;
 }

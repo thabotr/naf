@@ -7,6 +7,8 @@ describe('Login Page', () => {
 
   beforeEach(async () => {
     await device.reloadReactNative();
+    await expect(element(by.label('login page'))).toExist();
+    await expect(element(by.label('home page'))).not.toExist();
   });
 
   it('as an unregistered user I should not be able to log into the application', async () => {

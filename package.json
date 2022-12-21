@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "unitTest": "jest --detectOpenHandles",
-    "e2eTest" : "detox test --configuration android.emu.release",
+    "e2eTest" : "detox test --configuration android.emu.debug",
     "lint": "eslint ."
   },
   "dependencies": {

@@ -25,4 +25,5 @@ function createRandomChat(): Chat {
 
 Array.from({length: 30}).forEach(() => {
   CHATS.push(createRandomChat());
+  CHATS[0].user.handle = 'w/testChatHandle';
 });

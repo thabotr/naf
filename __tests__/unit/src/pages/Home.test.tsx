@@ -5,7 +5,7 @@ import {
   cleanup,
   fireEvent,
 } from '@testing-library/react-native';
-import Home from '../../../../src/pages/Home';
+import Home from '../../../../src/pages/Home/Home';
 import themed from '../../utils/themed';
 import {CHATS} from '../../../mockdata/chat';
 
@@ -19,7 +19,7 @@ describe('Home page', () => {
         <Home
           chats={[]}
           onOpenPreferences={() => {}}
-          onOpenUserProfile={() => {}}
+          onOpenMyProfile={() => {}}
         />,
       ),
     );
@@ -31,7 +31,7 @@ describe('Home page', () => {
         <Home
           chats={CHATS}
           onOpenPreferences={() => {}}
-          onOpenUserProfile={() => {}}
+          onOpenMyProfile={() => {}}
         />,
       ),
     );
@@ -44,15 +44,7 @@ describe('Home page', () => {
       "the prop 'onOpenPreferences' on click",
     () => {
       const onOpenPreferencesMock = jest.fn().mockName('onOpenPreferencesMock');
-      render(
-        themed(
-          <Home
-            chats={[]}
-            onOpenPreferences={onOpenPreferencesMock}
-            onOpenUserProfile={() => {}}
-          />,
-        ),
-      );
+      render(themed(<Home onOpenPreferences={onOpenPreferencesMock} />));
       screen.getByLabelText('home navigation bar');
       const openPreferencesButton = screen.getByLabelText('open preferences');
       fireEvent.press(openPreferencesButton);
@@ -60,23 +52,15 @@ describe('Home page', () => {
     },
   );
   test(
-    'the navbar should contain the user profile link which should call ' +
-      "the prop 'onOpenUserProfile' on click",
+    "the navbar should contain the user's profile link which should call " +
+      "the prop 'onOpenMyProfile' on click",
     () => {
-      const onOpenUserProfileMock = jest.fn().mockName('onOpenUserProfileMock');
-      render(
-        themed(
-          <Home
-            chats={[]}
-            onOpenPreferences={() => {}}
-            onOpenUserProfile={onOpenUserProfileMock}
-          />,
-        ),
-      );
+      const onOpenMyProfileMock = jest.fn().mockName('onOpenMyProfileMock');
+      render(themed(<Home onOpenMyProfile={onOpenMyProfileMock} />));
       screen.getByLabelText('home navigation bar');
-      const openUserProfileLink = screen.getByLabelText('open user profile');
+      const openUserProfileLink = screen.getByLabelText('open my profile');
       fireEvent.press(openUserProfileLink);
-      expect(onOpenUserProfileMock).toBeCalledTimes(1);
+      expect(onOpenMyProfileMock).toBeCalledTimes(1);
     },
   );
 });

@@ -57,7 +57,7 @@ describe(RemoteLoginRepository, () => {
       },
     );
     test(
-      'returns an undefined profile result when the ' +
+      'returns a null profile result when the ' +
         "fetch response status is 'No Content'",
       async () => {
         expect.assertions(2);
@@ -71,7 +71,7 @@ describe(RemoteLoginRepository, () => {
           expect.stringMatching(expectedFetchURL),
           expectedFetchConfig,
         );
-        expect(profileResult).toBeUndefined();
+        expect(profileResult).toBeNull();
       },
     );
     // eslint-disable-next-line require-await

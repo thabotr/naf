@@ -7,9 +7,10 @@
 #### 2. Build debug APK
     cd android ; ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug ; cd -
 #### 3. Start mock data server
-    cd __tests__/e2e/mockserver ; npx json-server ./data.js --middlewares ./middleware.js --routes ./routes.json ; cd -
+    cd __tests__/e2e/mockserver ; npx json-server ./data.js --middlewares ./middleware.js --routes ./routes.json
 #### 4. Run the tests
     npm run e2eTest
+see the [Detox](https://wix.github.io/Detox/docs/) docs for more info on running the e2e tests.
 
 ## Design
 ### Screens
