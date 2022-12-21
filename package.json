@@ -6,7 +6,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "unitTest": "jest",
+    "unitTest": "jest --detectOpenHandles",
+    "e2eTest" : "detox test --configuration android.emu.release",
     "lint": "eslint ."
   },
   "dependencies": {

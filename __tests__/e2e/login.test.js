@@ -14,7 +14,7 @@ describe('Login Page', () => {
     await element(by.label('your access token')).typeText(
       unregisteredAccessToken,
     );
-    const registeredUserHandle = 'w/unodosthreenfour';
+    const registeredUserHandle = 'w/testHandle';
     await element(by.label('your handle')).typeText(registeredUserHandle);
     await element(by.label('login')).tap();
     await expect(element(by.text('Login failed!'))).toExist();

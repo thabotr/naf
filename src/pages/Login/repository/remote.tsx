@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {SERVER_URL} from '../../../shared/routes/server';
 import {log} from '../../../shared/utils/logger';
 import {Profile} from '../../../types/user';
 import {LoginRepository} from '../repository';
@@ -20,7 +21,7 @@ class RemoteLoginRepository implements LoginRepository {
 
     let response;
     try {
-      response = await axios.get('http://10.0.2.2:3000/profile', {
+      response = await axios.get(`${SERVER_URL}/profile`, {
         headers: headers,
         validateStatus: status => status >= 200 && status < 600,
       });
