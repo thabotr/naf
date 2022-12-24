@@ -6,12 +6,13 @@ import {useThemedStyles} from '../providers/theme';
 type Props = {
   children?: ReactNode;
   pageLabel?: string;
+  style?: any;
 };
 
-export default function PageBackground({children, pageLabel}: Props) {
+export default function PageBackground({children, pageLabel, style}: Props) {
   const styles = useThemedStyles(styleSheet);
   return (
-    <Surface accessibilityLabel={pageLabel} style={styles.background}>
+    <Surface accessibilityLabel={pageLabel} style={[styles.background, style]}>
       {children}
     </Surface>
   );
@@ -22,7 +23,6 @@ const styleSheet = (theme: any) =>
     background: {
       width: '100%',
       height: '100%',
-      justifyContent: 'center',
       backgroundColor: theme.color.secondary,
     },
   });

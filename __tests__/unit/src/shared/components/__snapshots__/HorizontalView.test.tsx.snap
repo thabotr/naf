@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HorizontalView correctly renders its child components horizontally 1`] = `
+<View
+  style={
+    {
+      "display": "flex",
+      "flexDirection": "row",
+    }
+  }
+/>
+`;

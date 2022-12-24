@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PageBackground renders correctly 1`] = `
+<View
+  accessibilityLabel="test page"
+  collapsable={false}
+  style={
+    {
+      "backgroundColor": "#dbdbdb",
+      "height": "100%",
+      "shadowColor": "#000000",
+      "shadowOffset": {
+        "height": 3,
+        "width": 0,
+      },
+      "shadowOpacity": 0.24,
+      "shadowRadius": 4,
+      "width": "100%",
+    }
+  }
+/>
+`;

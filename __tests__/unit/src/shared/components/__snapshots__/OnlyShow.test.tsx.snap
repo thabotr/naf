@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`OnlyShow correctly renders its child component when the If prop is truthy 1`] = `
+<Text>
+  Im am the child component
+</Text>
+`;
+
+exports[`OnlyShow does not render its child component when the If prop is falsy 1`] = `null`;

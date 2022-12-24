@@ -1,10 +1,10 @@
 import React from 'react';
 
-export function OnlyShow({
+export default function OnlyShow({
   If,
   children,
 }: {
-  If?: boolean;
+  If: boolean;
   children: React.ReactNode;
 }) {
   return If ? <>{children}</> : null;

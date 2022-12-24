@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Paragraph, TextInput} from 'react-native-paper';
 
-import {OnlyShow} from '../../shared/components/OnlyShow';
+import OnlyShow from '../../shared/components/OnlyShow';
 import PageBackground from '../../shared/components/PageBackground';
 
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
@@ -38,7 +38,6 @@ const verboseLoginError = (err: LoginErrorType) => {
 };
 
 export function Login(props: Props) {
-  const styles = useThemedStyles(styleSheet);
   const [loginError, setLoginError] = useState<LoginErrorType>(undefined);
   const [loading, setLoading] = useState(false);
   const [handle, setHandle] = useState('');
@@ -72,8 +71,9 @@ export function Login(props: Props) {
     });
   };
 
+  const styles = useThemedStyles(styleSheet);
   return (
-    <PageBackground pageLabel="login page">
+    <PageBackground pageLabel="login page" style={styles.pageBg}>
       <MemoedTextInput
         label="your access token"
         setText={setToken}
@@ -150,5 +150,8 @@ const styleSheet = (theme: ThemeType) =>
       backgroundColor: theme.color.primary,
       marginHorizontal: 50,
       marginVertical: 10,
+    },
+    pageBg: {
+      justifyContent: 'center',
     },
   });

@@ -9,6 +9,7 @@ import PageBackground from './components/PageBackground';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {Chat} from '../types/chat';
 import {RemoteChatRepository} from '../pages/Chat/repository/remote';
+import {Preferences} from '../pages/Preferences/Preferences';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatRepo = new RemoteChatRepository();
@@ -77,9 +78,7 @@ export default function Router() {
     );
   };
 
-  const PreferencesScreen = () => (
-    <PageBackground pageLabel="preferences page" />
-  );
+  const PreferencesScreen = () => <Preferences />;
   const MyProfileScreen = () => <PageBackground pageLabel="my profile page" />;
   const ChatScreen = () => (
     <PageBackground pageLabel={`chat ${openChat?.user.handle} page`} />
