@@ -1,15 +1,31 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
-import {List} from 'react-native-paper';
+import {IconButton, List, Surface} from 'react-native-paper';
 import PageBackground from '../../shared/components/PageBackground';
 import {useThemedStyles} from '../../shared/providers/theme';
 import ThemePreferences from './ThemePreferences';
+import globalStyles, {globalThemedStyles} from '../../shared/styles';
 
-export function Preferences() {
+type Props = {
+  onBackToHome: () => void;
+};
+
+export function Preferences({onBackToHome}: Props) {
   const styles = useThemedStyles(styleSheet);
+  const themedStyle = useThemedStyles(globalThemedStyles);
   return (
     <PageBackground pageLabel="preferences page">
-      <List.Section>
+      <Surface
+        accessibilityLabel="preferences navigation bar"
+        style={themedStyle.navbar}>
+        <IconButton
+          icon="arrow-left"
+          accessibilityLabel="back to home"
+          onPress={onBackToHome}
+          style={globalStyles.square}
+        />
+      </Surface>
+      <List.Section accessibilityLabel="theme preferences">
         <List.Subheader style={styles.subHeader}>Theme</List.Subheader>
         <ThemePreferences />
       </List.Section>

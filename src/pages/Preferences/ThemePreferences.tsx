@@ -4,9 +4,9 @@ import HorizontalView from '../../shared/components/HorizontalView';
 import {useTheme} from '../../shared/providers/theme';
 import {ThemeSetting} from '../../types/settings';
 
-export default function ThemePreferences() {
+export default function ThemePreferences(props: any) {
   return (
-    <HorizontalView>
+    <HorizontalView {...props}>
       <ThemedToggleButton ts="light" />
       <ThemedToggleButton ts="dark" />
       <ThemedToggleButton ts="system_default" />

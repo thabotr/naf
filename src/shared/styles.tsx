@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   horizontal: {
     display: 'flex',
     flexDirection: 'row',
@@ -13,3 +13,16 @@ export default StyleSheet.create({
     height: 50,
   },
 });
+
+const globalThemedStyles = (theme: any) =>
+  StyleSheet.create({
+    navbar: {
+      ...styles.horizontal,
+      backgroundColor: theme.color.primary,
+      justifyContent: 'space-between',
+      paddingRight: 15,
+    },
+  });
+
+export default styles;
+export {globalThemedStyles};

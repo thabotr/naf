@@ -78,8 +78,13 @@ export default function Router() {
     );
   };
 
-  const PreferencesScreen = () => <Preferences />;
-  const MyProfileScreen = () => <PageBackground pageLabel="my profile page" />;
+  const PreferencesScreen = () => {
+    const navigation: any = useNavigation();
+    return <Preferences onBackToHome={() => navigation.navigate('Home')} />;
+  };
+  const MyProfileScreen = () => {
+    return <PageBackground pageLabel="my profile page" />;
+  };
   const ChatScreen = () => (
     <PageBackground pageLabel={`chat ${openChat?.user.handle} page`} />
   );

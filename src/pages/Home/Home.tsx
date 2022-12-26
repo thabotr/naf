@@ -1,9 +1,9 @@
 import React from 'react';
-import {Button, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {Button, FlatList, TouchableOpacity} from 'react-native';
 import {IconButton, Surface, Text} from 'react-native-paper';
 import PageBackground from '../../shared/components/PageBackground';
-import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
-import globalStyles from '../../shared/styles';
+import {useThemedStyles} from '../../shared/providers/theme';
+import globalStyles, {globalThemedStyles} from '../../shared/styles';
 import {Chat} from '../../types/chat';
 
 type Props = {
@@ -35,7 +35,7 @@ export default ({
   onOpenMyProfile,
   onOpenChat,
 }: Props) => {
-  const styles = useThemedStyles(styleSheet);
+  const styles = useThemedStyles(globalThemedStyles);
   return (
     <PageBackground pageLabel="home page">
       <Surface accessibilityLabel="home navigation bar" style={styles.navbar}>
@@ -62,13 +62,3 @@ export default ({
     </PageBackground>
   );
 };
-
-const styleSheet = (theme: ThemeType) =>
-  StyleSheet.create({
-    navbar: {
-      ...globalStyles.horizontal,
-      backgroundColor: theme.color.primary,
-      justifyContent: 'space-between',
-      paddingRight: 15,
-    },
-  });
