@@ -1,7 +1,7 @@
-import {device, element, expect, by} from 'detox';
+import {device, element, expect} from 'detox';
 import {PROFILE} from '../mockdata/profile';
 
-describe('Preferences Page', () => {
+describe('MyProfile Page', () => {
   describe('As a logged in user', () => {
     describe('coming from the home page', () => {
       beforeAll(async () => {
@@ -17,8 +17,8 @@ describe('Preferences Page', () => {
         await element(by.label('your handle')).typeText(registeredUserHandle);
         await element(by.label('login')).tap();
         await expect(element(by.label('home page'))).toExist();
-        await element(by.label('open preferences')).tap();
-        await expect(element(by.label('preferences page'))).toExist();
+        await element(by.label('open my profile')).tap();
+        await expect(element(by.label('my profile page'))).toExist();
       });
       it(
         "I should be able to navigate to the 'home page' by " +
@@ -29,9 +29,15 @@ describe('Preferences Page', () => {
           await expect(element(by.label('home page'))).toExist();
         },
       );
-      it('I should be able to see the theme preferences section', async () => {
-        await expect(element(by.label('theme preferences'))).toExist();
-      });
+      it(
+        "I should be able to navigate to the 'login page' by " +
+          "holding down the 'logout' button",
+        async () => {
+          await expect(element(by.label('login page'))).not.toExist();
+          await element(by.label('logout')).longPress();
+          await expect(element(by.label('login page'))).toExist();
+        },
+      );
     });
   });
 });

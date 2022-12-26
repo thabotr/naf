@@ -40,7 +40,7 @@ describe('MyProfile Page', () => {
     render(
       themed(<MyProfile onLogout={() => {}} onBackToHome={mockOnBackToHome} />),
     );
-    screen.getByLabelText('myprofile navigation bar');
+    screen.getByLabelText('my profile navigation bar');
     const backToHomeButton = screen.getByLabelText('back to home');
     fireEvent.press(backToHomeButton);
     expect(mockOnBackToHome).toHaveBeenCalledTimes(1);

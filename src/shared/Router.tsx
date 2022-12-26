@@ -10,6 +10,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {Chat} from '../types/chat';
 import {RemoteChatRepository} from '../pages/Chat/repository/remote';
 import {Preferences} from '../pages/Preferences/Preferences';
+import MyProfile from '../pages/MyProfile/MyProfile';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatRepo = new RemoteChatRepository();
@@ -83,7 +84,13 @@ export default function Router() {
     return <Preferences onBackToHome={() => navigation.navigate('Home')} />;
   };
   const MyProfileScreen = () => {
-    return <PageBackground pageLabel="my profile page" />;
+    const navigation: any = useNavigation();
+    return (
+      <MyProfile
+        onLogout={() => setLoggedInUser(undefined)}
+        onBackToHome={() => navigation.navigate('Home')}
+      />
+    );
   };
   const ChatScreen = () => (
     <PageBackground pageLabel={`chat ${openChat?.user.handle} page`} />

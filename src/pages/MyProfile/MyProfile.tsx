@@ -11,9 +11,9 @@ type Props = {
 
 export default function ({onLogout, onBackToHome}: Props) {
   return (
-    <PageBackground pageLabel="">
+    <PageBackground pageLabel="my profile page">
       <BackToHomeNavigationBar
-        accessibilityLabel="myprofile navigation bar"
+        accessibilityLabel="my profile navigation bar"
         onBackToHome={onBackToHome}
       />
       <Button
