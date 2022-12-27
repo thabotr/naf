@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/pages/Home/Home.tsx</title>
+    <title>Code coverage report for src/pages/ChatProfile/ChatProfile.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,20 +19,20 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/pages/Home</a> Home.tsx</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/pages/ChatProfile</a> ChatProfile.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -126,8 +126,7 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,6 +134,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,14 +160,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -164,8 +172,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,78 +189,69 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
-import {Button, FlatList, TouchableOpacity} from 'react-native';
-import {IconButton, Surface, Text} from 'react-native-paper';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, {useEffect, useState} from 'react';
+import {ToastAndroid, View} from 'react-native';
+import {Button, Paragraph} from 'react-native-paper';
+import BackToHomeNavigationBar from '../../shared/components/BackToHomeNavigationBar';
+import OnlyShow from '../../shared/components/OnlyShow';
 import PageBackground from '../../shared/components/PageBackground';
-import {useThemedStyles} from '../../shared/providers/theme';
-import globalStyles, {globalThemedStyles} from '../../shared/styles';
 import {Chat} from '../../types/chat';
+import {LoginErrorType, verboseLoginError} from '../Login/Login';
+import globalStyles from '../../shared/styles';
 &nbsp;
 type Props = {
-  chats?: Chat[];
-  onOpenPreferences?: () =&gt; void;
-  onOpenMyProfile?: () =&gt; void;
-  onOpenChat?: (chat: Chat) =&gt; void;
+  onGoBack?: () =&gt; void;
+  chat?: Chat;
+  onDisconnect?: () =&gt; void;
+  error?: LoginErrorType;
 };
-&nbsp;
-const ChatPreviewCard = ({
-  chat,
-  onOpenChat,
-}: {
-  chat: Chat;
-  onOpenChat?: (chat: Chat) =&gt; void;
-}) =&gt; {
+export default function ({onGoBack, chat, onDisconnect, error}: Props) {
+  const [disconnecting, setDisconnecting] = useState(false);
+  useEffect(() =&gt; {
+    if (error) {
+      setDisconnecting(false);
+    }
+  }, [error]);
   return (
-    &lt;Button
-      title={`Message ${chat.user.handle}`}
-      accessibilityLabel={`open chat ${chat.user.handle}`}
-      onPress={() =&gt; onOpenChat?.(chat)}
-    /&gt;
-  );
-};
-&nbsp;
-export default ({
-  chats,
-  onOpenPreferences,
-  onOpenMyProfile,
-  onOpenChat,
-}: Props) =&gt; {
-  const styles = useThemedStyles(globalThemedStyles);
-  return (
-    &lt;PageBackground pageLabel="home page"&gt;
-      &lt;Surface accessibilityLabel="home navigation bar" style={styles.navbar}&gt;
-        &lt;IconButton
-          icon="menu"
-          accessibilityLabel="open preferences"
-          onPress={onOpenPreferences}
-          style={globalStyles.square}
-        /&gt;
-        &lt;TouchableOpacity
-          onPress={onOpenMyProfile}
-          accessibilityLabel="open my profile"
-          style={globalStyles.avatarDimensions}
-          activeOpacity={0.5}
-          children={&lt;Text&gt;Open User Profile&lt;/Text&gt;}
-        /&gt;
-      &lt;/Surface&gt;
-      &lt;FlatList
-        data={chats}
-        renderItem={({item}) =&gt; (
-          &lt;ChatPreviewCard chat={item} onOpenChat={onOpenChat} /&gt;
-        )}
+    &lt;PageBackground pageLabel={`${chat?.user.handle} profile page`}&gt;
+      &lt;BackToHomeNavigationBar
+        accessibilityLabel="chat profile navigation bar"
+        onBackToHome={onGoBack}
       /&gt;
+      &lt;Button
+        onPress={() =&gt;
+          ToastAndroid.show('hold to disconnect from user', ToastAndroid.SHORT)
+        }
+        onLongPress={() =&gt; {
+          setDisconnecting(true);
+          onDisconnect?.();
+        }}
+        loading={disconnecting}
+        disabled={disconnecting}
+        icon="account-remove"
+        accessibilityLabel={`disconnect from chat ${chat?.user.handle}`}
+        children={null}
+      /&gt;
+      &lt;OnlyShow If={!!error}&gt;
+        &lt;View&gt;
+          &lt;Paragraph
+            accessibilityLabel="chat profile status"
+            style={globalStyles.loginErrorText}&gt;
+            Chat profile error!
+          &lt;/Paragraph&gt;
+          &lt;Paragraph
+            accessibilityLabel="chat profile sub-status"
+            style={[
+              globalStyles.loginErrorText,
+              globalStyles.loginErrorSubText,
+            ]}&gt;
+            {verboseLoginError(error)}
+          &lt;/Paragraph&gt;
+        &lt;/View&gt;
+      &lt;/OnlyShow&gt;
     &lt;/PageBackground&gt;
   );
-};
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
