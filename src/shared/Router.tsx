@@ -11,10 +11,12 @@ import {RemoteChatRepository} from '../pages/Chat/repository/remote';
 import {Preferences} from '../pages/Preferences/Preferences';
 import MyProfile from '../pages/MyProfile/MyProfile';
 import ChatPage from '../pages/Chat/Chat';
-import PageBackground from './components/PageBackground';
+import ChatProfile from '../pages/ChatProfile/ChatProfile';
+import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remote';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatRepo = new RemoteChatRepository();
+const remoteChatProfileRepo = new RemoteChatProfileRepository();
 const NavigationStack = createNativeStackNavigator();
 
 export default function Router() {
@@ -104,8 +106,40 @@ export default function Router() {
     );
   };
   const ChatProfileScreen = () => {
+    const navigation: any = useNavigation();
+    const [chatProfileError, setChatProfileError] =
+      useState<LoginErrorType>(undefined);
+
+    function onDisconnect() {
+      if (!loggedInUser || !openChat) {
+        return;
+      }
+      remoteChatProfileRepo
+        .deleteConnection(
+          loggedInUser.token,
+          loggedInUser.handle,
+          openChat.user.handle,
+        )
+        .then(connectionDeleted => {
+          if (connectionDeleted) {
+            setChats(oldChats =>
+              oldChats.filter(
+                oldChat => oldChat.user.handle !== openChat.user.handle,
+              ),
+            );
+            navigation.navigate('Home');
+          }
+        })
+        .catch(e => setChatProfileError(e.message));
+    }
+
     return (
-      <PageBackground pageLabel={`${openChat?.user.handle} profile page`} />
+      <ChatProfile
+        chat={openChat}
+        error={chatProfileError}
+        onGoBack={() => navigation.navigate('Chat')}
+        onDisconnect={onDisconnect}
+      />
     );
   };
 

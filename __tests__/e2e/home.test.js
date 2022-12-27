@@ -39,7 +39,7 @@ describe('Home Page', () => {
     describe('Who has a connected chat', () => {
       it(
         "I should be able to navigate to the 'chat <connectedChatHandle> page' by " +
-          "pressing the 'open chat <connectedChatHandle>' area",
+          "pressing the 'open chat <connectedChatHandle>' link",
         async () => {
           const connectedChatHandle = CHATS[0].user.handle;
           await expect(

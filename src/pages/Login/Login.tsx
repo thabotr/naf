@@ -22,7 +22,7 @@ type Props = {
   onPressLoginBtn: (userCredentials: {token: string; handle: string}) => void;
 };
 
-const verboseLoginError = (err: LoginErrorType) => {
+export const verboseLoginError = (err: LoginErrorType) => {
   switch (err) {
     case 'APP_ERROR':
       return 'unknown error encountered. Please resart application';

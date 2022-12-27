@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  loginErrorText: {color: 'red', textAlign: 'center'},
+  loginErrorSubText: {fontStyle: 'italic'},
 });
 
 const globalThemedStyles = (theme: any) =>

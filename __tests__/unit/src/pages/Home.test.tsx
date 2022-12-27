@@ -63,4 +63,13 @@ describe('Home page', () => {
       expect(onOpenMyProfileMock).toBeCalledTimes(1);
     },
   );
+  test("should call the 'onOpenChat' prop with the subject chat when a chat link is clicked", () => {
+    const chat = CHATS[0];
+    const mockOnOpenChat = jest.fn().mockName('mockOnOpenChat');
+    render(themed(<Home chats={CHATS} onOpenChat={mockOnOpenChat} />));
+    const openChatLink = screen.getByLabelText(`open chat ${chat.user.handle}`);
+    fireEvent.press(openChatLink);
+    expect(mockOnOpenChat).toBeCalledTimes(1);
+    expect(mockOnOpenChat).toBeCalledWith(chat);
+  });
 });

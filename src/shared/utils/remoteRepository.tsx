@@ -2,7 +2,8 @@ import {log} from './logger';
 
 const handleFetchError = (e: any) => {
   log('ERROR', 'RemoteChatRepository', e);
-  if (`${e}`.includes('timedout')) {
+  const errorString = e.message.toLocaleLowerCase();
+  if (errorString.match(/timedout/) || errorString.match(/network error/)) {
     throw new Error('NET_ERROR');
   } else {
     throw new Error('APP_ERROR');
