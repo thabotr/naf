@@ -5,12 +5,13 @@ import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
 import {ThemeProvider} from './providers/theme';
 import Home from '../pages/Home/Home';
-import PageBackground from './components/PageBackground';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {Chat} from '../types/chat';
 import {RemoteChatRepository} from '../pages/Chat/repository/remote';
 import {Preferences} from '../pages/Preferences/Preferences';
 import MyProfile from '../pages/MyProfile/MyProfile';
+import ChatPage from '../pages/Chat/Chat';
+import PageBackground from './components/PageBackground';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatRepo = new RemoteChatRepository();
@@ -92,9 +93,21 @@ export default function Router() {
       />
     );
   };
-  const ChatScreen = () => (
-    <PageBackground pageLabel={`chat ${openChat?.user.handle} page`} />
-  );
+  const ChatScreen = () => {
+    const navigation: any = useNavigation();
+    return (
+      <ChatPage
+        chat={openChat}
+        onBackToHome={() => navigation.navigate('Home')}
+        onOpenChatProfile={() => navigation.navigate('Chat Profile')}
+      />
+    );
+  };
+  const ChatProfileScreen = () => {
+    return (
+      <PageBackground pageLabel={`${openChat?.user.handle} profile page`} />
+    );
+  };
 
   return (
     <ThemeProvider>
@@ -113,6 +126,10 @@ export default function Router() {
             component={PreferencesScreen}
           />
           <NavigationStack.Screen name="Chat" component={ChatScreen} />
+          <NavigationStack.Screen
+            name="Chat Profile"
+            component={ChatProfileScreen}
+          />
         </NavigationStack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
