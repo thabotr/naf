@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
 import {IconButton, Surface} from 'react-native-paper';
+import FloatBottomRight from '../../shared/components/FloatBottomRight';
 import PageBackground from '../../shared/components/PageBackground';
 import Show from '../../shared/components/Show';
 import {useThemedStyles} from '../../shared/providers/theme';
@@ -38,7 +39,11 @@ export default function ({onBackToHome, chat, onOpenChatProfile}: Props) {
       <Show
         component={<MessageComposer />}
         If={composing}
-        ElseShow={<ComposeFAB onPress={() => setComposing(true)} />}
+        ElseShow={
+          <FloatBottomRight>
+            <ComposeFAB onPress={() => setComposing(true)} />
+          </FloatBottomRight>
+        }
       />
     </PageBackground>
   );

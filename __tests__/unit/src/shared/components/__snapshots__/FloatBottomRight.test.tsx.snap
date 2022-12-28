@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FloatBottomRight renders correctly 1`] = `
+<View
+  collapsable={false}
+  style={
+    {
+      "backgroundColor": "#ffffff",
+      "bottom": 50,
+      "elevation": 3,
+      "position": "absolute",
+      "right": 40,
+      "shadowColor": "#000000",
+      "shadowOffset": {
+        "height": 2,
+        "width": 0,
+      },
+      "shadowOpacity": 0.24,
+      "shadowRadius": 3,
+    }
+  }
+/>
+`;

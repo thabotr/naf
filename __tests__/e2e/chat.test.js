@@ -38,6 +38,16 @@ describe('Chat page', () => {
           element(by.label(`${chat.user.handle} profile page`)),
         ).toExist();
       });
+      test(
+        'when I click the compose mesage button it should bring up a ' +
+          'message composer and then disappear from view',
+        async () => {
+          await expect(element(by.label('message composer'))).not.toExist();
+          await element(by.label('compose message')).tap();
+          await expect(element(by.label('message composer'))).toExist();
+          await expect(element(by.label('compose message'))).not.toExist();
+        },
+      );
     });
   });
 });

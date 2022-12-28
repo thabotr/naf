@@ -14,6 +14,10 @@ const styles = StyleSheet.create({
   },
   loginErrorText: {color: 'red', textAlign: 'center'},
   loginErrorSubText: {fontStyle: 'italic'},
+  card: {
+    margin: 3,
+    elevation: 3,
+  },
 });
 
 const globalThemedStyles = (theme: any) =>

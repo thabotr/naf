@@ -7,13 +7,15 @@ exports[`Chat MessageComposer renders correctly 1`] = `
   style={
     {
       "backgroundColor": "#ffffff",
+      "elevation": 3,
+      "margin": 3,
       "shadowColor": "#000000",
       "shadowOffset": {
-        "height": 3,
+        "height": 2,
         "width": 0,
       },
       "shadowOpacity": 0.24,
-      "shadowRadius": 4,
+      "shadowRadius": 3,
     }
   }
 >
@@ -61,6 +63,96 @@ exports[`Chat MessageComposer renders correctly 1`] = `
         ]
       }
     >
+      <View
+        collapsable={false}
+        pointerEvents="none"
+        style={
+          {
+            "bottom": 0,
+            "left": 0,
+            "opacity": 1,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+            "transform": [
+              {
+                "translateX": 0,
+              },
+            ],
+            "zIndex": 3,
+          }
+        }
+      >
+        <Text
+          collapsable={false}
+          maxFontSizeMultiplier={1.5}
+          numberOfLines={1}
+          onLayout={[Function]}
+          style={
+            {
+              "color": "#6200ee",
+              "fontFamily": "System",
+              "fontSize": 16,
+              "fontWeight": undefined,
+              "left": 0,
+              "opacity": 0,
+              "paddingLeft": 12,
+              "paddingRight": 12,
+              "position": "absolute",
+              "textAlign": "left",
+              "top": 34,
+              "transform": [
+                {
+                  "translateX": 0,
+                },
+                {
+                  "translateY": 0,
+                },
+                {
+                  "scale": 1,
+                },
+              ],
+              "writingDirection": "ltr",
+            }
+          }
+        >
+          message text
+        </Text>
+        <Text
+          collapsable={false}
+          maxFontSizeMultiplier={1.5}
+          numberOfLines={1}
+          style={
+            {
+              "color": "rgba(0, 0, 0, 0.54)",
+              "fontFamily": "System",
+              "fontSize": 16,
+              "fontWeight": undefined,
+              "left": 0,
+              "opacity": 0,
+              "paddingLeft": 12,
+              "paddingRight": 12,
+              "position": "absolute",
+              "textAlign": "left",
+              "top": 34,
+              "transform": [
+                {
+                  "translateX": 0,
+                },
+                {
+                  "translateY": 0,
+                },
+                {
+                  "scale": 1,
+                },
+              ],
+              "writingDirection": "ltr",
+            }
+          }
+        >
+          message text
+        </Text>
+      </View>
       <TextInput
         editable={true}
         maxFontSizeMultiplier={1.5}
@@ -68,6 +160,7 @@ exports[`Chat MessageComposer renders correctly 1`] = `
         onBlur={[Function]}
         onChangeText={[Function]}
         onFocus={[Function]}
+        placeholder=" "
         placeholderTextColor="rgba(0, 0, 0, 0.54)"
         selectionColor="#6200ee"
         style={
@@ -84,8 +177,8 @@ exports[`Chat MessageComposer renders correctly 1`] = `
               "height": 64,
             },
             {
-              "paddingBottom": 0,
-              "paddingTop": 0,
+              "paddingBottom": 4,
+              "paddingTop": 24,
             },
             {
               "color": "#000000",
