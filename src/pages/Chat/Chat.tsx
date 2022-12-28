@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity} from 'react-native';
-import {IconButton, Surface} from 'react-native-paper';
+import {Surface} from 'react-native-paper';
 import FloatBottomRight from '../../shared/components/FloatBottomRight';
+import IconButton from '../../shared/components/IconButton';
 import PageBackground from '../../shared/components/PageBackground';
 import Show from '../../shared/components/Show';
 import {useThemedStyles} from '../../shared/providers/theme';
 import globalStyles, {globalThemedStyles} from '../../shared/styles';
 import {Chat} from '../../types/chat';
-import ComposeFAB from './ComposeFAB';
 import MessageComposer from './MessageComposer';
 
 type Props = {
@@ -26,7 +26,6 @@ export default function ({onBackToHome, chat, onOpenChatProfile}: Props) {
           icon="arrow-left"
           accessibilityLabel="back to home"
           onPress={onBackToHome}
-          style={globalStyles.square}
         />
         <TouchableOpacity
           onPress={onOpenChatProfile}
@@ -41,7 +40,11 @@ export default function ({onBackToHome, chat, onOpenChatProfile}: Props) {
         If={composing}
         ElseShow={
           <FloatBottomRight>
-            <ComposeFAB onPress={() => setComposing(true)} />
+            <IconButton
+              accessibilityLabel="compose message"
+              icon="pencil"
+              onPress={() => setComposing(true)}
+            />
           </FloatBottomRight>
         }
       />

@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Chat ComposeFAB renders correctly 1`] = `
+exports[`IconButton renders correctly 1`] = `
 <View
-  accessibilityLabel="compose message"
   accessibilityRole="button"
   accessibilityState={
     {
@@ -48,6 +47,9 @@ exports[`Chat ComposeFAB renders correctly 1`] = `
           {
             "borderRadius": 0,
           },
+          {
+            "backgroundColor": "#87cefa",
+          },
           undefined,
         ],
       ],
@@ -89,7 +91,7 @@ exports[`Chat ComposeFAB renders correctly 1`] = `
         ]
       }
     >
-      󰏫
+      󰆴
     </Text>
   </View>
 </View>
