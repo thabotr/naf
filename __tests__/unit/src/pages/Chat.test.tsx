@@ -19,7 +19,7 @@ describe('Chat page', () => {
     () => {
       const mockOnBackToHome = jest.fn().mockName('mockOnBackToHome');
       render(themed(<Chat onBackToHome={mockOnBackToHome} />));
-      screen.getByLabelText('chat navigation bar');
+      expect(screen.queryByLabelText('chat navigation bar')).not.toBeNull();
       const backButton = screen.getByLabelText('back to home');
       fireEvent.press(backButton);
       expect(mockOnBackToHome).toBeCalledTimes(1);
@@ -34,10 +34,22 @@ describe('Chat page', () => {
       render(
         themed(<Chat chat={chat} onOpenChatProfile={mockOnOpenChatProfile} />),
       );
-      screen.getByLabelText('chat navigation bar');
+      expect(screen.queryByLabelText('chat navigation bar')).not.toBeNull();
       const openChatProfileField = screen.getByLabelText('open chat profile');
       fireEvent.press(openChatProfileField);
       expect(mockOnOpenChatProfile).toBeCalledTimes(1);
+    },
+  );
+  test(
+    "should contain a 'compose message' button which adds a " +
+      "'mesage composer' and disappears when clicked",
+    () => {
+      render(themed(<Chat />));
+      expect(screen.queryByLabelText('message composer')).toBeNull();
+      const composeButton = screen.getByLabelText('compose message');
+      fireEvent.press(composeButton);
+      expect(screen.queryByLabelText('message composer')).not.toBeNull();
+      expect(screen.queryByLabelText('compose message')).toBeNull();
     },
   );
 });

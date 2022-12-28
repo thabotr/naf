@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HorizontalView correctly renders the child component in the 'ElseShow' prop given a falsy 'If' prop 1`] = `
+<Text>
+  I am here because If is falsy
+</Text>
+`;
+
+exports[`HorizontalView correctly renders the child component in the 'component' prop given a truthy 'If' prop 1`] = `
+<Text>
+  I am here because If is truthy
+</Text>
+`;
