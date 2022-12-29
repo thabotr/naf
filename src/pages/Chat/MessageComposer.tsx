@@ -5,27 +5,26 @@ import HorizontalView from '../../shared/components/HorizontalView';
 import IconButton from '../../shared/components/IconButton';
 import {useThemedStyles} from '../../shared/providers/theme';
 import globalStyles from '../../shared/styles';
-
-type ComposeMessageType = {text: string};
+import {Message} from './types/Message';
 
 type Props = {
-  onDiscardMessage?: (message: ComposeMessageType) => void;
-  onSendMessage?: (message: ComposeMessageType) => void;
-  initialMessage?: ComposeMessageType;
+  onDiscardMessage: (message: Message) => void;
+  onSendMessage: (message: Message) => void;
+  initialMessage: Message;
 };
 
 export default function (props: Props) {
   const styles = useThemedStyles(styleSheet);
   const [inputText, setInputText] = useState('');
   useEffect(() => {
-    setInputText(props.initialMessage?.text ?? '');
-  }, [props.initialMessage?.text]);
+    setInputText(props.initialMessage.text);
+  }, [props.initialMessage.text]);
   return (
     <Surface accessibilityLabel="message composer" style={globalStyles.card}>
       <TextInput
         label="message text"
         accessibilityLabel="message text input"
-        defaultValue={props.initialMessage?.text}
+        defaultValue={props.initialMessage.text}
         onChangeText={setInputText}
         multiline
         style={styles.textInput}
@@ -34,14 +33,14 @@ export default function (props: Props) {
         <IconButton
           icon="delete"
           accessibilityLabel="discard message"
-          onPress={() => props.onDiscardMessage?.({text: inputText})}
+          onPress={() => props.onDiscardMessage({text: inputText})}
           style={styles.action}
         />
         <IconButton
           icon="send"
           accessibilityLabel="send message"
           disabled={!inputText}
-          onPress={() => props.onSendMessage?.({text: inputText})}
+          onPress={() => props.onSendMessage({text: inputText})}
           style={styles.action}
         />
       </HorizontalView>

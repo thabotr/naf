@@ -6,11 +6,18 @@ import themed from '../../../utils/themed';
 describe('Chat page', () => {
   describe('MessageComposer', () => {
     const inititalText = 'hello';
+    const getEmptyComposer = () => (
+      <MessageComposer
+        initialMessage={{text: ''}}
+        onDiscardMessage={() => {}}
+        onSendMessage={() => {}}
+      />
+    );
     test(
       'when the initial message text is falsy then the text field should be ' +
         'empty and the send button should be disabled',
       () => {
-        render(themed(<MessageComposer />));
+        render(themed(getEmptyComposer()));
         const textInputField = screen.getByLabelText('message text input');
         expect(textInputField.props.defaultValue).toBeFalsy();
         const sendButton = screen.getByLabelText('send message');
@@ -22,7 +29,13 @@ describe('Chat page', () => {
         'that text and the send button should be enabled',
       () => {
         render(
-          themed(<MessageComposer initialMessage={{text: inititalText}} />),
+          themed(
+            <MessageComposer
+              initialMessage={{text: inititalText}}
+              onDiscardMessage={() => {}}
+              onSendMessage={() => {}}
+            />,
+          ),
         );
         const textInputField = screen.getByLabelText('message text input');
         expect(textInputField.props.defaultValue).toBe(inititalText);
@@ -31,14 +44,22 @@ describe('Chat page', () => {
       },
     );
     it('disables the send button when the text input field is cleared', () => {
-      render(themed(<MessageComposer initialMessage={{text: inititalText}} />));
+      render(
+        themed(
+          <MessageComposer
+            initialMessage={{text: inititalText}}
+            onDiscardMessage={() => {}}
+            onSendMessage={() => {}}
+          />,
+        ),
+      );
       const textInputField = screen.getByLabelText('message text input');
       fireEvent.changeText(textInputField, '');
       const sendButton = screen.getByLabelText('send message');
       expect(sendButton.props.accessibilityState.disabled).toBeTruthy();
     });
     it('enables the send button when the text input field is populated', () => {
-      render(themed(<MessageComposer />));
+      render(themed(getEmptyComposer()));
       const textInputField = screen.getByLabelText('message text input');
       const someText = 'a';
       fireEvent.changeText(textInputField, someText);
@@ -56,6 +77,7 @@ describe('Chat page', () => {
             <MessageComposer
               initialMessage={composedMessage}
               onSendMessage={mockOnSendMessage}
+              onDiscardMessage={() => {}}
             />,
           ),
         );
@@ -76,6 +98,7 @@ describe('Chat page', () => {
             <MessageComposer
               initialMessage={composedMessage}
               onDiscardMessage={mockOnDiscardMessage}
+              onSendMessage={() => {}}
             />,
           ),
         );
