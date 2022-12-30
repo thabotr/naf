@@ -1,24 +1,16 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Surface} from 'react-native-paper';
-import {useThemedStyles} from '../providers/theme';
+import {ThemeType, useThemedStyles} from '../providers/theme';
 
-type Props = {
-  children?: ReactNode;
-  pageLabel?: string;
-  style?: any;
-};
+type Props = React.ComponentProps<typeof Surface> & {pageLabel?: string};
 
-export default function PageBackground({children, pageLabel, style}: Props) {
+export default function PageBackground(props: Props): JSX.Element {
   const styles = useThemedStyles(styleSheet);
-  return (
-    <Surface accessibilityLabel={pageLabel} style={[styles.background, style]}>
-      {children}
-    </Surface>
-  );
+  return <Surface {...props} style={[styles.background, props.style]} />;
 }
 
-const styleSheet = (theme: any) =>
+const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
     background: {
       width: '100%',

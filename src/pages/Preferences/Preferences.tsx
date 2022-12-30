@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {List} from 'react-native-paper';
 import PageBackground from '../../shared/components/PageBackground';
-import {useThemedStyles} from '../../shared/providers/theme';
+import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 import ThemePreferences from './ThemePreferences';
 import BackToHomeNavigationBar from '../../shared/components/BackToHomeNavigationBar';
 
@@ -10,10 +10,10 @@ type Props = {
   onBackToHome: () => void;
 };
 
-export function Preferences({onBackToHome}: Props) {
+export function Preferences({onBackToHome}: Props): JSX.Element {
   const styles = useThemedStyles(styleSheet);
   return (
-    <PageBackground pageLabel="preferences page">
+    <PageBackground accessibilityLabel="preferences page">
       <BackToHomeNavigationBar
         accessibilityLabel="preferences navigation bar"
         onBackToHome={onBackToHome}
@@ -26,7 +26,7 @@ export function Preferences({onBackToHome}: Props) {
   );
 }
 
-const styleSheet = (theme: any) =>
+const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
     subHeader: {
       color: theme.color.textPrimary,

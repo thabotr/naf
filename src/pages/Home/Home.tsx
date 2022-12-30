@@ -7,10 +7,10 @@ import globalStyles, {globalThemedStyles} from '../../shared/styles';
 import {Chat} from '../../types/chat';
 
 type Props = {
-  chats?: Chat[];
-  onOpenPreferences?: () => void;
-  onOpenMyProfile?: () => void;
-  onOpenChat?: (chat: Chat) => void;
+  chats: Chat[];
+  onOpenPreferences: () => void;
+  onOpenMyProfile: () => void;
+  onOpenChat: (chat: Chat) => void;
 };
 
 const ChatPreviewCard = ({
@@ -18,13 +18,13 @@ const ChatPreviewCard = ({
   onOpenChat,
 }: {
   chat: Chat;
-  onOpenChat?: (chat: Chat) => void;
+  onOpenChat: (chat: Chat) => void;
 }) => {
   return (
     <Button
       title={`Message ${chat.user.handle}`}
       accessibilityLabel={`open chat ${chat.user.handle}`}
-      onPress={() => onOpenChat?.(chat)}
+      onPress={() => onOpenChat(chat)}
     />
   );
 };
@@ -34,10 +34,10 @@ export default ({
   onOpenPreferences,
   onOpenMyProfile,
   onOpenChat,
-}: Props) => {
+}: Props): JSX.Element => {
   const styles = useThemedStyles(globalThemedStyles);
   return (
-    <PageBackground pageLabel="home page">
+    <PageBackground accessibilityLabel="home page">
       <Surface accessibilityLabel="home navigation bar" style={styles.navbar}>
         <IconButton
           icon="menu"

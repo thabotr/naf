@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, TouchableOpacity} from 'react-native';
+import {FlatList, Text, TouchableOpacity} from 'react-native';
 import {Surface} from 'react-native-paper';
 import FloatBottomRight from '../../shared/components/FloatBottomRight';
 import IconButton from '../../shared/components/IconButton';
@@ -9,18 +9,36 @@ import {useThemedStyles} from '../../shared/providers/theme';
 import globalStyles, {globalThemedStyles} from '../../shared/styles';
 import {Chat} from '../../types/chat';
 import MessageComposer from './MessageComposer';
+import MessageDisplay from './MessageDisplay';
+import {Message} from './types/Message';
 
 type Props = {
-  onBackToHome?: () => void;
-  chat?: Chat;
-  onOpenChatProfile?: () => void;
+  onBackToHome: () => void;
+  chat: Chat;
+  onOpenChatProfile: () => void;
+  onSendMessage: (message: Message) => void;
 };
 
-export default function ({onBackToHome, chat, onOpenChatProfile}: Props) {
+export default function ({
+  onBackToHome,
+  chat,
+  onOpenChatProfile,
+  onSendMessage,
+}: Props): JSX.Element {
   const styles = useThemedStyles(globalThemedStyles);
   const [composing, setComposing] = useState(false);
+  const composerProps = {
+    initialMessage: {text: ''},
+    onSendMessage: (message: Message) => {
+      setComposing(false);
+      return onSendMessage(message);
+    },
+    onDiscardMessage: (_: Message) => {
+      setComposing(false);
+    },
+  };
   return (
-    <PageBackground pageLabel={`chat ${chat?.user.handle} page`}>
+    <PageBackground accessibilityLabel={`chat ${chat.user.handle} page`}>
       <Surface accessibilityLabel="chat navigation bar" style={styles.navbar}>
         <IconButton
           icon="arrow-left"
@@ -35,8 +53,12 @@ export default function ({onBackToHome, chat, onOpenChatProfile}: Props) {
           children={<Text>Open Chat Profile</Text>}
         />
       </Surface>
+      <FlatList
+        data={chat.messages}
+        renderItem={({item}) => <MessageDisplay message={item} fromMe />}
+      />
       <Show
-        component={<MessageComposer />}
+        component={<MessageComposer {...composerProps} />}
         If={composing}
         ElseShow={
           <FloatBottomRight>

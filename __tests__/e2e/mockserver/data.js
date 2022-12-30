@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const {CHATS} = require('../../mockdata/chat');
 const {PROFILE} = require('../../mockdata/profile');
 
@@ -9,6 +10,7 @@ module.exports = () => {
       id: chat.user.handle,
       metadata: chat.lastModified,
     })),
+    messages: [],
   };
   return data;
 };

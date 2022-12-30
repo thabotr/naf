@@ -8,6 +8,8 @@ import {
 import themed from '../../utils/themed';
 import ChatProfile from '../../../../src/pages/ChatProfile/ChatProfile';
 import {CHATS} from '../../../mockdata/chat';
+import {dummyChat} from '../../utils/dummyChat';
+import {doNothing} from '../../utils/doNothing';
 
 const mockToastAndroidShow = jest.fn().mockName('mockToastAndroidShow');
 jest.mock(
@@ -17,8 +19,20 @@ jest.mock(
     show: mockToastAndroidShow,
   }),
 );
-const mockOnDisconnect = jest.fn().mockName('mockOnDisconnect');
 
+type Props = React.ComponentProps<typeof ChatProfile>;
+
+function chatProfilePageFromFactory(overrides: Partial<Props>) {
+  const defaultProps: Props = {
+    chat: dummyChat,
+    error: undefined,
+    onDisconnect: doNothing,
+    onGoBack: doNothing,
+  };
+  return render(themed(<ChatProfile {...defaultProps} {...overrides} />));
+}
+
+const mockOnDisconnect = jest.fn().mockName('mockOnDisconnect');
 describe('Chat Profile page', () => {
   const currentChat = CHATS[0];
   beforeEach(() => {
@@ -31,7 +45,7 @@ describe('Chat Profile page', () => {
       "the prop 'onGoBack' on click",
     () => {
       const mockOnGoBack = jest.fn().mockName('mockOnGoBack');
-      render(themed(<ChatProfile onGoBack={mockOnGoBack} />));
+      chatProfilePageFromFactory({onGoBack: mockOnGoBack});
       screen.getByLabelText('chat profile navigation bar');
       const backToHomeButton = screen.getByLabelText('back to home');
       fireEvent.press(backToHomeButton);
@@ -43,9 +57,7 @@ describe('Chat Profile page', () => {
       "the prop 'onDisconnect' and become disabled on long press",
     () => {
       const chat = CHATS[1];
-      render(
-        themed(<ChatProfile chat={chat} onDisconnect={mockOnDisconnect} />),
-      );
+      chatProfilePageFromFactory({chat: chat, onDisconnect: mockOnDisconnect});
       const disconnectButton = screen.getByLabelText(
         `disconnect from chat ${chat.user.handle}`,
       );
@@ -58,11 +70,10 @@ describe('Chat Profile page', () => {
     "should call android toast show with hint message 'hold to disconnect from user' when " +
       'disconnect from chat <chatUserHandle> button is clicked',
     () => {
-      render(
-        themed(
-          <ChatProfile chat={currentChat} onDisconnect={mockOnDisconnect} />,
-        ),
-      );
+      chatProfilePageFromFactory({
+        chat: currentChat,
+        onDisconnect: mockOnDisconnect,
+      });
       const logoutButton = screen.getByLabelText(
         `disconnect from chat ${currentChat.user.handle}`,
       );
@@ -76,7 +87,7 @@ describe('Chat Profile page', () => {
     },
   );
   it("hides 'Chat profile error!' text field when the prop 'error' is undefined", () => {
-    render(themed(<ChatProfile chat={currentChat} />));
+    chatProfilePageFromFactory({chat: currentChat});
     const loginFailedTextComponent = screen.queryByText('Chat profile error!');
     expect(loginFailedTextComponent).toBeNull();
   });
@@ -84,7 +95,7 @@ describe('Chat Profile page', () => {
     "displays texts 'Chat profile error!' and 'please check network connection and try again' when " +
       "the prop 'error' is set to 'NET_ERROR'",
     () => {
-      render(themed(<ChatProfile chat={currentChat} error="NET_ERROR" />));
+      chatProfilePageFromFactory({chat: currentChat, error: 'NET_ERROR'});
       const chatProfileErrorComponent = screen.queryByText(
         'Chat profile error!',
       );

@@ -8,7 +8,7 @@ type Props = ViewProps & {
   onBackToHome?: () => void;
 };
 
-export default function (props: Props) {
+export default function (props: Props): JSX.Element {
   const themedStyle = useThemedStyles(globalThemedStyles);
   return (
     <Surface {...props} style={themedStyle.navbar}>

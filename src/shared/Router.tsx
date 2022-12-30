@@ -13,13 +13,14 @@ import MyProfile from '../pages/MyProfile/MyProfile';
 import ChatPage from '../pages/Chat/Chat';
 import ChatProfile from '../pages/ChatProfile/ChatProfile';
 import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remote';
+import {Message} from '../pages/Chat/types/Message';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatRepo = new RemoteChatRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
 const NavigationStack = createNativeStackNavigator();
 
-export default function Router() {
+export default function Router(): JSX.Element {
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(
     undefined,
   );
@@ -68,7 +69,9 @@ export default function Router() {
   }
 
   const HomeScreen = () => {
-    const navigation: any = useNavigation();
+    const navigation: {
+      navigate: (path: string) => void;
+    } = useNavigation();
     return (
       <MemoedHome
         chats={chats}
@@ -83,11 +86,15 @@ export default function Router() {
   };
 
   const PreferencesScreen = () => {
-    const navigation: any = useNavigation();
+    const navigation: {
+      navigate: (path: string) => void;
+    } = useNavigation();
     return <Preferences onBackToHome={() => navigation.navigate('Home')} />;
   };
   const MyProfileScreen = () => {
-    const navigation: any = useNavigation();
+    const navigation: {
+      navigate: (path: string) => void;
+    } = useNavigation();
     return (
       <MyProfile
         onLogout={() => setLoggedInUser(undefined)}
@@ -96,17 +103,35 @@ export default function Router() {
     );
   };
   const ChatScreen = () => {
-    const navigation: any = useNavigation();
+    const navigation: {
+      navigate: (path: string) => void;
+    } = useNavigation();
+    if (!openChat) {
+      return null;
+    }
+
+    const sendMessage = (message: Message) => {
+      setOpenChat(
+        oldChat =>
+          oldChat && {
+            ...oldChat,
+            messages: oldChat.messages.concat([message]),
+          },
+      );
+    };
     return (
       <ChatPage
         chat={openChat}
         onBackToHome={() => navigation.navigate('Home')}
         onOpenChatProfile={() => navigation.navigate('Chat Profile')}
+        onSendMessage={sendMessage}
       />
     );
   };
   const ChatProfileScreen = () => {
-    const navigation: any = useNavigation();
+    const navigation: {
+      navigate: (path: string) => void;
+    } = useNavigation();
     const [chatProfileError, setChatProfileError] =
       useState<LoginErrorType>(undefined);
 

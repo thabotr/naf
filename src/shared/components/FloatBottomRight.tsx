@@ -2,9 +2,9 @@ import React from 'react';
 import {StyleSheet} from 'react-native';
 import {Surface} from 'react-native-paper';
 
-type Props = any;
+type Props = React.ComponentProps<typeof Surface>;
 
-export default function (props: Props) {
+export default function (props: Props): JSX.Element {
   return <Surface style={[styles.floater, props.style]} {...props} />;
 }
 

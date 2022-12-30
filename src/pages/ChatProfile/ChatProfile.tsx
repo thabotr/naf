@@ -9,12 +9,17 @@ import {LoginErrorType, verboseLoginError} from '../Login/Login';
 import globalStyles from '../../shared/styles';
 
 type Props = {
-  onGoBack?: () => void;
-  chat?: Chat;
-  onDisconnect?: () => void;
-  error?: LoginErrorType;
+  onGoBack: () => void;
+  chat: Chat;
+  onDisconnect: () => void;
+  error: LoginErrorType;
 };
-export default function ({onGoBack, chat, onDisconnect, error}: Props) {
+export default function ({
+  onGoBack,
+  chat,
+  onDisconnect,
+  error,
+}: Props): JSX.Element {
   const [disconnecting, setDisconnecting] = useState(false);
   useEffect(() => {
     if (error) {
@@ -22,7 +27,7 @@ export default function ({onGoBack, chat, onDisconnect, error}: Props) {
     }
   }, [error]);
   return (
-    <PageBackground pageLabel={`${chat?.user.handle} profile page`}>
+    <PageBackground accessibilityLabel={`${chat?.user.handle} profile page`}>
       <BackToHomeNavigationBar
         accessibilityLabel="chat profile navigation bar"
         onBackToHome={onGoBack}
@@ -33,7 +38,7 @@ export default function ({onGoBack, chat, onDisconnect, error}: Props) {
         }
         onLongPress={() => {
           setDisconnecting(true);
-          onDisconnect?.();
+          onDisconnect();
         }}
         loading={disconnecting}
         disabled={disconnecting}

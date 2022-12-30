@@ -11,5 +11,13 @@ module.exports = (req, res, next) => {
     res.sendStatus(unauthorized);
     return;
   }
+
+  if (req.url === '/messages') {
+    // get body
+    // get text
+    // if error then respond with error
+    // else tag the message with time and respond
+  }
+
   next();
 };

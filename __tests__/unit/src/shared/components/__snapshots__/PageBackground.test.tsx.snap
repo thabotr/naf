@@ -2,8 +2,8 @@
 
 exports[`PageBackground renders correctly 1`] = `
 <View
-  accessibilityLabel="test page"
   collapsable={false}
+  pageLabel="test page"
   style={
     {
       "backgroundColor": "#dbdbdb",

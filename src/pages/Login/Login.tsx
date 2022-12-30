@@ -22,7 +22,7 @@ type Props = {
   onPressLoginBtn: (userCredentials: {token: string; handle: string}) => void;
 };
 
-export const verboseLoginError = (err: LoginErrorType) => {
+export const verboseLoginError = (err: LoginErrorType): string => {
   switch (err) {
     case 'APP_ERROR':
       return 'unknown error encountered. Please resart application';
@@ -37,7 +37,7 @@ export const verboseLoginError = (err: LoginErrorType) => {
   }
 };
 
-export function Login(props: Props) {
+export function Login(props: Props): JSX.Element {
   const [loginError, setLoginError] = useState<LoginErrorType>(undefined);
   const [loading, setLoading] = useState(false);
   const [handle, setHandle] = useState('');
@@ -73,7 +73,7 @@ export function Login(props: Props) {
 
   const styles = useThemedStyles(styleSheet);
   return (
-    <PageBackground pageLabel="login page" style={styles.pageBg}>
+    <PageBackground accessibilityLabel="login page" style={styles.pageBg}>
       <MemoedTextInput
         label="your access token"
         setText={setToken}
@@ -117,7 +117,7 @@ export function Login(props: Props) {
 
 const CustomTextInput = (props: {
   loading: boolean;
-  loginError?: any;
+  loginError?: LoginErrorType;
   defaultValue: string;
   setText: (token: string) => void;
   label: string;

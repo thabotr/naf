@@ -8,33 +8,30 @@ import {
 import Home from '../../../../src/pages/Home/Home';
 import themed from '../../utils/themed';
 import {CHATS} from '../../../mockdata/chat';
+import {doNothing} from '../../utils/doNothing';
+
+type Props = React.ComponentProps<typeof Home>;
+
+function homePageFromFactory(overrides: Partial<Props>) {
+  const defaultProps: Props = {
+    chats: [],
+    onOpenChat: doNothing,
+    onOpenMyProfile: doNothing,
+    onOpenPreferences: doNothing,
+  };
+  return render(themed(<Home {...defaultProps} {...overrides} />));
+}
 
 describe('Home page', () => {
   beforeEach(() => {
     cleanup();
   });
   test("displays chat preview cards if and only if the prop 'chats' is a non-empty array", () => {
-    render(
-      themed(
-        <Home
-          chats={[]}
-          onOpenPreferences={() => {}}
-          onOpenMyProfile={() => {}}
-        />,
-      ),
-    );
+    homePageFromFactory({});
     const chatPreviewCard = screen.queryByLabelText(/chat w\//);
     expect(chatPreviewCard).toBeNull();
 
-    render(
-      themed(
-        <Home
-          chats={CHATS}
-          onOpenPreferences={() => {}}
-          onOpenMyProfile={() => {}}
-        />,
-      ),
-    );
+    homePageFromFactory({chats: CHATS});
     const chatPreviewCards = screen.queryAllByLabelText(/chat w\//);
     const maxRenderableChatItems = 10;
     expect(chatPreviewCards.length).toBe(maxRenderableChatItems);
@@ -43,30 +40,30 @@ describe('Home page', () => {
     'the navbar should contain the preferences button which should call ' +
       "the prop 'onOpenPreferences' on click",
     () => {
-      const onOpenPreferencesMock = jest.fn().mockName('onOpenPreferencesMock');
-      render(themed(<Home onOpenPreferences={onOpenPreferencesMock} />));
+      const mockOnOpenPreferences = jest.fn().mockName('mockOnOpenPreferences');
+      homePageFromFactory({onOpenPreferences: mockOnOpenPreferences});
       screen.getByLabelText('home navigation bar');
       const openPreferencesButton = screen.getByLabelText('open preferences');
       fireEvent.press(openPreferencesButton);
-      expect(onOpenPreferencesMock).toBeCalledTimes(1);
+      expect(mockOnOpenPreferences).toBeCalledTimes(1);
     },
   );
   test(
     "the navbar should contain the user's profile link which should call " +
       "the prop 'onOpenMyProfile' on click",
     () => {
-      const onOpenMyProfileMock = jest.fn().mockName('onOpenMyProfileMock');
-      render(themed(<Home onOpenMyProfile={onOpenMyProfileMock} />));
+      const mockOnOpenMyProfile = jest.fn().mockName('mockOnOpenMyProfile');
+      homePageFromFactory({onOpenMyProfile: mockOnOpenMyProfile});
       screen.getByLabelText('home navigation bar');
       const openUserProfileLink = screen.getByLabelText('open my profile');
       fireEvent.press(openUserProfileLink);
-      expect(onOpenMyProfileMock).toBeCalledTimes(1);
+      expect(mockOnOpenMyProfile).toBeCalledTimes(1);
     },
   );
   test("should call the 'onOpenChat' prop with the subject chat when a chat link is clicked", () => {
     const chat = CHATS[0];
     const mockOnOpenChat = jest.fn().mockName('mockOnOpenChat');
-    render(themed(<Home chats={CHATS} onOpenChat={mockOnOpenChat} />));
+    homePageFromFactory({chats: CHATS, onOpenChat: mockOnOpenChat});
     const openChatLink = screen.getByLabelText(`open chat ${chat.user.handle}`);
     fireEvent.press(openChatLink);
     expect(mockOnOpenChat).toBeCalledTimes(1);

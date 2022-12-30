@@ -1,11 +1,11 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 
 export default function OnlyShow({
   If,
   children,
 }: {
   If: boolean;
-  children: React.ReactNode;
-}) {
-  return If ? <>{children}</> : null;
+  children: ReactNode;
+}): JSX.Element {
+  return If ? <>{children}</> : <></>;
 }

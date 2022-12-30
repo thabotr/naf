@@ -1,24 +1,26 @@
-import React, {ReactNode} from 'react';
+import React from 'react';
 import {render, screen, fireEvent} from '@testing-library/react-native';
-import {ThemeProvider} from '../../../../src/shared/providers/theme';
 import {Login} from '../../../../src/pages/Login/Login';
+import themed from '../../utils/themed';
+import {doNothing} from '../../utils/doNothing';
+import {ReactTestInstance} from 'react-test-renderer';
 
-const themed = (child: ReactNode) => <ThemeProvider>{child}</ThemeProvider>;
+type Props = React.ComponentProps<typeof Login>;
+
+function loginPageFromFactory(overrides: Partial<Props>) {
+  const defaultProps: Props = {
+    userCredentials: {handle: '', token: ''},
+    onPressLoginBtn: doNothing,
+  };
+  return render(themed(<Login {...defaultProps} {...overrides} />));
+}
 
 describe('Login page', () => {
   test(
     "displays texts 'Login failed!' and 'please check credentials and try again' when " +
       "the prop 'loginError' is set to 'AUTH_ERROR'",
     () => {
-      render(
-        themed(
-          <Login
-            userCredentials={{handle: '', token: ''}}
-            onPressLoginBtn={_ => {}}
-            loginError="AUTH_ERROR"
-          />,
-        ),
-      );
+      loginPageFromFactory({loginError: 'AUTH_ERROR'});
       const loginFailedTextComponent = screen.queryByText('Login failed!');
       expect(loginFailedTextComponent).not.toBeNull();
       const authErrorTextComponent = screen.queryByText(
@@ -31,15 +33,7 @@ describe('Login page', () => {
     "displays texts 'Login failed!' and 'unknown error encountered. Please resart application' when " +
       "the prop 'loginError' is set to 'APP_ERROR'",
     () => {
-      render(
-        themed(
-          <Login
-            userCredentials={{handle: '', token: ''}}
-            onPressLoginBtn={_ => {}}
-            loginError="APP_ERROR"
-          />,
-        ),
-      );
+      loginPageFromFactory({loginError: 'APP_ERROR'});
       const loginFailedTextComponent = screen.queryByText('Login failed!');
       expect(loginFailedTextComponent).not.toBeNull();
       const appErrorTextComponent = screen.queryByText(
@@ -52,15 +46,7 @@ describe('Login page', () => {
     "displays texts 'Login failed!' and 'something went wrong on our side. Please give " +
       "us a moment to look into this issue' when the prop 'loginError' is set to 'SERVER_ERROR'",
     () => {
-      render(
-        themed(
-          <Login
-            userCredentials={{handle: '', token: ''}}
-            onPressLoginBtn={_ => {}}
-            loginError="SERVER_ERROR"
-          />,
-        ),
-      );
+      loginPageFromFactory({loginError: 'SERVER_ERROR'});
       const loginFailedTextComponent = screen.queryByText('Login failed!');
       expect(loginFailedTextComponent).not.toBeNull();
       const serverErrorTextComponent = screen.queryByText(
@@ -73,15 +59,7 @@ describe('Login page', () => {
     "displays texts 'Login failed!' and 'please check network connection and try again' when " +
       "the prop 'loginError' is set to 'NET_ERROR'",
     () => {
-      render(
-        themed(
-          <Login
-            userCredentials={{handle: '', token: ''}}
-            onPressLoginBtn={_ => {}}
-            loginError="NET_ERROR"
-          />,
-        ),
-      );
+      loginPageFromFactory({loginError: 'NET_ERROR'});
       const loginFailedTextComponent = screen.queryByText('Login failed!');
       expect(loginFailedTextComponent).not.toBeNull();
       const networkErrorTextComponent = screen.queryByText(
@@ -91,27 +69,12 @@ describe('Login page', () => {
     },
   );
   test("hides 'Login failed!' text field when the prop 'loginError' is undefined", () => {
-    render(
-      themed(
-        <Login
-          userCredentials={{handle: '', token: ''}}
-          onPressLoginBtn={_ => {}}
-        />,
-      ),
-    );
+    loginPageFromFactory({});
     const loginFailedTextComponent = screen.queryByText('Login failed!');
     expect(loginFailedTextComponent).toBeNull();
   });
   test('disables the login button when the handle input field is empty or the token input field is empty', () => {
-    render(
-      themed(
-        <Login
-          userCredentials={{handle: '', token: ''}}
-          onPressLoginBtn={_ => {}}
-        />,
-      ),
-    );
-
+    loginPageFromFactory({});
     const loginButton = screen.getByLabelText('login');
     const assertLoginButtonDisabled = () => {
       expect(loginButton.props.accessibilityState.disabled).toBeTruthy();
@@ -123,7 +86,7 @@ describe('Login page', () => {
     const tokenInputField = screen.getByLabelText('your access token');
     const handleInputField = screen.getByLabelText('your handle');
 
-    const clearFieldText = (field: any) => {
+    const clearFieldText = (field: ReactTestInstance) => {
       const emptyText = '';
       fireEvent.changeText(field, emptyText);
     };
@@ -150,18 +113,14 @@ describe('Login page', () => {
     () => {
       const userHandle = 'someHandle';
       const userToken = 'someToken';
-      const onPressLoginMock = jest.fn().mockName('onPressLoginMock');
-      render(
-        themed(
-          <Login
-            userCredentials={{handle: userHandle, token: userToken}}
-            onPressLoginBtn={onPressLoginMock}
-          />,
-        ),
-      );
+      const mockOnPressLogin = jest.fn().mockName('mockOnPressLogin');
+      loginPageFromFactory({
+        userCredentials: {handle: userHandle, token: userToken},
+        onPressLoginBtn: mockOnPressLogin,
+      });
       const loginButton = screen.getByLabelText('login');
       fireEvent.press(loginButton);
-      expect(onPressLoginMock).toBeCalledWith({
+      expect(mockOnPressLogin).toBeCalledWith({
         token: userToken,
         handle: userHandle,
       });

@@ -8,6 +8,6 @@ export default function ({
   component: ReactNode;
   If: boolean;
   ElseShow: ReactNode;
-}) {
-  return <>{If ? component ?? null : ElseShow ?? null}</>;
+}): JSX.Element {
+  return <>{If ? component : ElseShow}</>;
 }

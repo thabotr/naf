@@ -1,10 +1,12 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {useTheme, useThemedStyles} from '../providers/theme';
+import {ThemeType, useTheme, useThemedStyles} from '../providers/theme';
 import globalStyles from '../styles';
 
-export default function (props: React.ComponentProps<typeof IconButton>) {
+type IconButtonProps = React.ComponentProps<typeof IconButton>;
+
+export default function (props: IconButtonProps): JSX.Element {
   const {theme} = useTheme();
   const styles = useThemedStyles(styleSheet);
   return (
@@ -15,7 +17,7 @@ export default function (props: React.ComponentProps<typeof IconButton>) {
     />
   );
 }
-const styleSheet = (theme: any) =>
+const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
     bg: {
       backgroundColor: theme.color.primary,

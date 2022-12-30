@@ -11,6 +11,7 @@ jest.mock('../../../../../src/shared/providers/theme', () => {
       jest.requireActual('../../../../../src/shared/providers/theme').useTheme,
       {
         apply(target, thisArg, argArray) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const realResult: any = Reflect.apply(target, thisArg, argArray);
           return {
             ...realResult,

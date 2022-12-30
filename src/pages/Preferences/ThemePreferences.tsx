@@ -1,10 +1,10 @@
-import React, {StyleSheet} from 'react-native';
+import React, {StyleSheet, ViewProps} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import HorizontalView from '../../shared/components/HorizontalView';
 import {useTheme} from '../../shared/providers/theme';
 import {ThemeSetting} from '../../types/settings';
 
-export default function ThemePreferences(props: any) {
+export default function ThemePreferences(props: ViewProps): JSX.Element {
   return (
     <HorizontalView {...props}>
       <ThemedToggleButton ts="light" />

@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {Surface, TextInput} from 'react-native-paper';
 import HorizontalView from '../../shared/components/HorizontalView';
 import IconButton from '../../shared/components/IconButton';
-import {useThemedStyles} from '../../shared/providers/theme';
+import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 import globalStyles from '../../shared/styles';
 import {Message} from './types/Message';
 
@@ -13,7 +13,7 @@ type Props = {
   initialMessage: Message;
 };
 
-export default function (props: Props) {
+export default function (props: Props): JSX.Element {
   const styles = useThemedStyles(styleSheet);
   const [inputText, setInputText] = useState('');
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function (props: Props) {
   );
 }
 
-const styleSheet = (theme: any) =>
+const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
     actions: {
       backgroundColor: theme.color.userPrimary,
