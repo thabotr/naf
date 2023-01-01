@@ -24,5 +24,6 @@ function createRandomChat() {
 }
 Array.from({ length: 30 }).forEach(function () {
     exports.CHATS.push(createRandomChat());
-    exports.CHATS[0].user.handle = 'w/testChatHandle';
 });
+exports.CHATS[0].user.handle = 'w/testChatHandle';
+exports.CHATS[1].user.handle = 'w/testChatHandle2';

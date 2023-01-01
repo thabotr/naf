@@ -1,22 +1,55 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+const {PROFILES} = require('../../mockdata/profile');
+
+const messages = {};
 module.exports = (req, res, next) => {
-  const validTestCredentials = {
-    token: 'testToken',
-    handle: 'w/testHandle',
-  };
+  const senderHandle = req.headers.handle;
+  const senderToken = req.headers.token;
   if (
-    req.headers.token !== validTestCredentials.token ||
-    req.headers.handle !== validTestCredentials.handle
+    !PROFILES.find(
+      profile =>
+        profile.handle === senderHandle && profile.token === senderToken,
+    )
   ) {
     const unauthorized = 401;
     res.sendStatus(unauthorized);
     return;
   }
 
-  if (req.url === '/messages') {
-    // get body
-    // get text
-    // if error then respond with error
-    // else tag the message with time and respond
+  if (req.url.includes('/messages')) {
+    switch (req.method) {
+      case 'GET':
+        res.json(messages[senderHandle] ?? []);
+        return;
+      case 'POST': {
+        const timestamp = new Date().getTime();
+        const postMessage = req.body;
+
+        const sendersMessage = {
+          ...postMessage,
+          timestamp: timestamp,
+        };
+        messages[senderHandle] ??= [];
+        const senderMessages = messages[senderHandle];
+        senderMessages.push(sendersMessage);
+
+        const recipientHandle = postMessage.toHandle;
+        const recipientMessage = {
+          ...postMessage,
+          timestamp: timestamp,
+          fromHandle: senderHandle,
+        };
+        delete recipientMessage.toHandle;
+        messages[recipientHandle] ??= [];
+        const recipientMessages = messages[recipientHandle];
+        recipientMessages.push(recipientMessage);
+
+        res.json({timestamp: timestamp});
+        return;
+      }
+      default:
+        return;
+    }
   }
 
   next();
