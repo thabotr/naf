@@ -16,8 +16,8 @@ import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remot
 import {Message} from '../pages/Chat/types/Message';
 
 const remoteRepo = new RemoteLoginRepository();
-const remoteChatRepo = new RemoteChatRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
+const remoteChatRepo = new RemoteChatRepository();
 const NavigationStack = createNativeStackNavigator();
 
 export default function Router(): JSX.Element {
@@ -42,7 +42,7 @@ export default function Router(): JSX.Element {
         setLoggedInUser(profileResult);
         setLoginError(undefined);
         remoteChatRepo
-          .getChats(credentials.token, credentials.handle)
+          ?.getChats(credentials.token, credentials.handle)
           .then(remoteChats => {
             if (remoteChats === null) {
               return;
@@ -111,13 +111,18 @@ export default function Router(): JSX.Element {
     }
 
     const sendMessage = (message: Message) => {
-      setOpenChat(
-        oldChat =>
-          oldChat && {
-            ...oldChat,
-            messages: oldChat.messages.concat([message]),
-          },
-      );
+      remoteChatRepo
+        .postMessage(loggedInUser.token, loggedInUser.handle, message)
+        .then(sentMessage =>
+          setOpenChat(
+            oldChat =>
+              oldChat && {
+                ...oldChat,
+                messages: oldChat.messages.concat([sentMessage]),
+              },
+          ),
+        )
+        .catch(e => console.log(e));
     };
     return (
       <ChatPage
@@ -156,6 +161,10 @@ export default function Router(): JSX.Element {
           }
         })
         .catch(e => setChatProfileError(e.message));
+    }
+
+    if (!openChat) {
+      return <></>;
     }
 
     return (

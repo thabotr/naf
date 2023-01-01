@@ -1,5 +1,6 @@
 import {log} from './logger';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 const handleFetchError = (e: any) => {
   log('ERROR', 'RemoteChatRepository', e);
   const errorString = e.message.toLocaleLowerCase();
@@ -10,6 +11,7 @@ const handleFetchError = (e: any) => {
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
 const handleUnsuccessfulResponse = (response: any) => {
   log(
     'ERROR',

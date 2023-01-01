@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, FlatList, TouchableOpacity} from 'react-native';
+import {FlatList, TouchableOpacity} from 'react-native';
 import {IconButton, Surface, Text} from 'react-native-paper';
 import PageBackground from '../../shared/components/PageBackground';
 import {useThemedStyles} from '../../shared/providers/theme';
@@ -21,10 +21,11 @@ const ChatPreviewCard = ({
   onOpenChat: (chat: Chat) => void;
 }) => {
   return (
-    <Button
-      title={`Message ${chat.user.handle}`}
+    <TouchableOpacity
+      children={<Text>Message {chat.user.handle}</Text>}
       accessibilityLabel={`open chat ${chat.user.handle}`}
       onPress={() => onOpenChat(chat)}
+      style={globalStyles.card}
     />
   );
 };

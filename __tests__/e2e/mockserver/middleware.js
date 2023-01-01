@@ -44,6 +44,7 @@ module.exports = (req, res, next) => {
         const recipientMessages = messages[recipientHandle];
         recipientMessages.push(recipientMessage);
 
+        res.status(201);
         res.json({timestamp: timestamp});
         return;
       }
