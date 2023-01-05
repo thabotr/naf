@@ -4,36 +4,19 @@ import base64
 import json
 from datetime import datetime
 from assertpy import assert_that
+from routes import Routes
 
 def encodeAuthCredentials(username: str, password: str) -> str:
-  credentials: str = ':'.join([username, password])
+  credentials: str = f"{username}:{password}"
   credentials_bytes = credentials.encode('utf-8')
   base64_bytes = base64.b64encode(credentials_bytes)
   credentials_b64 = base64_bytes.decode('utf-8')
   return credentials_b64
 
 class POSTMessages(unittest.TestCase):
-  messagesURL = '/backend/messages'
-  handle = 'w/testHandle'
-  token = 'testToken'
-  connectedUser = 'w/testHandle2'
-  authedHeaders = {
-      "Authorization" : " ".join(["Basic", encodeAuthCredentials(handle, token)]),
-  }
-  messageText = "test text"
-
-  def postMessage(self, message: dict, headers: dict = None) -> tuple:
-    valid_headers = self.authedHeaders if headers == None else headers
-    json_message = json.dumps(message)
-    self.conn.request('POST', self.messagesURL, json_message, valid_headers)
-    response = self.conn.getresponse()
-    status = response.status
-    body = response.read().decode("utf-8")
-    return status, body
-  
   def setUp(self) -> None:
-    self.conn = http.client.HTTPConnection("localhost", 8000)
-    
+    self.conn = http.client.HTTPConnection(Routes.HOST, Routes.PORT)
+
   def testUnauthOnBadCredentials(self):
     """given unregistered user authorization credentials it returns 'Unauthorized'"""
     unregisteredHandle = 'w/someUnregisteredHandle'
@@ -45,7 +28,7 @@ class POSTMessages(unittest.TestCase):
     }
     encoded_bad_credentials = encodeAuthCredentials(unregisteredHandle, unregisteredToken)
     badAuthheaders = {
-      "Authorization" : " ".join(["Basic", encoded_bad_credentials]),
+      "Authorization" : f"Basic {encoded_bad_credentials}",
     }
 
     status, _ = self.postMessage(validMessage, badAuthheaders)
@@ -99,5 +82,23 @@ class POSTMessages(unittest.TestCase):
     assert_that(timestamp).is_before(time_after_request)
     assert_that(timestamp).is_equal_to_ignoring_milliseconds(time_before_request)
 
+  def postMessage(self, message: dict, headers: dict = None) -> tuple:
+    valid_headers = self.authedHeaders if headers == None else headers
+    json_message = json.dumps(message)
+    self.conn.request('POST', self.messagesURL, json_message, valid_headers)
+    response = self.conn.getresponse()
+    status = response.status
+    body = response.read().decode("utf-8")
+    return status, body
+
+  messagesURL = f"{Routes.BASE_PATH}/messages"
+  handle = 'w/testHandle'
+  token = 'testToken'
+  connectedUser = 'w/testHandle2'
+  authedHeaders = {
+      "Authorization" : f"Basic {encodeAuthCredentials(handle, token)}",
+  }
+  messageText = "test text"
+  
 if __name__ == "__main__":
   unittest.main() # run all tests
