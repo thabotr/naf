@@ -12,8 +12,6 @@ class Router
   {
     $request_uri = $_SERVER['REQUEST_URI'];
     $request_method = $_SERVER['REQUEST_METHOD'];
-    echo var_dump($request_method). "%";
-    echo var_dump($request_uri) . "|";
     $uri_matches_our_route = route_matches_uri($route, $request_uri);
     $method_matches_ours = $request_method === $method;
     return $uri_matches_our_route and $method_matches_ours;
