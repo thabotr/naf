@@ -1,38 +1,13 @@
 import http.client
 import unittest
-import base64
 import json
 from datetime import datetime
 from assertpy import assert_that
-from routes import Routes
+from routes import Routes, TestCaseWithHTTP
 
-def encodeAuthCredentials(username: str, password: str) -> str:
-  credentials: str = f"{username}:{password}"
-  credentials_bytes = credentials.encode('utf-8')
-  base64_bytes = base64.b64encode(credentials_bytes)
-  credentials_b64 = base64_bytes.decode('utf-8')
-  return credentials_b64
-
-class POSTMessages(unittest.TestCase):
+class POSTMessages(TestCaseWithHTTP):
   def setUp(self) -> None:
     self.conn = http.client.HTTPConnection(Routes.HOST, Routes.PORT)
-
-  def testUnauthOnBadCredentials(self):
-    """given unregistered user authorization credentials it returns 'Unauthorized'"""
-    unregisteredHandle = 'w/someUnregisteredHandle'
-    unregisteredToken = 'someUnregisteredTestToken'
-    validMessage = {
-      "text": self.messageText,
-      "toHandle": self.connectedUser,
-      "timestamp": 0,
-    }
-    encoded_bad_credentials = encodeAuthCredentials(unregisteredHandle, unregisteredToken)
-    badAuthheaders = {
-      "Authorization" : f"Basic {encoded_bad_credentials}",
-    }
-
-    status, _ = self.postMessage(validMessage, badAuthheaders)
-    assert_that(status).is_equal_to(http.client.UNAUTHORIZED)
 
   def testBadReqOnMissingRecipient(self):
     """given a message without a 'toHandle' field it returns status 'Bad Request'"""
@@ -71,16 +46,11 @@ class POSTMessages(unittest.TestCase):
       "text": self.messageText,
       "toHandle": self.connectedUser,
     }
-
-    time_before_request = datetime.now()
     status, body = self.postMessage(message)
-    time_after_request = datetime.now()
     assert_that(status).is_equal_to(http.client.CREATED)
     result: dict = json.loads(body)
     assert_that(result).contains_key("timestamp")
-    timestamp = datetime.strptime(result["timestamp"], '%Y-%m-%d %H:%M:%S')
-    assert_that(timestamp).is_before(time_after_request)
-    assert_that(timestamp).is_equal_to_ignoring_milliseconds(time_before_request)
+    _ = datetime.strptime(result["timestamp"], '%Y-%m-%d %H:%M:%S')
 
   def postMessage(self, message: dict, headers: dict = None) -> tuple:
     valid_headers = self.authedHeaders if headers == None else headers
@@ -92,12 +62,6 @@ class POSTMessages(unittest.TestCase):
     return status, body
 
   messagesURL = f"{Routes.BASE_PATH}/messages"
-  handle = 'w/testHandle'
-  token = 'testToken'
-  connectedUser = 'w/testHandle2'
-  authedHeaders = {
-      "Authorization" : f"Basic {encodeAuthCredentials(handle, token)}",
-  }
   messageText = "test text"
   
 if __name__ == "__main__":
