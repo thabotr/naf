@@ -2,7 +2,7 @@ from assertpy import assert_that
 from routes import TestCaseWithHTTP, Routes
 from http import client
 
-class DELETEConnection(TestCaseWithHTTP):
+class DELETEConnections(TestCaseWithHTTP):
   connectionsURL = f"{Routes.BASE_PATH}/connections"
 
   def deleteConnection(self, handle=None):
