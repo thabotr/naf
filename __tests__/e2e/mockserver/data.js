@@ -4,7 +4,7 @@ const {PROFILE} = require('../../mockdata/profile');
 
 module.exports = () => {
   const data = {
-    profile: PROFILE,
+    profiles: PROFILE,
     chats: CHATS,
     connections: CHATS.map(chat => ({
       id: chat.user.handle,

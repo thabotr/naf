@@ -1,72 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1672167525363" clover="3.2.0">
-  <project timestamp="1672167525363" name="All files">
-    <metrics statements="158" coveredstatements="148" conditionals="45" coveredconditionals="35" methods="48" coveredmethods="46" elements="251" coveredelements="229" complexity="0" loc="158" ncloc="158" packages="15" files="22" classes="22"/>
+<coverage generated="1673119923213" clover="3.2.0">
+  <project timestamp="1673119923214" name="All files">
+    <metrics statements="205" coveredstatements="192" conditionals="53" coveredconditionals="40" methods="67" coveredmethods="63" elements="325" coveredelements="295" complexity="0" loc="205" ncloc="205" packages="16" files="30" classes="30"/>
     <package name="__tests__.mockdata">
-      <metrics statements="13" coveredstatements="13" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <metrics statements="23" coveredstatements="23" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
       <file name="chat.js" path="C:\Users\TiZZAR\Desktop\projects\naf\__tests__\mockdata\chat.js">
-        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="2" count="4" type="stmt"/>
-        <line num="3" count="4" type="stmt"/>
-        <line num="4" count="4" type="stmt"/>
-        <line num="5" count="4" type="stmt"/>
-        <line num="7" count="120" type="stmt"/>
-        <line num="25" count="4" type="stmt"/>
-        <line num="26" count="120" type="stmt"/>
-        <line num="27" count="120" type="stmt"/>
+        <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="7" count="90" type="stmt"/>
+        <line num="25" count="3" type="stmt"/>
+        <line num="26" count="90" type="stmt"/>
+        <line num="28" count="3" type="stmt"/>
+        <line num="29" count="3" type="stmt"/>
       </file>
       <file name="profile.js" path="C:\Users\TiZZAR\Desktop\projects\naf\__tests__\mockdata\profile.js">
-        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <metrics statements="14" coveredstatements="14" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
+        <line num="6" count="5" type="stmt"/>
         <line num="24" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="26" count="5" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
       </file>
     </package>
     <package name="__tests__.unit.utils">
-      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="3" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+      <file name="doNothing.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\__tests__\unit\utils\doNothing.tsx">
+        <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="3" count="0" type="stmt"/>
+      </file>
+      <file name="dummyChat.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\__tests__\unit\utils\dummyChat.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="2" type="stmt"/>
+      </file>
       <file name="themed.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\__tests__\unit\utils\themed.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="4" count="22" type="stmt"/>
+        <line num="4" count="40" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.Chat">
-      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="22" coveredstatements="21" conditionals="4" coveredconditionals="2" methods="13" coveredmethods="12"/>
       <file name="Chat.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\Chat\Chat.tsx">
-        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="16" count="2" type="stmt"/>
-        <line num="17" count="2" type="stmt"/>
+        <metrics statements="9" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="4"/>
+        <line num="28" count="10" type="stmt"/>
+        <line num="29" count="10" type="stmt"/>
+        <line num="30" count="10" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="10" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="68" count="3" type="stmt"/>
+      </file>
+      <file name="MessageComposer.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\Chat\MessageComposer.tsx">
+        <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="1" methods="5" coveredmethods="5"/>
+        <line num="17" count="16" type="stmt"/>
+        <line num="18" count="16" type="stmt"/>
+        <line num="19" count="16" type="stmt"/>
+        <line num="20" count="9" type="cond" truecount="1" falsecount="1"/>
+        <line num="22" count="16" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="16" type="stmt"/>
+      </file>
+      <file name="MessageDisplay.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\Chat\MessageDisplay.tsx">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="1" methods="3" coveredmethods="3"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.ChatProfile">
       <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="4"/>
       <file name="ChatProfile.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\ChatProfile\ChatProfile.tsx">
         <metrics statements="8" coveredstatements="8" conditionals="2" coveredconditionals="2" methods="4" coveredmethods="4"/>
-        <line num="18" count="6" type="stmt"/>
-        <line num="19" count="6" type="stmt"/>
-        <line num="20" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="21" count="1" type="stmt"/>
+        <line num="23" count="6" type="stmt"/>
         <line num="24" count="6" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
-        <line num="36" count="1" type="stmt"/>
+        <line num="25" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="29" count="6" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.ChatProfile.repository">
-      <metrics statements="10" coveredstatements="6" conditionals="4" coveredconditionals="1" methods="2" coveredmethods="1"/>
+      <metrics statements="8" coveredstatements="4" conditionals="4" coveredconditionals="1" methods="2" coveredmethods="1"/>
       <file name="remote.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\ChatProfile\repository\remote.tsx">
-        <metrics statements="10" coveredstatements="6" conditionals="4" coveredconditionals="1" methods="2" coveredmethods="1"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="20" count="1" type="stmt"/>
+        <metrics statements="8" coveredstatements="4" conditionals="4" coveredconditionals="1" methods="2" coveredmethods="1"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="20" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="21" count="1" type="stmt"/>
-        <line num="22" count="1" type="stmt"/>
-        <line num="26" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="29" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="30" count="1" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="35" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.Home">
@@ -76,9 +118,9 @@
         <line num="16" count="1" type="stmt"/>
         <line num="23" count="20" type="stmt"/>
         <line num="27" count="1" type="stmt"/>
-        <line num="38" count="5" type="stmt"/>
         <line num="39" count="5" type="stmt"/>
-        <line num="59" count="20" type="stmt"/>
+        <line num="40" count="5" type="stmt"/>
+        <line num="60" count="20" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.Login">
@@ -123,24 +165,27 @@
       </file>
     </package>
     <package name="src.pages.Login.repository">
-      <metrics statements="15" coveredstatements="13" conditionals="8" coveredconditionals="6" methods="2" coveredmethods="1"/>
+      <metrics statements="18" coveredstatements="15" conditionals="12" coveredconditionals="9" methods="2" coveredmethods="1"/>
       <file name="remote.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\pages\Login\repository\remote.tsx">
-        <metrics statements="15" coveredstatements="13" conditionals="8" coveredconditionals="6" methods="2" coveredmethods="1"/>
-        <line num="16" count="8" type="stmt"/>
-        <line num="21" count="8" type="cond" truecount="2" falsecount="0"/>
-        <line num="22" count="6" type="stmt"/>
-        <line num="26" count="8" type="stmt"/>
+        <metrics statements="18" coveredstatements="15" conditionals="12" coveredconditionals="9" methods="2" coveredmethods="1"/>
+        <line num="14" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="15" count="8" type="cond" truecount="1" falsecount="1"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="18" count="8" type="stmt"/>
+        <line num="22" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="23" count="6" type="stmt"/>
         <line num="27" count="8" type="stmt"/>
-        <line num="29" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="31" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="32" count="1" type="stmt"/>
+        <line num="28" count="8" type="stmt"/>
+        <line num="30" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="32" count="6" type="cond" truecount="2" falsecount="0"/>
         <line num="33" count="1" type="stmt"/>
-        <line num="37" count="1" type="stmt"/>
-        <line num="38" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="39" count="3" type="stmt"/>
-        <line num="42" count="2" type="stmt"/>
-        <line num="44" count="2" type="stmt"/>
-        <line num="45" count="0" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="39" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="40" count="3" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+        <line num="45" count="2" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
       </file>
     </package>
     <package name="src.pages.MyProfile">
@@ -176,23 +221,35 @@
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
       <file name="styles.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\styles.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="3" count="6" type="stmt"/>
-        <line num="19" count="6" type="stmt"/>
-        <line num="20" count="19" type="stmt"/>
+        <line num="3" count="9" type="stmt"/>
+        <line num="23" count="9" type="stmt"/>
+        <line num="24" count="27" type="stmt"/>
       </file>
     </package>
     <package name="src.shared.components">
-      <metrics statements="10" coveredstatements="10" conditionals="4" coveredconditionals="4" methods="5" coveredmethods="5"/>
+      <metrics statements="17" coveredstatements="17" conditionals="4" coveredconditionals="4" methods="9" coveredmethods="9"/>
       <file name="BackToHomeNavigationBar.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\BackToHomeNavigationBar.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="12" count="12" type="stmt"/>
         <line num="13" count="12" type="stmt"/>
       </file>
+      <file name="FloatBottomRight.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\FloatBottomRight.tsx">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="8" count="8" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+      </file>
       <file name="HorizontalView.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\HorizontalView.tsx">
-        <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="5" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="6" count="5" type="stmt"/>
-        <line num="10" count="5" type="stmt"/>
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="5" count="21" type="stmt"/>
+        <line num="8" count="21" type="stmt"/>
+      </file>
+      <file name="IconButton.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\IconButton.tsx">
+        <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="10" count="50" type="stmt"/>
+        <line num="11" count="50" type="stmt"/>
+        <line num="12" count="50" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="50" type="stmt"/>
       </file>
       <file name="OnlyShow.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\OnlyShow.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
@@ -200,45 +257,62 @@
       </file>
       <file name="PageBackground.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\PageBackground.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
-        <line num="13" count="38" type="stmt"/>
-        <line num="14" count="38" type="stmt"/>
-        <line num="21" count="7" type="stmt"/>
-        <line num="22" count="38" type="stmt"/>
+        <line num="9" count="46" type="stmt"/>
+        <line num="10" count="46" type="stmt"/>
+        <line num="13" count="7" type="stmt"/>
+        <line num="14" count="46" type="stmt"/>
+      </file>
+      <file name="Show.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\components\Show.tsx">
+        <metrics statements="1" coveredstatements="1" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="12" count="12" type="cond" truecount="2" falsecount="0"/>
       </file>
     </package>
     <package name="src.shared.providers">
       <metrics statements="22" coveredstatements="22" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
       <file name="theme.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\providers\theme.tsx">
         <metrics statements="22" coveredstatements="22" conditionals="5" coveredconditionals="5" methods="5" coveredmethods="5"/>
-        <line num="26" count="10" type="stmt"/>
-        <line num="32" count="10" type="stmt"/>
-        <line num="45" count="10" type="stmt"/>
-        <line num="59" count="10" type="stmt"/>
-        <line num="62" count="35" type="stmt"/>
-        <line num="63" count="35" type="stmt"/>
-        <line num="64" count="35" type="stmt"/>
-        <line num="65" count="35" type="cond" truecount="3" falsecount="0"/>
+        <line num="26" count="13" type="stmt"/>
+        <line num="32" count="13" type="stmt"/>
+        <line num="45" count="13" type="stmt"/>
+        <line num="59" count="13" type="stmt"/>
+        <line num="62" count="46" type="stmt"/>
+        <line num="63" count="46" type="stmt"/>
+        <line num="64" count="46" type="stmt"/>
+        <line num="65" count="46" type="cond" truecount="3" falsecount="0"/>
         <line num="67" count="1" type="stmt"/>
         <line num="69" count="1" type="stmt"/>
-        <line num="71" count="33" type="cond" truecount="2" falsecount="0"/>
-        <line num="75" count="35" type="stmt"/>
-        <line num="76" count="35" type="stmt"/>
+        <line num="71" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="75" count="46" type="stmt"/>
+        <line num="76" count="46" type="stmt"/>
         <line num="77" count="4" type="stmt"/>
-        <line num="80" count="35" type="stmt"/>
-        <line num="86" count="35" type="stmt"/>
-        <line num="93" count="10" type="stmt"/>
-        <line num="94" count="115" type="stmt"/>
-        <line num="95" count="115" type="stmt"/>
-        <line num="98" count="10" type="stmt"/>
-        <line num="99" count="97" type="stmt"/>
-        <line num="100" count="97" type="stmt"/>
+        <line num="80" count="46" type="stmt"/>
+        <line num="86" count="46" type="stmt"/>
+        <line num="93" count="13" type="stmt"/>
+        <line num="94" count="248" type="stmt"/>
+        <line num="95" count="248" type="stmt"/>
+        <line num="98" count="13" type="stmt"/>
+        <line num="99" count="180" type="stmt"/>
+        <line num="100" count="180" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.shared.repository">
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="remote.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\repository\remote.tsx">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
       </file>
     </package>
     <package name="src.shared.routes">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="server.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\routes\server.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
       </file>
     </package>
     <package name="src.shared.utils">
@@ -250,25 +324,25 @@
       </file>
       <file name="remoteRepository.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\utils\remoteRepository.tsx">
         <metrics statements="13" coveredstatements="9" conditionals="8" coveredconditionals="3" methods="2" coveredmethods="2"/>
-        <line num="3" count="2" type="stmt"/>
         <line num="4" count="2" type="stmt"/>
         <line num="5" count="2" type="stmt"/>
-        <line num="6" count="0" type="cond" truecount="0" falsecount="4"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="13" count="2" type="stmt"/>
-        <line num="14" count="2" type="stmt"/>
-        <line num="22" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="23" count="1" type="stmt"/>
-        <line num="25" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="26" count="1" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="7" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="24" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
       </file>
       <file name="validateContext.tsx" path="C:\Users\TiZZAR\Desktop\projects\naf\src\shared\utils\validateContext.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
-        <line num="6" count="117" type="cond" truecount="2" falsecount="0"/>
+        <line num="6" count="250" type="cond" truecount="2" falsecount="0"/>
         <line num="7" count="1" type="stmt"/>
-        <line num="9" count="116" type="stmt"/>
+        <line num="9" count="249" type="stmt"/>
       </file>
     </package>
   </project>

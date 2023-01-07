@@ -14,6 +14,7 @@ import ChatPage from '../pages/Chat/Chat';
 import ChatProfile from '../pages/ChatProfile/ChatProfile';
 import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remote';
 import {Message} from '../pages/Chat/types/Message';
+import {RemoteRepository} from './repository/remote';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
@@ -33,7 +34,7 @@ export default function Router(): JSX.Element {
   });
 
   function onPressLogin(credentials: {token: string; handle: string}) {
-    remoteRepo.setCredentials(credentials.token, credentials.handle);
+    RemoteRepository.setCredentials(credentials.token, credentials.handle);
     remoteRepo
       .getUserProfile()
       .then(profileResult => {
@@ -42,14 +43,12 @@ export default function Router(): JSX.Element {
         }
         setLoggedInUser(profileResult);
         setLoginError(undefined);
-        remoteChatRepo
-          ?.getChats(credentials.token, credentials.handle)
-          .then(remoteChats => {
-            if (remoteChats === null) {
-              return;
-            }
-            setChats(remoteChats);
-          });
+        remoteChatRepo.getChats().then(remoteChats => {
+          if (remoteChats === null) {
+            return;
+          }
+          setChats(remoteChats);
+        });
       })
       .catch(e => {
         setUserCredentials(credentials);
@@ -111,15 +110,20 @@ export default function Router(): JSX.Element {
       return null;
     }
 
-    const sendMessage = (message: Message) => {
+    const sendMessage = (message: Partial<Message>) => {
+      const fullMessage: Message = {
+        text: message.text ?? '',
+        toHandle: openChat.user.handle,
+        timestamp: 0,
+      };
       remoteChatRepo
-        .postMessage(loggedInUser.token, loggedInUser.handle, message)
+        .postMessage(fullMessage)
         .then(sentMessage =>
           setOpenChat(
             oldChat =>
               oldChat && {
                 ...oldChat,
-                messages: oldChat.messages.concat([sentMessage]),
+                messages: (oldChat.messages ?? []).concat([sentMessage]),
               },
           ),
         )
@@ -146,11 +150,7 @@ export default function Router(): JSX.Element {
         return;
       }
       remoteChatProfileRepo
-        .deleteConnection(
-          loggedInUser.token,
-          loggedInUser.handle,
-          openChat.user.handle,
-        )
+        .deleteConnection(openChat.user.handle)
         .then(connectionDeleted => {
           if (connectionDeleted) {
             setChats(oldChats =>

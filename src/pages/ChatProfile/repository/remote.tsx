@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {RemoteRepository} from '../../../shared/repository/remote';
 import {SERVER_URL} from '../../../shared/routes/server';
 import {
   handleFetchError,
@@ -6,23 +7,13 @@ import {
 } from '../../../shared/utils/remoteRepository';
 
 class RemoteChatProfileRepository {
-  async deleteConnection(
-    userToken: string,
-    userHandle: string,
-    chatUserHandle: string,
-  ): Promise<boolean> {
-    const headers: any = {
-      token: userToken,
-      handle: userHandle,
-    };
-
+  async deleteConnection(chatUserHandle: string): Promise<boolean> {
     let response;
     try {
-      const encodedChatHandle = encodeURIComponent(chatUserHandle);
       response = await axios.delete(
-        `${SERVER_URL}/connections/${encodedChatHandle}`,
+        `${SERVER_URL}/connections/${chatUserHandle}`,
         {
-          headers: headers,
+          headers: RemoteRepository.basicAuthHeader,
           validateStatus: status => status >= 200 && status < 600,
         },
       );

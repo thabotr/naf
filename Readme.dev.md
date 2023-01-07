@@ -11,6 +11,18 @@
 #### 4. Run the tests
     npm run e2eTest
 see the [Detox](https://wix.github.io/Detox/docs/) docs for more info on running the e2e tests.
+### Back-end unit testing
+  Download [PHPUnit](https://phpunit.de/index.html) phar and place it in project root
+    
+  Run 
+    
+    php .\phpunit-6.5.14.phar --verbose .\backend\<path\to\test\file>.php
+  
+  from the php tests directory
+### Back-end contract/integration testing
+These ensure that the back-end's endpoints are working as expected
+
+    python .\__tests__\integration\resource\__main___test.py
 
 ## Design
 ### Screens
@@ -69,4 +81,6 @@ View interactive flow diagram [here](https://www.figma.com/file/APEmswGqj6lTPwXp
 <image src="./design/NAF FLOW.jpg"/>
 
 ## Planning
-[Trello Board](https://trello.com/b/1dFWkADP/naf-immersive-conversational-platform) - see what we plan on working on, now and in the future.
+[Trello Board](https://trello.com/b/1dFWkADP/naf-immersive-conversational-platform) - see our vision of the app, now and in the future.
+## Development
+[Jira](https://thaborlabs.atlassian.net/jira/software/projects/NAF/) - see what features, bugs and configs we are working on.

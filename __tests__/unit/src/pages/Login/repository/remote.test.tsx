@@ -2,6 +2,7 @@ import axios from 'axios';
 import {RemoteLoginRepository} from '../../../../../../src/pages/Login/repository/remote';
 import {Profile} from '../../../../../../src/types/user';
 import {Buffer} from 'buffer';
+import {RemoteRepository} from '../../../../../../src/shared/repository/remote';
 
 jest.useRealTimers();
 const mockFetch = jest.fn().mockName('mockFetch');
@@ -11,7 +12,7 @@ describe(RemoteLoginRepository, () => {
   const expectedFetchURL = /.+/;
   const token = 'someTestToken';
   const handle = 'w/someTestHandle';
-  repo.setCredentials(token, handle);
+  RemoteRepository.setCredentials(token, handle);
   const encodedCredentials = Buffer.from(`${handle}:${token}`).toString(
     'base64',
   );

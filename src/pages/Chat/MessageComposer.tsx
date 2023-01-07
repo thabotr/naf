@@ -8,16 +8,16 @@ import globalStyles from '../../shared/styles';
 import {Message} from './types/Message';
 
 type Props = {
-  onDiscardMessage: (message: Message) => void;
-  onSendMessage: (message: Message) => void;
-  initialMessage: Message;
+  onDiscardMessage: (message: Partial<Message>) => void;
+  onSendMessage: (message: Partial<Message>) => void;
+  initialMessage: Partial<Message>;
 };
 
 export default function (props: Props): JSX.Element {
   const styles = useThemedStyles(styleSheet);
   const [inputText, setInputText] = useState('');
   useEffect(() => {
-    setInputText(props.initialMessage.text);
+    setInputText(props.initialMessage.text ?? '');
   }, [props.initialMessage.text]);
   return (
     <Surface accessibilityLabel="message composer" style={globalStyles.card}>

@@ -1,6 +1,5 @@
 import {device, element, expect} from 'detox';
-import {CHATS} from '../mockdata/chat';
-import {PROFILE} from '../mockdata/profile';
+import {PROFILE, PROFILES} from '../mockdata/profile';
 describe('Home Page', () => {
   describe('As a logged in user', () => {
     beforeAll(async () => {
@@ -41,7 +40,7 @@ describe('Home Page', () => {
         "I should be able to navigate to the 'chat <connectedChatHandle> page' by " +
           "pressing the 'open chat <connectedChatHandle>' link",
         async () => {
-          const connectedChatHandle = CHATS[0].user.handle;
+          const connectedChatHandle = PROFILES[1].handle;
           await expect(
             element(by.label(`chat ${connectedChatHandle} page`)),
           ).not.toExist();

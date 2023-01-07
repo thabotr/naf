@@ -1,7 +1,6 @@
 <?php
 namespace repository\database {
   use mysqli;
-  use mysqli_sql_exception;
   use mysqli_stmt;
 
   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);

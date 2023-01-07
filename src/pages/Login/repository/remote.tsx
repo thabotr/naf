@@ -1,4 +1,3 @@
-/* eslint-disable brace-style */
 import axios from 'axios';
 import {SERVER_URL} from '../../../shared/routes/server';
 import {
@@ -9,17 +8,15 @@ import {Profile} from '../../../types/user';
 import {LoginRepository} from '../repository';
 import {RemoteRepository} from '../../../shared/repository/remote';
 
-class RemoteLoginRepository
-  extends RemoteRepository
-  implements LoginRepository
-{
+class RemoteLoginRepository implements LoginRepository {
   async getUserProfile(profileLastModified?: number): Promise<Profile | null> {
-    const credentialsDefined = this.handle && this.token;
+    const credentialsDefined =
+      RemoteRepository.handle && RemoteRepository.token;
     if (!credentialsDefined) {
       throw new Error('credentials missing');
     }
     const headers: Record<string, string | number> = {
-      ...this.basicAuthHeader,
+      ...RemoteRepository.basicAuthHeader,
     };
 
     if (profileLastModified !== undefined) {
@@ -36,7 +33,7 @@ class RemoteLoginRepository
         const body = response.data;
         const profile: Profile = {
           ...body,
-          token: this.token,
+          token: RemoteRepository.token,
         };
         return profile;
       } else if (response.status === 204) {

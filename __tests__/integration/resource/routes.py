@@ -6,7 +6,7 @@ from assertpy import assert_that
 class Routes:
   HOST = "localhost"
   PORT = 8000
-  BASE_PATH = "/backend"
+  BASE_PATH = "/naf/api"
 
 def encodeAuthCredentials(username: str, password: str) -> str:
   credentials: str = f"{username}:{password}"

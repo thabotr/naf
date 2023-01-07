@@ -16,7 +16,7 @@ type Props = {
   onBackToHome: () => void;
   chat: Chat;
   onOpenChatProfile: () => void;
-  onSendMessage: (message: Message) => void;
+  onSendMessage: (message: Partial<Message>) => void;
 };
 
 export default function ({
@@ -29,11 +29,11 @@ export default function ({
   const [composing, setComposing] = useState(false);
   const composerProps = {
     initialMessage: {text: ''},
-    onSendMessage: (message: Message) => {
+    onSendMessage: (message: Partial<Message>) => {
       setComposing(false);
       return onSendMessage(message);
     },
-    onDiscardMessage: (_: Message) => {
+    onDiscardMessage: (_: Partial<Message>) => {
       setComposing(false);
     },
   };

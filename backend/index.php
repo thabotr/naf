@@ -7,6 +7,11 @@ require_once(realpath(dirname(__FILE__) . '/src/router.php'));
 use repository\database\DBRepository;
 use resource\Router;
 
+Router::get("/ping", function () {
+  echo "pong";
+  exit;
+});
+
 $db_repo = new DBRepository("tartarus.aserv.co.za:3306", "thabolao_naf_admin", "naf_admin_pw", "thabolao_naf_db");
 if (!isset($_SERVER['PHP_AUTH_USER'])) {
   header('WWW-Authenticate: BASIC realm="user profile"');
@@ -32,11 +37,17 @@ Router::get("/chats", function () {
   exit;
 });
 
-Router::delete("/connections", "/(?<chat_handle>w/[a-zA-Z0-9]+)", function (array $matched_patterns) {
+Router::delete("/connections", "/(?<chat_handle>w/[a-zA-Z0-9-_]+)", function (array $matched_patterns) {
   global $user_id, $db_repo;
+  if(count($matched_patterns) == 0) {
+    header('HTTP/1.0 400 Bad Request');
+    echo "missing handle in url";
+    exit;
+  }
   $chat_handle = $matched_patterns['chat_handle'];
   $db_repo->delete_user_chat($user_id, $chat_handle);
   header('HTTP/1.0 200 OK');
+  echo "disconnected from $chat_handle";
   exit;
 });
 
@@ -49,6 +60,9 @@ function validateMessage(array $message)
   if (!isset($message['toHandle'])) {
     throw new MessageFormatException("message missing field 'toHandle'");
   }
+  if (!isset($message['text'])) {
+    throw new MessageFormatException("message missing field 'text'");
+  }
 }
 
 Router::post("/messages", function (string $body) {
@@ -58,7 +72,8 @@ Router::post("/messages", function (string $body) {
     validateMessage($message);
     $message_metadata = $db_repo->add_user_message($user_id, $message);
     if (count($message_metadata) == 0) {
-      header('HTTP/1.0 400 Bad Request');
+      header('HTTP/1.0 404 Not Found');
+      echo "user " . $message["toHandle"] . " not found";
       exit;
     }
     header('HTTP/1.0 201 Created');

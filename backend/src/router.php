@@ -26,7 +26,7 @@ class Router
   static function delete(string $route, string $url_resource_to_delete_pattern, callable $callback): void
   {
     if (Router::we_should_handle_request($route, "DELETE")) {
-      preg_match("#" . $route . $url_resource_to_delete_pattern . "#", $_SERVER['REQUEST_URI'], $matches);
+      preg_match("`" . $route . $url_resource_to_delete_pattern . "`", $_SERVER['REQUEST_URI'], $matches);
       call_user_func($callback, $matches);
       exit;
     }

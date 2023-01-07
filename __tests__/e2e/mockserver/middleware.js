@@ -5,6 +5,10 @@ const messages = {};
 module.exports = (req, res, next) => {
   const senderHandle = req.headers.handle;
   const senderToken = req.headers.token;
+  if (req.url === '/ping') {
+    res.json('pong');
+    return;
+  }
   if (
     !PROFILES.find(
       profile =>

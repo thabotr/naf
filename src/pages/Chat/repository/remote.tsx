@@ -1,4 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
+import {RemoteRepository} from '../../../shared/repository/remote';
 import {SERVER_URL} from '../../../shared/routes/server';
 import {
   handleFetchError,
@@ -8,20 +9,12 @@ import {Chat} from '../../../types/chat';
 import {ChatRepository} from '../repository';
 import {Message} from '../types/Message';
 
-class RemoteChatRepository implements ChatRepository {
-  async getChats(
-    userToken: string,
-    userHandle: string,
-  ): Promise<Chat[] | null> {
-    const headers: Record<string, string> = {
-      token: userToken,
-      handle: userHandle,
-    };
-
+class RemoteChatRepository extends RemoteRepository implements ChatRepository {
+  async getChats(): Promise<Chat[] | null> {
     let response;
     try {
       response = await axios.get(`${SERVER_URL}/chats`, {
-        headers: headers,
+        headers: RemoteRepository.basicAuthHeader,
         validateStatus: status => status >= 200 && status < 600,
       });
       if (response.status === 200) {
@@ -37,23 +30,14 @@ class RemoteChatRepository implements ChatRepository {
     return null;
   }
 
-  async postMessage(
-    userToken: string,
-    userHandle: string,
-    message: Message,
-  ): Promise<Message> {
-    const headers: Record<string, string> = {
-      token: userToken,
-      handle: userHandle,
-    };
+  async postMessage(message: Message): Promise<Message> {
     let response;
     try {
       const config: AxiosRequestConfig<Message> = {
-        headers: headers,
+        headers: RemoteRepository.basicAuthHeader,
         validateStatus: (status: number) => status >= 200 && status < 600,
       };
       const sanitizedMessage: Omit<Message, 'timestamp'> = message;
-      console.log(sanitizedMessage);
       response = await axios.post(
         `${SERVER_URL}/messages`,
         sanitizedMessage,

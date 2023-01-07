@@ -1,11 +1,12 @@
 import {device, expect, by} from 'detox';
-import {CHATS} from '../mockdata/chat';
-import {PROFILE} from '../mockdata/profile';
+import {PROFILE, PROFILES} from '../mockdata/profile';
 
 describe('Chat Profile page', () => {
   describe('As a logged in user', () => {
     describe('coming from the chat page', () => {
-      const chat = CHATS[0];
+      const chat = {
+        user: PROFILES[2],
+      };
       beforeAll(async () => {
         await device.launchApp({newInstance: true});
       });
