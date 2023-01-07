@@ -33,7 +33,7 @@ export const verboseLoginError = (err: LoginErrorType): string => {
     case 'SERVER_ERROR':
       return 'something went wrong on our side. Please give us a moment to look into this issue';
     default:
-      return '';
+      return 'unexpected error';
   }
 };
 

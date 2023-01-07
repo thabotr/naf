@@ -33,8 +33,9 @@ export default function Router(): JSX.Element {
   });
 
   function onPressLogin(credentials: {token: string; handle: string}) {
+    remoteRepo.setCredentials(credentials.token, credentials.handle);
     remoteRepo
-      .getUserProfile(credentials.token, credentials.handle)
+      .getUserProfile()
       .then(profileResult => {
         if (!profileResult) {
           return;

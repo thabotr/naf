@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 import axios from 'axios';
 import {SERVER_URL} from '../../../shared/routes/server';
 import {
@@ -6,16 +7,19 @@ import {
 } from '../../../shared/utils/remoteRepository';
 import {Profile} from '../../../types/user';
 import {LoginRepository} from '../repository';
+import {RemoteRepository} from '../../../shared/repository/remote';
 
-class RemoteLoginRepository implements LoginRepository {
-  async getUserProfile(
-    userToken: string,
-    userHandle: string,
-    profileLastModified?: number,
-  ): Promise<Profile | null> {
-    const headers: any = {
-      token: userToken,
-      handle: userHandle,
+class RemoteLoginRepository
+  extends RemoteRepository
+  implements LoginRepository
+{
+  async getUserProfile(profileLastModified?: number): Promise<Profile | null> {
+    const credentialsDefined = this.handle && this.token;
+    if (!credentialsDefined) {
+      throw new Error('credentials missing');
+    }
+    const headers: Record<string, string | number> = {
+      ...this.basicAuthHeader,
     };
 
     if (profileLastModified !== undefined) {
@@ -24,7 +28,7 @@ class RemoteLoginRepository implements LoginRepository {
 
     let response;
     try {
-      response = await axios.get(`${SERVER_URL}/profile`, {
+      response = await axios.get(`${SERVER_URL}/profiles`, {
         headers: headers,
         validateStatus: status => status >= 200 && status < 600,
       });
@@ -32,7 +36,7 @@ class RemoteLoginRepository implements LoginRepository {
         const body = response.data;
         const profile: Profile = {
           ...body,
-          token: userToken,
+          token: this.token,
         };
         return profile;
       } else if (response.status === 204) {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {RemoteLoginRepository} from '../../../../../../src/pages/Login/repository/remote';
 import {Profile} from '../../../../../../src/types/user';
+import {Buffer} from 'buffer';
 
 jest.useRealTimers();
 const mockFetch = jest.fn().mockName('mockFetch');
@@ -8,11 +9,16 @@ describe(RemoteLoginRepository, () => {
   const repo = new RemoteLoginRepository();
   const fetchErrorMessage = 'intentional testing error';
   const expectedFetchURL = /.+/;
+  const token = 'someTestToken';
+  const handle = 'w/someTestHandle';
+  repo.setCredentials(token, handle);
+  const encodedCredentials = Buffer.from(`${handle}:${token}`).toString(
+    'base64',
+  );
   const profileLastModified = 10;
   const expectedFetchConfig = {
     headers: {
-      token: 'someToken',
-      handle: 'someHandle',
+      Authorization: `Basic ${encodedCredentials}`,
       lastmodified: profileLastModified,
     },
     validateStatus: expect.anything(),
@@ -31,11 +37,10 @@ describe(RemoteLoginRepository, () => {
         expect.assertions(2);
         mockFetch.mockResolvedValueOnce({status: 204});
         mockFetch.mockResolvedValueOnce({status: 204});
-        await repo.getUserProfile('', '');
+        await repo.getUserProfile();
         const fetchConfigWithoutLastModified = {
           headers: {
-            token: '',
-            handle: '',
+            Authorization: expect.anything(),
           },
           validateStatus: expect.anything(),
         };
@@ -45,11 +50,7 @@ describe(RemoteLoginRepository, () => {
         );
 
         const fetchConfigWithLastModified = expectedFetchConfig;
-        await repo.getUserProfile(
-          expectedFetchConfig.headers.token,
-          expectedFetchConfig.headers.handle,
-          expectedFetchConfig.headers.lastmodified,
-        );
+        await repo.getUserProfile(expectedFetchConfig.headers.lastmodified);
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringMatching(expectedFetchURL),
           fetchConfigWithLastModified,
@@ -62,11 +63,7 @@ describe(RemoteLoginRepository, () => {
       async () => {
         expect.assertions(2);
         mockFetch.mockResolvedValueOnce({status: 204});
-        const profileResult = await repo.getUserProfile(
-          expectedFetchConfig.headers.token,
-          expectedFetchConfig.headers.handle,
-          expectedFetchConfig.headers.lastmodified,
-        );
+        const profileResult = await repo.getUserProfile(profileLastModified);
         expect(mockFetch).toHaveBeenCalledWith(
           expect.stringMatching(expectedFetchURL),
           expectedFetchConfig,
@@ -81,13 +78,9 @@ describe(RemoteLoginRepository, () => {
         status: 403,
         data: fetchErrorMessage,
       });
-      expect(
-        repo.getUserProfile(
-          expectedFetchConfig.headers.token,
-          expectedFetchConfig.headers.handle,
-          expectedFetchConfig.headers.lastmodified,
-        ),
-      ).rejects.toThrow('AUTH_ERROR');
+      expect(repo.getUserProfile(profileLastModified)).rejects.toThrow(
+        'AUTH_ERROR',
+      );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringMatching(expectedFetchURL),
         expectedFetchConfig,
@@ -100,9 +93,9 @@ describe(RemoteLoginRepository, () => {
         status: 500,
         data: fetchErrorMessage,
       });
-      expect(
-        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
-      ).rejects.toThrow('SERVER_ERROR');
+      expect(repo.getUserProfile(profileLastModified)).rejects.toThrow(
+        'SERVER_ERROR',
+      );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringMatching(expectedFetchURL),
         expectedFetchConfig,
@@ -114,9 +107,9 @@ describe(RemoteLoginRepository, () => {
       mockFetch.mockRejectedValueOnce(
         'intentional testing network error: connection timedout',
       );
-      expect(
-        repo.getUserProfile('someToken', 'someHandle', profileLastModified),
-      ).rejects.toThrow('NET_ERROR');
+      expect(repo.getUserProfile(profileLastModified)).rejects.toThrow(
+        'NET_ERROR',
+      );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringMatching(expectedFetchURL),
         expectedFetchConfig,
@@ -126,13 +119,9 @@ describe(RemoteLoginRepository, () => {
     test("throws login error 'APP_ERROR' when fetch encounters an unknown error", async () => {
       expect.assertions(2);
       mockFetch.mockRejectedValue('some intentional testing error');
-      expect(
-        repo.getUserProfile(
-          expectedFetchConfig.headers.token,
-          expectedFetchConfig.headers.handle,
-          expectedFetchConfig.headers.lastmodified,
-        ),
-      ).rejects.toThrow('APP_ERROR');
+      expect(repo.getUserProfile(profileLastModified)).rejects.toThrow(
+        'APP_ERROR',
+      );
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringMatching(expectedFetchURL),
         expectedFetchConfig,
@@ -143,7 +132,7 @@ describe(RemoteLoginRepository, () => {
       const expectedUserProfile: Profile = {
         avatarURI: '',
         connections: {},
-        handle: 'someHandle',
+        handle: handle,
         initials: '',
         landscapeURI: '',
         lastModified: 0,
@@ -151,21 +140,17 @@ describe(RemoteLoginRepository, () => {
         name: '',
         surname: '',
         waitingForThem: {},
-        token: 'someToken',
+        token: token,
         waitingForYou: {},
       };
       mockFetch.mockResolvedValueOnce({
         status: 200,
         data: expectedUserProfile,
       });
-      const profileResult = await repo.getUserProfile(
-        expectedUserProfile.token,
-        expectedUserProfile.handle,
-      );
+      const profileResult = await repo.getUserProfile();
       const expectedProfileFetchConfig = {
         headers: {
-          token: expectedUserProfile.token,
-          handle: expectedUserProfile.handle,
+          Authorization: `Basic ${encodedCredentials}`,
         },
         validateStatus: expect.anything(),
       };
