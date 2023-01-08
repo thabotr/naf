@@ -1,7 +1,9 @@
 <?php
 namespace repository\database {
   use mysqli;
-  use mysqli_stmt;
+    use mysqli_sql_exception;
+    use mysqli_stmt;
+  use TheSeer\Tokenizer\Exception;
 
   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
@@ -14,6 +16,24 @@ namespace repository\database {
       $rows = $result->fetch_all(MYSQLI_ASSOC);
       return $rows;
     }
+
+    function add_user(array $new_user)
+    {
+      $stmt = $this->prepare("INSERT INTO user(handle, token) VALUES (?, ?)");
+      $stmt->bind_param("ss", $new_user
+        ['handle'], $new_user['token']);
+      try {
+        $stmt->execute();
+      } catch( mysqli_sql_exception $exception) {
+        $user_already_exists = preg_match('/duplicate entry/i', $exception);
+        if($user_already_exists){
+          return false;
+        }
+        throw $exception;
+      }
+      return true;
+    }
+
     function get_user_id_and_profile(string $handle, string $token): array
     {
       $stmt = $this->prepare("SELECT id FROM user WHERE handle=? AND token=?");
@@ -82,7 +102,7 @@ namespace repository\database {
       $stmt->bind_param("ii", $user_id, $user_id);
       $stmt->execute();
       $res = $stmt->get_result();
-      if( $res->fetch_array() == NULL) {
+      if ($res->fetch_array() == NULL) {
         $this->rollback();
         return array();
       }

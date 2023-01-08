@@ -80,6 +80,26 @@ class DBRepositoryTest extends TestCase
     $message_metadata = $this->mysqli->add_user_message($user_id, $message);
     $this->assertEquals(0, count($message_metadata));
   }
+
+  public function testAddUserReturnsFalseOnDuplicateHandle(): void {
+    $existing_user = array(
+      "handle" => "w/testHandle",
+      "token" => "anyToken",
+    );
+    $user_added = $this->mysqli->add_user($existing_user);
+    $this->assertFalse($user_added);
+  }
+
+  public function testAddUserReturnsTrueWhenNewUserCreated(): void {
+    $nonexisting_user = array(
+      "handle" => "w/newTestHandle",
+      "token" => "anyToken",
+    );
+    $handle = $nonexisting_user['handle'];
+    $this->mysqli->query("DELETE FROM user WHERE handle = '$handle'");
+    $user_added = $this->mysqli->add_user($nonexisting_user);
+    $this->assertTrue($user_added);
+  }
 }
 
 ?>
