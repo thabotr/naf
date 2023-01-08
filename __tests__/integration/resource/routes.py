@@ -7,6 +7,8 @@ class Routes:
   HOST = "localhost"
   PORT = 8000
   BASE_PATH = "/naf/api"
+  PROD_SERVER = "www.thaborlabs.com"
+  RUN_AGAINST_PROD = False
 
 def encodeAuthCredentials(username: str, password: str) -> str:
   credentials: str = f"{username}:{password}"
@@ -25,7 +27,10 @@ class TestCaseWithHTTP(unittest.TestCase):
   }
 
   def setUp(self) -> None:
-    self.conn = http.client.HTTPConnection(Routes.HOST, Routes.PORT)
+    if Routes.RUN_AGAINST_PROD:
+      self.conn = http.client.HTTPSConnection(Routes.PROD_SERVER)
+    else :
+      self.conn = http.client.HTTPConnection(Routes.HOST, Routes.PORT)
     return super().setUp()
   
   def tearDown(self) -> None:

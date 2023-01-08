@@ -6,9 +6,6 @@ from assertpy import assert_that
 from routes import Routes, TestCaseWithHTTP
 
 class POSTMessages(TestCaseWithHTTP):
-  def setUp(self) -> None:
-    self.conn = http.client.HTTPConnection(Routes.HOST, Routes.PORT)
-
   def testBadReqOnMissingRecipient(self):
     """given a message without a 'toHandle' field it returns status 'Bad Request'"""
     messageMissingReceipient = {
