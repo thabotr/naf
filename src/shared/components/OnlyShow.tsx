@@ -4,7 +4,7 @@ export default function OnlyShow({
   If,
   children,
 }: {
-  If: boolean;
+  If?: boolean;
   children: ReactNode;
 }): JSX.Element {
   return If ? <>{children}</> : <></>;

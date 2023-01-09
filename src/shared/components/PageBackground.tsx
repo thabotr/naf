@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {Surface} from 'react-native-paper';
 import {ThemeType, useThemedStyles} from '../providers/theme';
 
-type Props = React.ComponentProps<typeof Surface> & {pageLabel?: string};
+type Props = React.ComponentProps<typeof Surface>;
 
 export default function PageBackground(props: Props): JSX.Element {
   const styles = useThemedStyles(styleSheet);

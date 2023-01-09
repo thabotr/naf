@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Login, LoginErrorType} from '../pages/Login/Login';
+import {Credentials, Login, LoginErrorType} from '../pages/Login/Login';
 import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
 import {ThemeProvider} from './providers/theme';
@@ -15,6 +15,7 @@ import ChatProfile from '../pages/ChatProfile/ChatProfile';
 import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remote';
 import {Message} from '../pages/Chat/types/Message';
 import {RemoteRepository} from './repository/remote';
+import Registration from '../pages/Registration/Registration';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
@@ -32,6 +33,10 @@ export default function Router(): JSX.Element {
     handle: '',
     token: '',
   });
+  const [registering, setRegistering] = useState(false);
+  const [registrationError, setRegistrationError] =
+    useState<LoginErrorType>(undefined);
+  const [registered, setRegistered] = useState(false);
 
   function onPressLogin(credentials: {token: string; handle: string}) {
     RemoteRepository.setCredentials(credentials.token, credentials.handle);
@@ -56,13 +61,41 @@ export default function Router(): JSX.Element {
       });
   }
 
+  function onRegister(credentials: Credentials) {
+    RemoteRepository.createProfile(credentials)
+      .then(registeredCredentials => {
+        setRegistered(true);
+        setRegistering(false);
+        setUserCredentials(registeredCredentials);
+        setLoginError(undefined);
+      })
+      .catch(e => {
+        setRegistrationError(e.message);
+      });
+  }
+
+  if (registering) {
+    return (
+      <ThemeProvider>
+        <Registration
+          credentials={userCredentials}
+          onBackToLogin={() => setRegistering(false)}
+          onRegister={onRegister}
+          registrationError={registrationError}
+        />
+      </ThemeProvider>
+    );
+  }
+
   if (!loggedInUser) {
     return (
       <ThemeProvider>
         <Login
+          onToRegistration={() => setRegistering(true)}
           onPressLoginBtn={onPressLogin}
           userCredentials={userCredentials}
           loginError={loginError}
+          registered={registered}
         />
       </ThemeProvider>
     );

@@ -1,9 +1,15 @@
 import React from 'react';
-import {render, screen, fireEvent} from '@testing-library/react-native';
-import {Login} from '../../../../src/pages/Login/Login';
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+} from '@testing-library/react-native';
+import {Credentials, Login} from '../../../../src/pages/Login/Login';
 import themed from '../../utils/themed';
 import {doNothing} from '../../utils/doNothing';
 import {ReactTestInstance} from 'react-test-renderer';
+import {HelperText} from '../../../../src/shared/middleware';
 
 type Props = React.ComponentProps<typeof Login>;
 
@@ -11,63 +17,59 @@ function loginPageFromFactory(overrides: Partial<Props>) {
   const defaultProps: Props = {
     userCredentials: {handle: '', token: ''},
     onPressLoginBtn: doNothing,
+    onToRegistration: doNothing,
   };
   return render(themed(<Login {...defaultProps} {...overrides} />));
 }
 
 describe('Login page', () => {
+  test("displays successful registration message if and only if prop 'registerd' is truthy", () => {
+    loginPageFromFactory({registered: true});
+    expect(
+      screen.queryByText(HelperText.successfulRegistrationText),
+    ).not.toBeNull();
+    cleanup();
+    loginPageFromFactory({});
+    expect(
+      screen.queryByText(HelperText.successfulRegistrationText),
+    ).toBeNull();
+  });
+  const getRegisterBtn = () => screen.getByLabelText('to registration');
   test(
-    "displays texts 'Login failed!' and 'please check credentials and try again' when " +
-      "the prop 'loginError' is set to 'AUTH_ERROR'",
+    "should contain a 'register' area which should call the 'onToRegistration' prop with " +
+      'the current handle and token inputs as arguments when pressed',
     () => {
-      loginPageFromFactory({loginError: 'AUTH_ERROR'});
-      const loginFailedTextComponent = screen.queryByText('Login failed!');
-      expect(loginFailedTextComponent).not.toBeNull();
-      const authErrorTextComponent = screen.queryByText(
-        'please check credentials and try again',
-      );
-      expect(authErrorTextComponent).not.toBeNull();
+      const mockOnToRegistration = jest.fn().mockName('mockOnToRegistration');
+      loginPageFromFactory({onToRegistration: mockOnToRegistration});
+      fireEvent.press(getRegisterBtn());
+      const emptyCredentials: Credentials = {handle: '', token: ''};
+      expect(mockOnToRegistration).toBeCalledTimes(1);
+      expect(mockOnToRegistration).toBeCalledWith(emptyCredentials);
+      cleanup();
+      const someCredentials: Credentials = {
+        handle: 'w/someone',
+        token: 'maybethis',
+      };
+      loginPageFromFactory({
+        userCredentials: someCredentials,
+        onToRegistration: mockOnToRegistration,
+      });
+      fireEvent.press(getRegisterBtn());
+      expect(mockOnToRegistration).toBeCalledTimes(2);
+      expect(mockOnToRegistration).toBeCalledWith(someCredentials);
     },
   );
-  test(
-    "displays texts 'Login failed!' and 'unknown error encountered. Please resart application' when " +
-      "the prop 'loginError' is set to 'APP_ERROR'",
-    () => {
-      loginPageFromFactory({loginError: 'APP_ERROR'});
-      const loginFailedTextComponent = screen.queryByText('Login failed!');
-      expect(loginFailedTextComponent).not.toBeNull();
-      const appErrorTextComponent = screen.queryByText(
-        'unknown error encountered. Please resart application',
-      );
-      expect(appErrorTextComponent).not.toBeNull();
-    },
-  );
-  test(
-    "displays texts 'Login failed!' and 'something went wrong on our side. Please give " +
-      "us a moment to look into this issue' when the prop 'loginError' is set to 'SERVER_ERROR'",
-    () => {
-      loginPageFromFactory({loginError: 'SERVER_ERROR'});
-      const loginFailedTextComponent = screen.queryByText('Login failed!');
-      expect(loginFailedTextComponent).not.toBeNull();
-      const serverErrorTextComponent = screen.queryByText(
-        'something went wrong on our side. Please give us a moment to look into this issue',
-      );
-      expect(serverErrorTextComponent).not.toBeNull();
-    },
-  );
-  test(
-    "displays texts 'Login failed!' and 'please check network connection and try again' when " +
-      "the prop 'loginError' is set to 'NET_ERROR'",
-    () => {
-      loginPageFromFactory({loginError: 'NET_ERROR'});
-      const loginFailedTextComponent = screen.queryByText('Login failed!');
-      expect(loginFailedTextComponent).not.toBeNull();
-      const networkErrorTextComponent = screen.queryByText(
-        'please check network connection and try again',
-      );
-      expect(networkErrorTextComponent).not.toBeNull();
-    },
-  );
+  test("displays texts 'Login failed!' and the error text if loginError is defined", () => {
+    loginPageFromFactory({
+      loginError: 'please check credentials and try again',
+    });
+    const loginFailedTextComponent = screen.queryByText('Login failed!');
+    expect(loginFailedTextComponent).not.toBeNull();
+    const authErrorTextComponent = screen.queryByText(
+      'please check credentials and try again',
+    );
+    expect(authErrorTextComponent).not.toBeNull();
+  });
   test("hides 'Login failed!' text field when the prop 'loginError' is undefined", () => {
     loginPageFromFactory({});
     const loginFailedTextComponent = screen.queryByText('Login failed!');

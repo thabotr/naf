@@ -9,6 +9,7 @@ describe('Login Page', () => {
     await device.reloadReactNative();
     await expect(element(by.label('login page'))).toExist();
     await expect(element(by.label('home page'))).not.toExist();
+    await expect(element(by.label('registration page'))).not.toExist();
   });
 
   it('as an unregistered user I should not be able to log into the application', async () => {
@@ -33,5 +34,9 @@ describe('Login Page', () => {
     await element(by.label('your handle')).typeText(registeredUserHandle);
     await element(by.label('login')).tap();
     await expect(element(by.label('home page'))).toExist();
+  });
+  test("I should be able to navigate to the 'registration page' by pressing the 'to registration' link", async () => {
+    await element(by.label('to registration')).tap();
+    await expect(element(by.label('registration page'))).toExist();
   });
 });

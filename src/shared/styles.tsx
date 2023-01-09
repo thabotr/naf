@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {ThemeType} from './providers/theme';
 
 const styles = StyleSheet.create({
   horizontal: {
@@ -20,13 +21,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const globalThemedStyles = (theme: any) =>
+const globalThemedStyles = (
+  theme: ThemeType,
+): ReturnType<typeof StyleSheet.create> =>
   StyleSheet.create({
     navbar: {
       ...styles.horizontal,
       backgroundColor: theme.color.primary,
       justifyContent: 'space-between',
       paddingRight: 15,
+    },
+    text: {
+      color: theme.color.textPrimary,
     },
   });
 

@@ -11,8 +11,8 @@ export default function (props: IconButtonProps): JSX.Element {
   const styles = useThemedStyles(styleSheet);
   return (
     <IconButton
-      color={theme.color.textPrimary}
       {...props}
+      color={theme.color.textPrimary}
       style={[globalStyles.square, styles.bg, props.style]}
     />
   );

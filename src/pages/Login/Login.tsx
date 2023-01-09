@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Button, Paragraph, TextInput} from 'react-native-paper';
-
+import {StyleSheet} from 'react-native';
+import {Button, Paragraph} from 'react-native-paper';
+import MemoedTextInput from '../../shared/components/MemoedTextInput';
 import OnlyShow from '../../shared/components/OnlyShow';
+
 import PageBackground from '../../shared/components/PageBackground';
+import RemoteError from '../../shared/components/RemoteError';
+import {HelperText} from '../../shared/middleware';
 
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 
@@ -13,13 +16,16 @@ export type LoginErrorType =
   | 'APP_ERROR'
   | 'SERVER_ERROR'
   | undefined;
+export type Credentials = {token: string; handle: string};
 type Props = {
   userCredentials: {
     token: string;
     handle: string;
   };
-  loginError?: LoginErrorType;
-  onPressLoginBtn: (userCredentials: {token: string; handle: string}) => void;
+  loginError?: string;
+  onPressLoginBtn: (userCredentials: Credentials) => void;
+  onToRegistration: (credentials: Credentials) => void;
+  registered?: boolean;
 };
 
 export const verboseLoginError = (err: LoginErrorType): string => {
@@ -37,8 +43,30 @@ export const verboseLoginError = (err: LoginErrorType): string => {
   }
 };
 
+function SuccessfulRegistrationHelperText({
+  registerd,
+}: {
+  registerd?: boolean;
+}): JSX.Element {
+  const styles = StyleSheet.create({
+    paragraph: {
+      textAlign: 'center',
+      color: 'green',
+      fontSize: 17,
+      padding: 5,
+    },
+  });
+  return (
+    <OnlyShow If={registerd}>
+      <Paragraph style={styles.paragraph}>
+        {HelperText.successfulRegistrationText}
+      </Paragraph>
+    </OnlyShow>
+  );
+}
+
 export function Login(props: Props): JSX.Element {
-  const [loginError, setLoginError] = useState<LoginErrorType>(undefined);
+  const [loginError, setLoginError] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
   const [handle, setHandle] = useState('');
   const [token, setToken] = useState('');
@@ -77,32 +105,26 @@ export function Login(props: Props): JSX.Element {
       <MemoedTextInput
         label="your access token"
         setText={setToken}
-        loading={loading}
+        disabled={loading}
         defaultValue={props.userCredentials.token}
-        loginError={props.loginError}
+        error={props.loginError}
         secureTextEntry
       />
       <MemoedTextInput
         label="your handle"
         setText={setHandle}
-        loading={loading}
+        disabled={loading}
         defaultValue={props.userCredentials.handle}
-        loginError={props.loginError}
+        error={props.loginError}
       />
-      <OnlyShow If={!!loginError}>
-        <View>
-          <Paragraph
-            accessibilityLabel="login status"
-            style={styles.loginErrorText}>
-            Login failed!
-          </Paragraph>
-          <Paragraph
-            accessibilityLabel="login sub-status"
-            style={[styles.loginErrorText, styles.loginErrorSubText]}>
-            {verboseLoginError(props.loginError)}
-          </Paragraph>
-        </View>
-      </OnlyShow>
+      <SuccessfulRegistrationHelperText registerd={props.registered} />
+      <RemoteError
+        error={{
+          name: 'login',
+          text: 'Login failed!',
+          desciption: loginError,
+        }}
+      />
       <Button
         onPress={onClickLogin}
         loading={loading}
@@ -111,41 +133,22 @@ export function Login(props: Props): JSX.Element {
         style={styles.loginButton}>
         Login
       </Button>
+      <Button
+        accessibilityLabel="to registration"
+        onPress={() => props.onToRegistration({handle: handle, token: token})}
+        icon="account-plus"
+        mode="outlined"
+        color={styles.toRegistrationBtn.color}
+        contentStyle={styles.toRegistrationBtn.contentStyle}
+        compact
+        uppercase={false}>
+        New to these parts? Register.
+      </Button>
     </PageBackground>
   );
 }
-
-const CustomTextInput = (props: {
-  loading: boolean;
-  loginError?: LoginErrorType;
-  defaultValue: string;
-  setText: (token: string) => void;
-  label: string;
-  secureTextEntry?: boolean;
-}) => {
-  const styles = useThemedStyles(styleSheet);
-  return (
-    <TextInput
-      label={props.label}
-      secureTextEntry={props.secureTextEntry}
-      onChangeText={text => props.setText(text)}
-      disabled={props.loading}
-      error={!!props.loginError}
-      defaultValue={props.defaultValue}
-      mode="outlined"
-      style={styles.textInput}
-      accessibilityLabel={props.label}
-    />
-  );
-};
-
-const MemoedTextInput = React.memo(CustomTextInput);
-
 const styleSheet = (theme: ThemeType) =>
   StyleSheet.create({
-    textInput: {marginHorizontal: 20},
-    loginErrorText: {color: 'red', textAlign: 'center'},
-    loginErrorSubText: {fontStyle: 'italic'},
     loginButton: {
       backgroundColor: theme.color.primary,
       marginHorizontal: 50,
@@ -153,5 +156,11 @@ const styleSheet = (theme: ThemeType) =>
     },
     pageBg: {
       justifyContent: 'center',
+    },
+    toRegistrationBtn: {
+      color: theme.color.textPrimary,
+      contentStyle: {
+        flexDirection: 'row-reverse',
+      },
     },
   });

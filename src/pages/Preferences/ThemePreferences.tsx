@@ -1,6 +1,6 @@
 import React, {StyleSheet, ViewProps} from 'react-native';
-import {IconButton} from 'react-native-paper';
 import HorizontalView from '../../shared/components/HorizontalView';
+import IconButton from '../../shared/components/IconButton';
 import {useTheme} from '../../shared/providers/theme';
 import {ThemeSetting} from '../../types/settings';
 
@@ -40,7 +40,6 @@ function ThemedToggleButton({ts}: {ts: ThemeSetting}) {
 
   return (
     <IconButton
-      color={theme.color.textPrimary}
       style={styles.button}
       accessibilityLabel={acLabels[ts]}
       icon={icons[ts]}

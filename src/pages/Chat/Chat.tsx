@@ -50,7 +50,7 @@ export default function ({
           accessibilityLabel="open chat profile"
           style={globalStyles.avatarDimensions}
           activeOpacity={0.5}
-          children={<Text>Open Chat Profile</Text>}
+          children={<Text style={styles.text}>Open Chat Profile</Text>}
         />
       </Surface>
       <FlatList

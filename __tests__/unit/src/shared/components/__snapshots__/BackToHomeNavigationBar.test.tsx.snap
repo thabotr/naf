@@ -63,9 +63,17 @@ exports[`BackToHomeNavigationBar renders correctly 1`] = `
             "width": 36,
           },
           undefined,
-          {
-            "borderRadius": 0,
-          },
+          [
+            {
+              "borderRadius": 0,
+            },
+            {
+              "backgroundColor": "#87cefa",
+            },
+            {
+              "borderRadius": 0,
+            },
+          ],
         ],
       ]
     }

@@ -1,8 +1,9 @@
 import React from 'react';
 import {ViewProps} from 'react-native';
-import {IconButton, Surface} from 'react-native-paper';
+import {Surface} from 'react-native-paper';
 import {useThemedStyles} from '../providers/theme';
 import globalStyles, {globalThemedStyles} from '../styles';
+import IconButton from './IconButton';
 
 type Props = ViewProps & {
   onBackToHome?: () => void;

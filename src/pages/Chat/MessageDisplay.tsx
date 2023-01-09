@@ -1,7 +1,7 @@
 import React from 'react';
 import {Paragraph, Surface} from 'react-native-paper';
 import {Message} from './types/Message';
-import globalStyles from '../../../src/shared/styles';
+import globalStyles, {globalThemedStyles} from '../../../src/shared/styles';
 import {StyleSheet} from 'react-native';
 import {ThemeType, useThemedStyles} from '../../shared/providers/theme';
 
@@ -14,7 +14,7 @@ export default function ({message, fromMe}: Props): JSX.Element {
   const styles = useThemedStyles(theme => styleSheet(theme, fromMe));
   return (
     <Surface style={styles.messageDisplay}>
-      <Paragraph>{message.text}</Paragraph>
+      <Paragraph style={styles.text}>{message.text}</Paragraph>
     </Surface>
   );
 }
@@ -29,4 +29,5 @@ const styleSheet = (theme: ThemeType, fromMe: boolean) =>
       paddingHorizontal: 5,
       ...globalStyles.card,
     },
+    ...globalThemedStyles(theme),
   });
