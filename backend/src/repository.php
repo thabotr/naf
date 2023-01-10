@@ -1,8 +1,8 @@
 <?php
 namespace repository\database {
   use mysqli;
-    use mysqli_sql_exception;
-    use mysqli_stmt;
+  use mysqli_sql_exception;
+  use mysqli_stmt;
   use TheSeer\Tokenizer\Exception;
 
   mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -17,6 +17,27 @@ namespace repository\database {
       return $rows;
     }
 
+    function get_user_messages(int $user_id): array
+    {
+      $stmt = <<<'SQL'
+        SELECT
+          message.text,
+          message.created_at AS `timestamp`,
+          user_sender.handle AS fromHandle,
+          user_receipient.handle AS toHandle
+        FROM message
+        LEFT JOIN user user_sender
+        ON message.from_user = user_sender.id
+        LEFT JOIN user user_receipient
+        ON message.to_user = user_receipient.id
+        WHERE user_sender.id = ? OR user_receipient.id = ?
+      SQL;
+      $preped_stmt = $this->prepare($stmt);
+      $preped_stmt->bind_param("ii", $user_id, $user_id);
+      $messages = $this->getResultArray($preped_stmt);
+      return $messages;
+    }
+
     function add_user(array $new_user)
     {
       $stmt = $this->prepare("INSERT INTO user(handle, token) VALUES (?, ?)");
@@ -24,9 +45,9 @@ namespace repository\database {
         ['handle'], $new_user['token']);
       try {
         $stmt->execute();
-      } catch( mysqli_sql_exception $exception) {
+      } catch (mysqli_sql_exception $exception) {
         $user_already_exists = preg_match('/duplicate entry/i', $exception);
-        if($user_already_exists){
+        if ($user_already_exists) {
           return false;
         }
         throw $exception;

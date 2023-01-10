@@ -79,18 +79,27 @@ Router::delete("/connections", "/(?<chat_handle>w/[a-zA-Z0-9-_]+)", function (ar
   exit;
 });
 
+Router::get("/chats", function () {
+  global $user_id, $db_repo;
+  $chats = $db_repo->get_user_chats($user_id);
+  echo json_encode($chats);
+  header('HTTP/1.0 200 OK');
+  exit;
+});
+
+Router::get("/messages", function () {
+  global $user_id, $db_repo;
+  $messages = $db_repo->get_user_messages($user_id);
+  echo json_encode($messages);
+  exit;
+});
+
 Router::get("/profiles", function () {
   global $profile;
   echo json_encode($profile);
   exit;
 });
 
-Router::get("/chats", function () {
-  global $user_id, $db_repo;
-  $chats = $db_repo->get_user_chats($user_id);
-  echo json_encode($chats);
-  exit;
-});
 
 class MessageFormatException extends Exception
 {

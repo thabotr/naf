@@ -20,6 +20,30 @@ class DBRepositoryTest extends TestCase
   {
     $this->mysqli->close();
   }
+  function addUserMessages(): void {
+    $this->mysqli->query("DELETE FROM message WHERE from_user = 1 OR to_user = 1");
+    $this->mysqli->query("INSERT INTO message(text, from_user, to_user) VALUES ('t1', 1, 2)");
+    $this->mysqli->query("INSERT INTO message(text, from_user, to_user) VALUES ('t2', 2, 1)");
+    $this->mysqli->query("INSERT INTO message(text, from_user, to_user) VALUES ('t3', 1, 3)");
+    $this->mysqli->query("INSERT INTO message(text, from_user, to_user) VALUES ('t4', 1, 3)");
+    $this->mysqli->query("INSERT INTO message(text, from_user, to_user) VALUES ('t5', 3, 1)");
+  }
+  function removeUserMessages(): void {
+    $this->mysqli->query("DELETE FROM message WHERE from_user = 1 OR to_user = 1");
+  }
+  public function testGetUserMessagesReturnsAllTheUsersMessages(): void {
+    $user_id = 1;
+    $user_handle = "w/testHandle";
+    $expected_number_of_messages = 5;
+    $this->addUserMessages();
+    $messages = $this->mysqli->get_user_messages($user_id);
+    $this->removeUserMessages();
+    $this->assertEquals($expected_number_of_messages, count($messages));
+    foreach($messages as $msg) {
+      $is_user_message = $msg['fromHandle'] === $user_handle || $msg['toHandle'] === $user_handle;
+        $this->assertTrue($is_user_message);
+    }
+  }
   public function testGetUserIdAndProfileReturnsValidResult(): void
   {
     $test_handle = "w/testHandle";
