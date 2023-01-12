@@ -5,6 +5,7 @@ import {HelperText} from '../../../../../src/shared/middleware';
 import {
   HttpStatusCode,
   RemoteRepository,
+  validateAllStatuses,
 } from '../../../../../src/shared/repository/remote';
 
 jest.useRealTimers();
@@ -32,7 +33,7 @@ describe('Repository', () => {
           headers: {
             Authorization: 'Basic '.concat(encodedCredentials),
           },
-          validateStatus: RemoteRepository.validateAllStatuses,
+          validateStatus: validateAllStatuses,
         };
         RemoteRepository.createProfile(credentials);
         expect(mockPost).toHaveBeenCalledTimes(1);

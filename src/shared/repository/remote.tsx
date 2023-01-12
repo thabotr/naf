@@ -1,8 +1,10 @@
-import axios from 'axios';
+import axios, {AxiosRequestConfig} from 'axios';
+import Stream from 'stream';
 import {Buffer} from 'buffer';
 import {Credentials} from '../../pages/Login/Login';
 import {HelperText} from '../middleware';
 import {SERVER_URL} from '../routes/server';
+import {EventPublisher, EventTypeString} from '../utils/eventPublisher';
 import {log} from '../utils/logger';
 
 class RemoteRepository {
@@ -22,20 +24,8 @@ class RemoteRepository {
     };
   }
 
-  static validateAllStatuses(status: HttpStatusCode): boolean {
-    return status >= 200 && status < 600;
-  }
-
   static async createProfile(credentials: Credentials): Promise<Credentials> {
-    const encodedCredentials = Buffer.from(
-      `${credentials.handle}:${credentials.token}`,
-    ).toString('base64');
-    const config = {
-      headers: {
-        Authorization: 'Basic '.concat(encodedCredentials),
-      },
-      validateStatus: RemoteRepository.validateAllStatuses,
-    };
+    const config = getAuthNValidationConfig(credentials);
     const data = undefined;
     let response;
     try {
@@ -55,7 +45,64 @@ class RemoteRepository {
 
     throw new Error(HelperText.unknownError);
   }
+  static async getNotifications(
+    eventPublisher: EventPublisher,
+    abortController: AbortController,
+    credentials: Credentials,
+  ): Promise<void> {
+    const config: AxiosRequestConfig<unknown> = {
+      responseType: 'stream',
+      signal: abortController.signal,
+      ...getAuthNValidationConfig(credentials),
+    };
+
+    const response = await axios.get(`${SERVER_URL}/notifications`, config);
+
+    const stream: Stream = response.data;
+    stream.on('data', (buffer: Buffer) => {
+      const eventCodeString = buffer.toString();
+      const event = toEventTypeString(eventCodeString);
+      eventPublisher.publish(event);
+      if (event === 'IDLE') {
+        return;
+      }
+      abortController.abort();
+    });
+
+    stream.on('end', () => {
+      eventPublisher.publish('START_NOTIFICATION_LISTENER');
+      abortController.abort();
+    });
+  }
 }
+
+const validateAllStatuses = (status: HttpStatusCode): boolean => {
+  return status >= 200 && status < 600;
+};
+
+const getAuthNValidationConfig = (
+  credentials: Credentials,
+): AxiosRequestConfig<unknown> => {
+  const encodedCredentials = Buffer.from(
+    `${credentials.handle}:${credentials.token}`,
+  ).toString('base64');
+  const config = {
+    headers: {
+      Authorization: 'Basic '.concat(encodedCredentials),
+    },
+    validateStatus: validateAllStatuses,
+  };
+  return config;
+};
+
+const toEventTypeString = (codeString: string): EventTypeString => {
+  switch (codeString) {
+    case '1':
+      return 'NEW_MESSAGE';
+    default:
+      return 'IDLE';
+  }
+};
 
 export enum HttpStatusCode {
   Continue = 100,
@@ -123,4 +170,4 @@ export enum HttpStatusCode {
   NetworkAuthenticationRequired = 511,
 }
 
-export {RemoteRepository};
+export {RemoteRepository, validateAllStatuses, getAuthNValidationConfig};
