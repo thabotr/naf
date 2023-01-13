@@ -9,16 +9,21 @@ import Chat from '../../../../src/pages/Chat/Chat';
 import themed from '../../utils/themed';
 import {dummyChat} from '../../utils/dummyChat';
 import {doNothing} from '../../utils/doNothing';
+import {CHATS} from '../../../mockdata/chat';
+import {Message} from '../../../../src/pages/Chat/types/Message';
+import {faker} from '@faker-js/faker';
+import {PROFILES} from '../../../mockdata/profile';
 
 type ChatProps = React.ComponentProps<typeof Chat>;
-const getChatFromFactory = (overrides: Partial<ChatProps>) => {
+const renderChatWith = (overrides: Partial<ChatProps>) => {
   const defaultProps: ChatProps = {
     chat: dummyChat,
     onOpenChatProfile: doNothing,
     onBackToHome: doNothing,
     onSendMessage: doNothing,
+    messages: [],
   };
-  return themed(<Chat {...defaultProps} {...overrides} />);
+  return render(themed(<Chat {...defaultProps} {...overrides} />));
 };
 
 describe('Chat page', () => {
@@ -30,11 +35,7 @@ describe('Chat page', () => {
       "the prop 'onBackToHome' on click",
     () => {
       const mockOnBackToHome = jest.fn().mockName('mockOnBackToHome');
-      render(
-        getChatFromFactory({
-          onBackToHome: mockOnBackToHome,
-        }),
-      );
+      renderChatWith({onBackToHome: mockOnBackToHome});
       expect(screen.queryByLabelText('chat navigation bar')).not.toBeNull();
       const backButton = screen.getByLabelText('back to home');
       fireEvent.press(backButton);
@@ -46,11 +47,7 @@ describe('Chat page', () => {
       "the prop 'onOpenChatProfile' on click",
     () => {
       const mockOnOpenChatProfile = jest.fn().mockName('mockOnOpenChatProfile');
-      render(
-        getChatFromFactory({
-          onOpenChatProfile: mockOnOpenChatProfile,
-        }),
-      );
+      renderChatWith({onOpenChatProfile: mockOnOpenChatProfile});
       expect(screen.queryByLabelText('chat navigation bar')).not.toBeNull();
       const openChatProfileField = screen.getByLabelText('open chat profile');
       fireEvent.press(openChatProfileField);
@@ -65,21 +62,29 @@ describe('Chat page', () => {
     "should contain a 'compose message' button which adds a " +
       "'mesage composer' and disappears when clicked",
     () => {
-      render(getChatFromFactory({}));
+      renderChatWith({});
       expect(queryMessageComposer()).toBeNull();
       fireEvent.press(getComposeButton());
       expect(queryMessageComposer()).not.toBeNull();
       expect(queryComposeButton()).toBeNull();
     },
   );
+  const expectIsVisible = (message: Message) =>
+    expect(screen.queryByText(message.text)).not.toBeNull();
+  const getNewMessage = () => ({
+    text: faker.lorem.sentence(),
+    timestamp: faker.date.past().getTime(),
+    toHandle: PROFILES[1].handle,
+  });
+  const messages: Message[] = Array.from({length: 7}).map(getNewMessage);
+  it('displays all the messages in the chat object', () => {
+    renderChatWith({chat: CHATS[0], messages: messages});
+    messages.forEach(expectIsVisible);
+  });
   describe('during message composition', () => {
     const mockOnSendMessage = jest.fn().mockName('mockOnSendMessage');
     beforeEach(() => {
-      render(
-        getChatFromFactory({
-          onSendMessage: mockOnSendMessage,
-        }),
-      );
+      renderChatWith({onSendMessage: mockOnSendMessage});
       fireEvent.press(getComposeButton());
       expect(queryMessageComposer()).not.toBeNull();
     });

@@ -17,6 +17,7 @@ type Props = {
   chat: Chat;
   onOpenChatProfile: () => void;
   onSendMessage: (message: Partial<Message>) => void;
+  messages: Message[];
 };
 
 export default function ({
@@ -24,6 +25,7 @@ export default function ({
   chat,
   onOpenChatProfile,
   onSendMessage,
+  messages,
 }: Props): JSX.Element {
   const styles = useThemedStyles(globalThemedStyles);
   const [composing, setComposing] = useState(false);
@@ -54,8 +56,10 @@ export default function ({
         />
       </Surface>
       <FlatList
-        data={chat.messages}
-        renderItem={({item}) => <MessageDisplay message={item} fromMe />}
+        data={messages}
+        renderItem={({item}) => (
+          <MessageDisplay key={item.timestamp} message={item} fromMe />
+        )}
       />
       <Show
         component={<MessageComposer {...composerProps} />}
