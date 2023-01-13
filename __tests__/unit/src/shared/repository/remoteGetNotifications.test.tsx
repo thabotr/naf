@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Stream from 'stream';
 import {SERVER_URL} from '../../../../../src/shared/routes/server';
-import {EventPublisher} from '../../../../../src/shared/utils/eventPublisher';
+import eventPublisher from '../../../../../src/shared/utils/eventPublisher';
 import {
   getAuthNValidationConfig,
   RemoteRepository,
@@ -13,7 +13,7 @@ jest.useRealTimers();
 describe(RemoteRepository, () => {
   describe(RemoteRepository.getNotifications, () => {
     const mockGet = jest.fn().mockName('mockGet');
-    const mockEventPublisher = new EventPublisher();
+    const mockEventPublisher = eventPublisher;
     const mockController = new AbortController();
     mockController.abort = jest.fn().mockName('mockAbortRequest');
     axios.get = mockGet;

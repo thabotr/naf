@@ -1,12 +1,10 @@
-import {
-  EventPublisher,
+import pubSub, {
   EventTypeString,
 } from '../../../../../src/shared/utils/eventPublisher';
 
 jest.useRealTimers();
 
 describe('EventPublisher', () => {
-  const pubSub = new EventPublisher();
   const newMsgEvent: EventTypeString = 'NEW_MESSAGE';
   describe('subscribe', () => {
     const mockSubscriber = jest.fn().mockName('mockSubscriber');
