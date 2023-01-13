@@ -44,11 +44,14 @@ class POSTNotifications(TestCaseWithHTTP):
     Ideally: we would send two requests, in parallel, from two different users - one for listening to
     notifications and one for posting a new message and then assert that the listener does get the new
     message event code when the post message is complete. However, we cannot do this since requests can 
-    only be executed sequentially from the same development machine.
+    only be executed sequentially from the same machine.
     """
     data = json.dumps({
       'messagesSince': '2023/1/13'
     })
-    response = requests.post("http://localhost:8000" + self.notificationsURL, data, stream=True, headers=self.authedHeaders)
-    for data in response.iter_content():
-      print(data)
+    remote = f"https://{Routes.PROD_SERVER}"
+    local = f"http://{Routes.HOST}:{Routes.PORT}"
+    url = (remote if Routes.RUN_AGAINST_PROD else local) + self.notificationsURL
+    response = requests.post( url, data, stream=True, headers=self.authedHeaders)
+    for data in response.iter_content(chunk_size=4096):
+      print(data[:1].decode())
