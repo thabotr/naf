@@ -1,10 +1,9 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import Stream from 'stream';
 import {Buffer} from 'buffer';
 import {Credentials} from '../../pages/Login/Login';
 import {HelperText} from '../middleware';
 import {SERVER_URL} from '../routes/server';
-import {EventPublisher, EventTypeString} from '../utils/eventPublisher';
+import {EventTypeString} from '../utils/eventPublisher';
 import {log} from '../utils/logger';
 
 class RemoteRepository {
@@ -45,34 +44,20 @@ class RemoteRepository {
 
     throw new Error(HelperText.unknownError);
   }
-  static async getNotifications(
-    eventPublisher: EventPublisher,
-    abortController: AbortController,
-    credentials: Credentials,
-  ): Promise<void> {
-    const config: AxiosRequestConfig<unknown> = {
-      responseType: 'stream',
-      signal: abortController.signal,
-      ...getAuthNValidationConfig(credentials),
-    };
 
+  static async getNotifications(
+    credentials: Credentials,
+    selectors: Record<string, string>,
+  ): Promise<EventTypeString> {
+    const config: AxiosRequestConfig<unknown> = {
+      ...getAuthNValidationConfig(credentials, selectors),
+    };
     const response = await axios.get(`${SERVER_URL}/notifications`, config);
 
-    const stream: Stream = response.data;
-    stream.on('data', (buffer: Buffer) => {
-      const eventCodeString = buffer.toString();
-      const event = toEventTypeString(eventCodeString);
-      eventPublisher.publish(event);
-      if (event === 'IDLE') {
-        return;
-      }
-      abortController.abort();
-    });
-
-    stream.on('end', () => {
-      eventPublisher.publish('START_NOTIFICATION_LISTENER');
-      abortController.abort();
-    });
+    if (response.status === HttpStatusCode.Ok) {
+      return toEventTypeString(response.data);
+    }
+    return 'IDLE';
   }
 }
 
@@ -82,6 +67,7 @@ const validateAllStatuses = (status: HttpStatusCode): boolean => {
 
 const getAuthNValidationConfig = (
   credentials: Credentials,
+  additionalHeaders?: Record<string, string>,
 ): AxiosRequestConfig<unknown> => {
   const encodedCredentials = Buffer.from(
     `${credentials.handle}:${credentials.token}`,
@@ -89,6 +75,7 @@ const getAuthNValidationConfig = (
   const config = {
     headers: {
       Authorization: 'Basic '.concat(encodedCredentials),
+      ...additionalHeaders,
     },
     validateStatus: validateAllStatuses,
   };

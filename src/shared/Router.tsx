@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Credentials, Login, LoginErrorType} from '../pages/Login/Login';
 import {RemoteLoginRepository} from '../pages/Login/repository/remote';
@@ -16,11 +16,33 @@ import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remot
 import {Message} from '../pages/Chat/types/Message';
 import {RemoteRepository} from './repository/remote';
 import Registration from '../pages/Registration/Registration';
+import eventPublisher from '../shared/utils/eventPublisher';
 
 const remoteRepo = new RemoteLoginRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
 const remoteChatRepo = new RemoteChatRepository();
 const NavigationStack = createNativeStackNavigator();
+
+const listenForNotifications = async (
+  loggedInUser: Profile,
+  messageSince: string,
+) => {
+  let timeout = 1000;
+  while (timeout) {
+    RemoteRepository.getNotifications(loggedInUser, {
+      messagessince: messageSince,
+    })
+      .then(event => {
+        eventPublisher.publish(event);
+        timeout = 1000;
+      })
+      .catch(e => {
+        console.log('getNotifications: ', e);
+        timeout *= 2;
+      });
+    await new Promise(resolve => setTimeout(resolve, timeout));
+  }
+};
 
 export default function Router(): JSX.Element {
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(
@@ -37,6 +59,26 @@ export default function Router(): JSX.Element {
   const [registrationError, setRegistrationError] =
     useState<LoginErrorType>(undefined);
   const [registered, setRegistered] = useState(false);
+  const [messageSince, setMessagesSince] = useState('1997/01/01');
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      return;
+    }
+    eventPublisher.subscribe('NEW_MESSAGE', () => {
+      remoteChatRepo.getChats().then(remoteChats => {
+        if (remoteChats === null) {
+          return;
+        }
+        console.log(
+          remoteChats.map(rChat => rChat.messages.map(msg => msg.timestamp)),
+        );
+        setChats(remoteChats);
+      });
+    });
+    eventPublisher.subscribe('IDLE', () => console.log('idling'));
+    listenForNotifications(loggedInUser, messageSince);
+  }, [loggedInUser, messageSince]);
 
   function onPressLogin(credentials: {token: string; handle: string}) {
     RemoteRepository.setCredentials(credentials.token, credentials.handle);
@@ -168,6 +210,7 @@ export default function Router(): JSX.Element {
         onBackToHome={() => navigation.navigate('Home')}
         onOpenChatProfile={() => navigation.navigate('Chat Profile')}
         onSendMessage={sendMessage}
+        messages={openChat.messages}
       />
     );
   };
