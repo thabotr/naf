@@ -31,7 +31,7 @@ class TestCaseWithHTTP(unittest.TestCase):
     token = 'testToken'
     connectedUser = 'w/testHandle2'
     secondConnectedUser = "w/testHandle3"
-    authedHeaders = {
+    authed_headers = {
         "Authorization": f"Basic {encodeAuthCredentials(handle, token)}",
     }
 

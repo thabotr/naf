@@ -8,7 +8,7 @@ class DELETEConnections(TestCaseWithHTTP):
   def deleteConnection(self, handle=None):
     handle_uri = f"/{handle}" if handle else ""
     url = f"{self.connectionsURL}{handle_uri}"
-    self.conn.request('DELETE', url, headers=self.authedHeaders)
+    self.conn.request('DELETE', url, headers=self.authed_headers)
     response = self.conn.getresponse()
     status = response.status
     body = response.read().decode("utf-8")

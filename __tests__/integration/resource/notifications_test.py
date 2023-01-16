@@ -9,7 +9,7 @@ class GETNotifications(TestCaseWithHTTP):
   notificationsURL = f"{Routes.BASE_PATH}/notifications"
 
   def getNotifications(self, headers: dict[str, str]):
-    self.conn.request('GET', self.notificationsURL, headers=self.authedHeaders | headers)
+    self.conn.request('GET', self.notificationsURL, headers=self.authed_headers | headers)
     response = self.conn.getresponse()
     status, body = response.status, response.read().decode("utf-8")
     return (status, body)

@@ -12,7 +12,7 @@ class GETProfiles(TestCaseWithHTTP):
         expectedProfile = {
             "handle": self.handle,
         }
-        self.conn.request('GET', profilesURL, headers=self.authedHeaders)
+        self.conn.request('GET', profilesURL, headers=self.authed_headers)
         response = self.conn.getresponse()
         status = response.status
         body = response.read().decode("utf-8")

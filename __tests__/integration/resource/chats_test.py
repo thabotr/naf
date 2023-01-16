@@ -14,7 +14,7 @@ class GETChats(TestCaseWithHTTP):
     expectedChats = [{
       "user": connectedUserProfile,
     }]
-    self.conn.request('GET', self.chatsURL, headers=self.authedHeaders)
+    self.conn.request('GET', self.chatsURL, headers=self.authed_headers)
     response = self.conn.getresponse()
     status = response.status
     body = response.read().decode("utf-8")
