@@ -1,5 +1,6 @@
 export type Message = {
   text: string;
   toHandle: string;
-  timestamp: number;
+  timestamp: Date;
+  fromHandle: string;
 };

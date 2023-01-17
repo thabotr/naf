@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {Buffer} from 'buffer';
+import {Message} from '../../pages/Chat/types/Message';
 import {Credentials} from '../../pages/Login/Login';
 import {HelperText} from '../middleware';
 import {SERVER_URL} from '../routes/server';
@@ -11,6 +12,37 @@ class RemoteRepository {
   static token = '';
   static basicAuthHeader: Record<string, string | number> = {};
   static profilesURL = SERVER_URL.concat('/profiles');
+  static messagesURL = SERVER_URL.concat('/messages');
+
+  static async getMessages(
+    credentials: Credentials,
+    since?: Date,
+  ): Promise<Message[]> {
+    const sinceHeader: Record<string, string> = {};
+    if (since) {
+      sinceHeader.since = since.toJSON().replace('T', ' ').replace('Z', '');
+    }
+    const config = getAuthNValidationConfig(credentials, sinceHeader);
+    try {
+      const response = await axios.get(this.messagesURL, config);
+      if (response.status === HttpStatusCode.Ok) {
+        const remoteMsgs: Record<string, string>[] = response.data;
+        const messages: Message[] = remoteMsgs.map(msg => {
+          const utcTimestamp = msg.timestamp.replace(' ', 'T').concat('Z');
+          return {
+            text: msg.text,
+            timestamp: new Date(utcTimestamp),
+            toHandle: msg.toHandle,
+            fromHandle: msg.fromHandle,
+          };
+        });
+        return messages;
+      }
+    } catch (e) {
+      console.log('getMessages', e);
+    }
+    throw new Error(HelperText.unknownError);
+  }
 
   static setCredentials(token: string, handle: string): void {
     RemoteRepository.handle = handle;
@@ -52,6 +84,7 @@ class RemoteRepository {
     const config: AxiosRequestConfig<unknown> = {
       ...getAuthNValidationConfig(credentials, selectors),
     };
+
     const response = await axios.get(`${SERVER_URL}/notifications`, config);
 
     if (response.status === HttpStatusCode.Ok) {
@@ -82,9 +115,9 @@ const getAuthNValidationConfig = (
   return config;
 };
 
-const toEventTypeString = (codeString: string): EventTypeString => {
-  switch (codeString) {
-    case '1':
+const toEventTypeString = (code: number): EventTypeString => {
+  switch (code) {
+    case 1:
       return 'NEW_MESSAGE';
     default:
       return 'IDLE';

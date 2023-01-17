@@ -33,8 +33,13 @@ const listenForNotifications = async (
       messagessince: messageSince,
     })
       .then(event => {
-        eventPublisher.publish(event);
-        timeout = 1000;
+        if (event === 'IDLE') {
+          timeout = 1000;
+          console.log('idling');
+        } else {
+          eventPublisher.publish(event);
+          timeout = 0;
+        }
       })
       .catch(e => {
         console.log('getNotifications: ', e);
@@ -66,17 +71,8 @@ export default function Router(): JSX.Element {
       return;
     }
     eventPublisher.subscribe('NEW_MESSAGE', () => {
-      remoteChatRepo.getChats().then(remoteChats => {
-        if (remoteChats === null) {
-          return;
-        }
-        console.log(
-          remoteChats.map(rChat => rChat.messages.map(msg => msg.timestamp)),
-        );
-        setChats(remoteChats);
-      });
+      // fetch new messages
     });
-    eventPublisher.subscribe('IDLE', () => console.log('idling'));
     listenForNotifications(loggedInUser, messageSince);
   }, [loggedInUser, messageSince]);
 
@@ -189,7 +185,7 @@ export default function Router(): JSX.Element {
       const fullMessage: Message = {
         text: message.text ?? '',
         toHandle: openChat.user.handle,
-        timestamp: 0,
+        timestamp: new Date(),
       };
       remoteChatRepo
         .postMessage(fullMessage)
