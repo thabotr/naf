@@ -17,7 +17,10 @@ describe('Chat page', () => {
         await device.launchApp({newInstance: true});
       });
       const getHomePage = () => element(by.label('home page'));
+      let requestController;
       beforeEach(async () => {
+        // eslint-disable-next-line no-undef
+        requestController = new AbortController();
         await device.reloadReactNative();
         const registeredAccessToken = PROFILE.token;
         await element(by.label('your access token')).typeText(
@@ -31,6 +34,10 @@ describe('Chat page', () => {
         await expect(
           element(by.label(`chat ${chat.user.handle} page`)),
         ).toExist();
+      });
+      afterEach(() => {
+        // if any request fails, we want to abort it so fetch can be reused
+        requestController.abort();
       });
       test(
         'I should be able to navigate back home by clicking the `back to `home ' +
@@ -62,32 +69,13 @@ describe('Chat page', () => {
       };
       const ourUser = PROFILES[0];
       test('I should be able to see all the messages between the chat and I', async () => {
-        // const response = await axios.get(
-        //   SERVER_URL.concat('/naf/api/messages'),
-        //   getAuthHeader(ourUser),
-        // );
-        // jExpect(response.status).toBe(200);
-        // const messagesFromApi = response.data;
-        const messagesFromApi = [
-          {
-            text: 'test text',
-            timestamp: '2023-01-10 04:34:32',
-            fromHandle: 'w/testHandle',
-            toHandle: 'w/testHandle2',
-          },
-          {
-            text: 'hey',
-            timestamp: '2023-01-14 20:57:20',
-            fromHandle: 'w/testHandle2',
-            toHandle: 'w/testHandle',
-          },
-          {
-            text: 'Test.POSTNofitications.testNewMessageEventCodeOnNewMessage',
-            timestamp: '2023-01-16 03:15:11',
-            fromHandle: 'w/testHandle2',
-            toHandle: 'w/testHandle',
-          },
-        ];
+        const response = await fetch(SERVER_URL.concat('/naf/api/messages'), {
+          method: 'GET',
+          headers: getAuthHeader(ourUser),
+          signal: requestController.signal,
+        });
+        jExpect(response.status).toBe(200);
+        const messagesFromApi = await response.json();
         for (const message of messagesFromApi) {
           const messageTimestamp = new Date(
             message.timestamp.replace(' ', 'T').concat('Z'),
@@ -112,11 +100,21 @@ describe('Chat page', () => {
           method: 'POST',
           headers: authHeader,
           body: JSON.stringify(message),
+          signal: requestController.signal,
         });
-        console.log('BEcause here', await res.text());
         jExpect(res.status).toBe(201);
+        const msgTimestr = (await res.json()).timestamp;
+        const timestamp = new Date(
+          msgTimestr.replace(' ', 'T').concat('Z'),
+        ).getTime();
         const greaterThanPollingFrequency = 5000;
-        await waitFor(element(by.text(message.text)))
+        await waitFor(
+          element(
+            by.label(
+              `message from ${chat.user.handle} to ${ourUser.handle} @ ${timestamp}`,
+            ),
+          ),
+        )
           .toExist()
           .withTimeout(greaterThanPollingFrequency);
       });
