@@ -9,8 +9,6 @@ import {SERVER_URL} from '../../../../../src/shared/routes/server';
 jest.useRealTimers();
 const mockFetch = jest.fn().mockName('mockFetch');
 describe(RemoteRepository, () => {
-  const fetchErrorMessage = 'intentional testing error';
-  const expectedFetchURL = SERVER_URL.concat('/profiles');
   const token = 'someTestToken';
   const handle = 'w/someTestHandle';
   RemoteRepository.setCredentials(token, handle);
@@ -29,6 +27,7 @@ describe(RemoteRepository, () => {
         handle: handle,
         token: token,
       });
+      const expectedFetchURL = SERVER_URL.concat('/profiles');
       expect(mockFetch).toHaveBeenCalledWith(expectedFetchURL, fetchConfig);
     });
     test("throws an authorization error when server returns status 'Unauthorized'", async () => {
