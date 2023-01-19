@@ -1,3 +1,4 @@
+import {faker} from '@faker-js/faker';
 import {device, element, expect} from 'detox';
 describe('Registration Page', () => {
   describe('as a user coming from the login page', () => {
@@ -40,8 +41,8 @@ describe('Registration Page', () => {
         'where there will be a successful registration confirmation',
       async () => {
         const validCredentials = {
-          handle: 'w/testHandleNewRegistrant',
-          token: 'testTokenForMe',
+          handle: 'w/'.concat(faker.internet.userName('majin', 'boo')),
+          token: faker.internet.password(8, true),
         };
         await element(by.label('your new access token')).typeText(
           validCredentials.token,

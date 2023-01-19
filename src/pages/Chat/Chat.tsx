@@ -58,7 +58,11 @@ export default function ({
       <FlatList
         data={messages}
         renderItem={({item}) => (
-          <MessageDisplay key={item.timestamp} message={item} fromMe />
+          <MessageDisplay
+            key={item.timestamp.getTime()}
+            message={item}
+            fromMe
+          />
         )}
       />
       <Show

@@ -71,10 +71,11 @@ describe('Chat page', () => {
   );
   const expectIsVisible = (message: Message) =>
     expect(screen.queryByText(message.text)).not.toBeNull();
-  const getNewMessage = () => ({
+  const getNewMessage = (): Message => ({
     text: faker.lorem.sentence(),
-    timestamp: faker.date.past().getTime(),
+    timestamp: faker.date.past(),
     toHandle: PROFILES[1].handle,
+    fromHandle: PROFILES[0].handle,
   });
   const messages: Message[] = Array.from({length: 7}).map(getNewMessage);
   it('displays all the messages in the chat object', () => {

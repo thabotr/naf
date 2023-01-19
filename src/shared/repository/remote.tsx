@@ -4,8 +4,9 @@ import {Message} from '../../pages/Chat/types/Message';
 import {Credentials} from '../../pages/Login/Login';
 import {HelperText} from '../middleware';
 import {SERVER_URL} from '../routes/server';
-import {EventTypeString} from '../utils/eventPublisher';
+import {EventName} from '../utils/publisher';
 import {log} from '../utils/logger';
+import {Profile} from '../../types/user';
 
 class RemoteRepository {
   static handle = '';
@@ -13,6 +14,31 @@ class RemoteRepository {
   static basicAuthHeader: Record<string, string | number> = {};
   static profilesURL = SERVER_URL.concat('/profiles');
   static messagesURL = SERVER_URL.concat('/messages');
+
+  static async getUserProfile(credentials: Credentials): Promise<Profile> {
+    let response;
+    try {
+      response = await axios.get(
+        `${SERVER_URL}/profiles`,
+        getAuthNValidationConfig(credentials),
+      );
+    } catch (e) {
+      console.log('RemoteLoginRepository->getUserProfile', e);
+      throw new Error(HelperText.unknownError);
+    }
+    if (response.status === 401) {
+      throw new Error(HelperText.authorizationError);
+    }
+    if (response.status === 200) {
+      const body = response.data;
+      const profile: Profile = {
+        ...body,
+        token: RemoteRepository.token,
+      };
+      return profile;
+    }
+    throw new Error(HelperText.unknownError);
+  }
 
   static async getMessages(
     credentials: Credentials,
@@ -38,8 +64,9 @@ class RemoteRepository {
         });
         return messages;
       }
+      console.log('RemoteRepository->getMessages status:', response.status);
     } catch (e) {
-      console.log('getMessages', e);
+      console.log('RemoteRepository->getMessages', e);
     }
     throw new Error(HelperText.unknownError);
   }
@@ -80,7 +107,7 @@ class RemoteRepository {
   static async getNotifications(
     credentials: Credentials,
     selectors: Record<string, string>,
-  ): Promise<EventTypeString> {
+  ): Promise<EventName> {
     const config: AxiosRequestConfig<unknown> = {
       ...getAuthNValidationConfig(credentials, selectors),
     };
@@ -115,7 +142,7 @@ const getAuthNValidationConfig = (
   return config;
 };
 
-const toEventTypeString = (code: number): EventTypeString => {
+const toEventTypeString = (code: number): EventName => {
   switch (code) {
     case 1:
       return 'NEW_MESSAGE';

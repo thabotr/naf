@@ -29,6 +29,7 @@ class HelperText {
   static successfulRegistrationText = "You're now a citizen. Login!";
   static handleAlreadyTaken = 'handle already taken';
   static unknownError = 'an unknown error occured';
+  static authorizationError = 'please check credentials and try again';
 }
 
 export {Validator, HelperText};

@@ -1,52 +1,43 @@
-import pubSub, {
-  EventTypeString,
-} from '../../../../../src/shared/utils/eventPublisher';
-
+import Publisher, {
+  EventName,
+  Subscription,
+} from '../../../../../src/shared/utils/publisher';
 jest.useRealTimers();
 
-describe('EventPublisher', () => {
-  const newMsgEvent: EventTypeString = 'NEW_MESSAGE';
-  describe('subscribe', () => {
-    const mockSubscriber = jest.fn().mockName('mockSubscriber');
-    it(
-      'given an event type and a subscriber it will add tha subsribers to the list of' +
-        'subscribers for that event type',
-      () => {
-        expect(pubSub.subscriptions[newMsgEvent]).not.toContain(mockSubscriber);
-        pubSub.subscribe(newMsgEvent, mockSubscriber);
-        expect(pubSub.subscriptions[newMsgEvent]).toContain(mockSubscriber);
-      },
-    );
-    it('returns a function which when called unsubscribes the the subscriber from the event type', () => {
-      const unsubscibe = pubSub.subscribe('NEW_MESSAGE', mockSubscriber);
-      unsubscibe();
-      expect(pubSub.subscriptions.NEW_MESSAGE).not.toContain(mockSubscriber);
-    });
-    it('subscribes the same function only once to the same event', () => {
-      pubSub.subscribe(newMsgEvent, mockSubscriber);
-      pubSub.subscribe(newMsgEvent, mockSubscriber);
-      const numberOfsubscriptions = pubSub.subscriptions[newMsgEvent].filter(
-        subber => subber === mockSubscriber,
-      ).length;
-      expect(numberOfsubscriptions).toBe(1);
-    });
+describe('Publisher', () => {
+  const newMsgEvent: EventName = 'NEW_MESSAGE';
+  const mockCallback = jest.fn().mockName('mockCallback');
+  const subscription: Subscription = {
+    id: 'some sub',
+    callback: mockCallback,
+  };
+  beforeEach(() => {
+    mockCallback.mockClear();
   });
-  describe('publish', () => {
-    const mockSubscriber = jest.fn().mockName('mockSubscriber');
-    pubSub.subscribe(newMsgEvent, mockSubscriber);
-    it('it calls all the subscribers to the given event type', () => {
-      const mock2ndSubscriber = jest.fn().mockName('mock2ndSubscriber');
-      pubSub.subscribe(newMsgEvent, mock2ndSubscriber);
-      pubSub.publish(newMsgEvent);
-      expect(mockSubscriber).toBeCalledTimes(1);
-      expect(mock2ndSubscriber).toBeCalledTimes(1);
-    });
-    it('it does not fail when any of the subscribers throws an error', () => {
-      const anError = new Error('error thrown by mockSubscriber');
-      mockSubscriber.mockImplementation(() => {
-        throw anError;
-      });
-      expect(() => pubSub.publish(newMsgEvent)).not.toThrow(anError);
-    });
+  it('callbacks only executed when subbed events are published', () => {
+    Publisher.publish(newMsgEvent);
+    expect(mockCallback).toBeCalledTimes(0);
+    Publisher.subscribe(newMsgEvent, subscription);
+    Publisher.publish(newMsgEvent);
+    expect(mockCallback).toBeCalledTimes(1);
+  });
+  it('returns an unsubscribe callback on subscribe', () => {
+    const unsubscibe = Publisher.subscribe(newMsgEvent, subscription);
+    unsubscibe();
+    Publisher.publish(newMsgEvent);
+    expect(mockCallback).toBeCalledTimes(0);
+  });
+  it('does not duplicate multiple subscriptions to the same event', () => {
+    Publisher.subscribe(newMsgEvent, subscription);
+    Publisher.subscribe(newMsgEvent, subscription);
+    Publisher.publish(newMsgEvent);
+    expect(mockCallback).toBeCalledTimes(1);
+  });
+  it('should pass into the callback any data given to the publish function', () => {
+    Publisher.subscribe(newMsgEvent, subscription);
+    const data = 'published message';
+    Publisher.publish(newMsgEvent, data);
+    expect(mockCallback).toBeCalledTimes(1);
+    expect(mockCallback).toBeCalledWith(data);
   });
 });

@@ -61,12 +61,12 @@ describe('Login page', () => {
   );
   test("displays texts 'Login failed!' and the error text if loginError is defined", () => {
     loginPageFromFactory({
-      loginError: 'please check credentials and try again',
+      loginError: HelperText.authorizationError,
     });
     const loginFailedTextComponent = screen.queryByText('Login failed!');
     expect(loginFailedTextComponent).not.toBeNull();
     const authErrorTextComponent = screen.queryByText(
-      'please check credentials and try again',
+      HelperText.authorizationError,
     );
     expect(authErrorTextComponent).not.toBeNull();
   });

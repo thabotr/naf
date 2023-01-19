@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Credentials, Login, LoginErrorType} from '../pages/Login/Login';
-import {RemoteLoginRepository} from '../pages/Login/repository/remote';
 import {Profile} from '../types/user';
 import {ThemeProvider} from './providers/theme';
 import Home from '../pages/Home/Home';
@@ -16,38 +15,39 @@ import {RemoteChatProfileRepository} from '../pages/ChatProfile/repository/remot
 import {Message} from '../pages/Chat/types/Message';
 import {RemoteRepository} from './repository/remote';
 import Registration from '../pages/Registration/Registration';
-import eventPublisher from '../shared/utils/eventPublisher';
+import Publisher, {Subscription} from '../shared/utils/publisher';
+import {AppRegistry} from 'react-native';
 
-const remoteRepo = new RemoteLoginRepository();
 const remoteChatProfileRepo = new RemoteChatProfileRepository();
 const remoteChatRepo = new RemoteChatRepository();
 const NavigationStack = createNativeStackNavigator();
 
-const listenForNotifications = async (
-  loggedInUser: Profile,
-  messageSince: string,
-) => {
-  let timeout = 1000;
-  while (timeout) {
-    RemoteRepository.getNotifications(loggedInUser, {
-      messagessince: messageSince,
-    })
-      .then(event => {
-        if (event === 'IDLE') {
-          timeout = 1000;
-          console.log('idling');
-        } else {
-          eventPublisher.publish(event);
-          timeout = 0;
-        }
-      })
-      .catch(e => {
-        console.log('getNotifications: ', e);
-        timeout *= 2;
-      });
-    await new Promise(resolve => setTimeout(resolve, timeout));
-  }
-};
+function addMsgsToChats(messages: Message[], chats: Chat[]): Chat[] {
+  const chatsWithNewMsgs = [...chats];
+  chatsWithNewMsgs.forEach(chat => {
+    const newMessagesForChat = messages.filter(
+      msg =>
+        msg.fromHandle === chat.user.handle ||
+        msg.toHandle === chat.user.handle,
+    );
+    chat.messages = chat.messages.concat(newMessagesForChat);
+  });
+  return chatsWithNewMsgs;
+}
+
+function getLatestTimestamp(messages: Message[]): Date | undefined {
+  return messages
+    .map(msg => msg.timestamp)
+    .sort((date1, date2) => date1.getTime() - date2.getTime())
+    .pop();
+}
+
+function enrichWithRequiredFields(chat: Chat): Chat {
+  chat.messages ??= [];
+  chat.messageThreads ??= [];
+  chat.lastModified ??= new Date(1997, 1, 1);
+  return chat;
+}
 
 export default function Router(): JSX.Element {
   const [loggedInUser, setLoggedInUser] = useState<Profile | undefined>(
@@ -64,33 +64,63 @@ export default function Router(): JSX.Element {
   const [registrationError, setRegistrationError] =
     useState<LoginErrorType>(undefined);
   const [registered, setRegistered] = useState(false);
-  const [messageSince, setMessagesSince] = useState('1997/01/01');
+
+  useEffect(() => {
+    if (loggedInUser) {
+      const credentials = JSON.stringify({
+        handle: loggedInUser.handle,
+        token: loggedInUser.token,
+      });
+      AppRegistry.startHeadlessTask(171, 'naf-notifier', credentials);
+    }
+  }, [loggedInUser]);
 
   useEffect(() => {
     if (!loggedInUser) {
       return;
     }
-    eventPublisher.subscribe('NEW_MESSAGE', () => {
-      // fetch new messages
-    });
-    listenForNotifications(loggedInUser, messageSince);
-  }, [loggedInUser, messageSince]);
+    const getMsgs: Subscription = {
+      id: 'getMessages',
+      callback: () => {
+        let messagesSince;
+        RemoteRepository.getMessages(loggedInUser, messagesSince)
+          .then(messages => {
+            const latestMsgTimestamp = getLatestTimestamp(messages);
+            messagesSince = latestMsgTimestamp;
+            latestMsgTimestamp &&
+              Publisher.publish('MESSAGE_SINCE', latestMsgTimestamp);
+            setChats(currChats => addMsgsToChats(messages, currChats));
+          })
+          .finally(() => Publisher.publish('START_NOTIFICATION_LISTENER'));
+      },
+    };
+    const unsubFromGetMsgs = Publisher.subscribe('NEW_MESSAGE', getMsgs);
+    return () => {
+      unsubFromGetMsgs();
+    };
+  }, [loggedInUser]);
 
   function onPressLogin(credentials: {token: string; handle: string}) {
     RemoteRepository.setCredentials(credentials.token, credentials.handle);
-    remoteRepo
-      .getUserProfile()
+    RemoteRepository.getUserProfile(credentials)
       .then(profileResult => {
-        if (!profileResult) {
-          return;
-        }
+        console.log('logged in as ', profileResult);
         setLoggedInUser(profileResult);
         setLoginError(undefined);
         remoteChatRepo.getChats().then(remoteChats => {
           if (remoteChats === null) {
             return;
           }
+          remoteChats.forEach(enrichWithRequiredFields);
           setChats(remoteChats);
+          RemoteRepository.getMessages(profileResult)
+            .then(messages => {
+              const latestMsgTimestamp = getLatestTimestamp(messages);
+              latestMsgTimestamp &&
+                Publisher.publish('MESSAGE_SINCE', latestMsgTimestamp);
+              setChats(currentChats => addMsgsToChats(messages, currentChats));
+            })
+            .catch(e => console.log('Login->getMessages', e));
         });
       })
       .catch(e => {
@@ -186,6 +216,7 @@ export default function Router(): JSX.Element {
         text: message.text ?? '',
         toHandle: openChat.user.handle,
         timestamp: new Date(),
+        fromHandle: loggedInUser.handle,
       };
       remoteChatRepo
         .postMessage(fullMessage)

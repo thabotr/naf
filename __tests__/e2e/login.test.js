@@ -1,3 +1,4 @@
+import {faker} from '@faker-js/faker';
 import {device, element, expect} from 'detox';
 import {PROFILE} from '../mockdata/profile';
 describe('Login Page', () => {
@@ -12,8 +13,8 @@ describe('Login Page', () => {
     await expect(element(by.label('registration page'))).not.toExist();
   });
 
-  it('as an unregistered user I should not be able to log into the application', async () => {
-    const unregisteredAccessToken = 'token';
+  it('as an unauthorized user I should not be able to log into the application', async () => {
+    const unregisteredAccessToken = faker.internet.password(8, true);
     await element(by.label('your access token')).typeText(
       unregisteredAccessToken,
     );

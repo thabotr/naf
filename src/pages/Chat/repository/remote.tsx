@@ -44,10 +44,14 @@ class RemoteChatRepository extends RemoteRepository implements ChatRepository {
         config,
       );
       if (response.status === 201) {
-        const remoteMessage: Pick<Message, 'timestamp'> = response.data;
+        const remoteMessage: Record<string, string> = response.data;
+        const utcTimestampStr = remoteMessage.timestamp
+          .replace(' ', 'T')
+          .concat('Z');
+        const timestamp = new Date(utcTimestampStr);
         return {
           ...sanitizedMessage,
-          ...remoteMessage,
+          timestamp: timestamp,
         };
       }
     } catch (e) {
