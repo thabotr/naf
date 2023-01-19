@@ -1,5 +1,6 @@
 import {faker} from '@faker-js/faker';
 import {device, expect, by} from 'detox';
+import 'isomorphic-fetch';
 import {expect as jExpect} from '@jest/globals';
 import {Buffer} from 'buffer';
 import {PROFILE, PROFILES} from '../mockdata/profile';
@@ -107,14 +108,12 @@ describe('Chat page', () => {
           text: faker.hacker.phrase(),
           toHandle: ourUser.handle,
         };
-        const res = await fetch(
-          {
-            method: 'POST',
-            url: SERVER_URL.concat('/naf/api/messages'),
-            headers: authHeader,
-          },
-          {body: message},
-        );
+        const res = await fetch(SERVER_URL.concat('/naf/api/messages'), {
+          method: 'POST',
+          headers: authHeader,
+          body: JSON.stringify(message),
+        });
+        console.log('BEcause here', await res.text());
         jExpect(res.status).toBe(201);
         const greaterThanPollingFrequency = 5000;
         await waitFor(element(by.text(message.text)))

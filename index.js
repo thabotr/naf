@@ -21,7 +21,7 @@ AppRegistry.registerHeadlessTask(
       console.log('task already registered');
       return;
     }
-    if (!loggedInUser) {
+    if (!loggedInUserStr) {
       console.log('no user to get notifications for');
       return;
     }
