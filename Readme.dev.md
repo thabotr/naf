@@ -11,18 +11,6 @@
 #### 4. Run the tests
     npm run e2eTest
 see the [Detox](https://wix.github.io/Detox/docs/) docs for more info on running the e2e tests.
-### Back-end unit testing
-  Download [PHPUnit](https://phpunit.de/index.html) phar and place it in project root
-    
-  Run 
-    
-    php .\phpunit-6.5.14.phar --verbose .\backend\<path\to\test\file>.php
-  
-  from the php tests directory
-### Back-end contract/integration testing
-These ensure that the back-end's endpoints are working as expected
-
-    python .\__tests__\integration\resource\__main___test.py
 
 ## Design
 ### Screens
