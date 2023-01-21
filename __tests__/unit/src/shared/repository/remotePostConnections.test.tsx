@@ -52,7 +52,7 @@ describe(RemoteRepository, () => {
     it('throws the unknown error when fetch throws as error', async () => {
       expect.assertions(1);
       mockPost.mockRejectedValueOnce(
-        new Error('connectToUser intentionally thown testing error'),
+        new Error('connectToUser intentionally thrown testing error'),
       );
       await expect(connectToUser()).rejects.toThrow(HelperText.unknownError);
     });
