@@ -8,13 +8,50 @@ import {EventName} from '../utils/publisher';
 import {log} from '../utils/logger';
 import {Profile} from '../../types/user';
 
+type ConnectionRequest = {
+  toHandle: string;
+  timestamp: Date;
+};
+
+function getURL(path: string): string {
+  return SERVER_URL.concat(path);
+}
 class RemoteRepository {
   static handle = '';
   static token = '';
   static basicAuthHeader: Record<string, string | number> = {};
   static profilesURL = SERVER_URL.concat('/profiles');
   static messagesURL = SERVER_URL.concat('/messages');
+  static connectionsURL = getURL('/connections');
 
+  static async connectToUser(
+    userToConnectHandle: string,
+    credentials: Credentials,
+  ): Promise<ConnectionRequest> {
+    const connectToUserURL = this.connectionsURL.concat(
+      `/${userToConnectHandle}`,
+    );
+    const config = getAuthNValidationConfig(credentials);
+    let response;
+    try {
+      response = await axios.post(connectToUserURL, undefined, config);
+    } catch (e) {
+      console.error(e);
+      throw new Error(HelperText.unknownError);
+    }
+    if (response.status === HttpStatusCode.NotFound) {
+      throw new Error(HelperText.userNotFound);
+    }
+    if (response.status === HttpStatusCode.Created) {
+      const timestampStr: string = response.data.timestamp;
+      const dateTime = new Date(timestampStr.replace(' ', 'T').concat('Z'));
+      return {
+        toHandle: userToConnectHandle,
+        timestamp: dateTime,
+      };
+    }
+    throw new Error(HelperText.unknownError);
+  }
   static async getUserProfile(credentials: Credentials): Promise<Profile> {
     let response;
     try {

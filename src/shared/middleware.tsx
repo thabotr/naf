@@ -30,6 +30,7 @@ class HelperText {
   static handleAlreadyTaken = 'handle already taken';
   static unknownError = 'an unknown error occured';
   static authorizationError = 'please check credentials and try again';
+  static userNotFound = 'user by that handle does not exist';
 }
 
 export {Validator, HelperText};
